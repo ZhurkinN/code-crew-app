@@ -1,0 +1,6 @@
+applicationType: default
+defaultPackage: cis.tinkoff
+testFramework: junit
+sourceLanguage: java
+buildTool: gradle
+features: [annotation-api, app-name, data, data-jpa, gradle, http-client, jackson-databind, java, java-application, jdbc-hikari, junit, kafka, liquibase, logback, lombok, micronaut-build, mockito, netty-server, openapi, postgres, readme, security-annotations, security-oauth2, shade, swagger-ui, testcontainers, yaml]
