@@ -1,18 +1,14 @@
 package cis.tinkoff.db.entity;
 
+import io.micronaut.data.annotation.GeneratedValue;
+import io.micronaut.data.annotation.Id;
+import io.micronaut.data.annotation.MappedEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.apache.kafka.common.protocol.types.Field;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
-@Table(name = "users")
-@Entity
+@MappedEntity(alias = "tbl_users")
 @AllArgsConstructor
 @NoArgsConstructor
 @Data

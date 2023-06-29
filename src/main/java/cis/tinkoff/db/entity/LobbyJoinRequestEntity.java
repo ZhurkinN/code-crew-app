@@ -1,14 +1,16 @@
 package cis.tinkoff.db.entity;
 
+import io.micronaut.data.annotation.GeneratedValue;
+import io.micronaut.data.annotation.Id;
+import io.micronaut.data.annotation.MappedEntity;
+import io.micronaut.data.annotation.Relation;
+import io.micronaut.data.jdbc.annotation.JoinColumn;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
-
-@Table(name = "lobby_join_request")
-@Entity
+@MappedEntity(alias = "tbl_lobby_join_request")
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -18,11 +20,11 @@ public class LobbyJoinRequestEntity {
     @GeneratedValue
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @Relation(value = Relation.Kind.MANY_TO_ONE, cascade = Relation.Cascade.ALL)
+    @JoinColumn(name = "user_id")
     private UserEntity user;
 
-    @ManyToOne
-    @JoinColumn(name = "lobby_id", nullable = false)
+    @Relation(value = Relation.Kind.MANY_TO_ONE, cascade = Relation.Cascade.ALL)
+    @JoinColumn(name = "lobby_id")
     private LobbyEntity lobby;
 }

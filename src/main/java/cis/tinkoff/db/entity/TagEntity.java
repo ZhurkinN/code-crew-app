@@ -1,17 +1,14 @@
 package cis.tinkoff.db.entity;
 
+import io.micronaut.data.annotation.GeneratedValue;
+import io.micronaut.data.annotation.Id;
+import io.micronaut.data.annotation.MappedEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
-@Table(name = "tags")
-@Entity
+@MappedEntity(alias = "tbl_tags")
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
