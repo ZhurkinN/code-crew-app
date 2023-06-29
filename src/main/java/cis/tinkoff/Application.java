@@ -9,10 +9,15 @@ import io.swagger.v3.oas.annotations.*;
 import io.swagger.v3.oas.annotations.info.*;
 
 @OpenAPIDefinition(
-    info = @Info(
-            title = "code-crew",
-            version = "0.0"
-    )
+        info = @Info(
+                title = "CodeCrew - WEB service for finding development teams",
+                description = "The service allows you to create and find a dream team for you!",
+                version = "0.1",
+                contact = @Contact(
+                        name = "CodeCrewTeam",
+                        email = "zhurkin236@gmail.com"
+                )
+        )
 )
 public class Application {
 
