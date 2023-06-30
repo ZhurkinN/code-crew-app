@@ -194,7 +194,7 @@ create table if not exists public.team_request
     resume_id   bigint not null
         constraint fk_resume_id
             references public.resume,
-    user_id     bigint not null
+    user_id     bigint default null
         constraint fk_user_id
             references public.users,
     vacancy_id  bigint not null
