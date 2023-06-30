@@ -19,7 +19,6 @@ dependencies {
     annotationProcessor("io.micronaut.data:micronaut-data-processor")
     implementation("io.micronaut:micronaut-http-client")
     implementation("io.micronaut:micronaut-jackson-databind")
-//    implementation("io.micronaut.data:micronaut-data-hibernate-jpa")
     implementation("io.micronaut.kafka:micronaut-kafka")
     implementation("io.micronaut.liquibase:micronaut-liquibase")
     implementation("io.micronaut.security:micronaut-security-oauth2")

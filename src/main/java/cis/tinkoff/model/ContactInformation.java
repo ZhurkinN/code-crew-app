@@ -1,4 +1,4 @@
-package cis.tinkoff.db.entity;
+package cis.tinkoff.model;
 
 import io.micronaut.data.annotation.GeneratedValue;
 import io.micronaut.data.annotation.Id;
@@ -6,26 +6,30 @@ import io.micronaut.data.annotation.MappedEntity;
 import io.micronaut.data.annotation.Relation;
 import io.micronaut.data.jdbc.annotation.JoinColumn;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 
-
-@MappedEntity(alias = "tbl_contact_info")
+@Getter
+@Setter
+@Accessors(chain = true)
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
-@Builder
-public class ContactInfoEntity {
+@MappedEntity(alias = "contact_information")
+public class ContactInformation {
+
     @Id
     @GeneratedValue
     private Long id;
 
-    @Relation(value = Relation.Kind.MANY_TO_ONE, cascade = Relation.Cascade.ALL)
+    @Relation(
+            value = Relation.Kind.MANY_TO_ONE,
+            cascade = Relation.Cascade.PERSIST,
+            mappedBy = "contacts"
+    )
     @JoinColumn(name = "user_id")
-    private UserEntity user;
-
+    private User user;
     private String socialMedia;
-
     private String link;
 }
