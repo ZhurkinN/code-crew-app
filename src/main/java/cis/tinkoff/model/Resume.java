@@ -30,8 +30,7 @@ public class Resume {
 
     @Relation(
             value = Relation.Kind.MANY_TO_ONE,
-            cascade = Relation.Cascade.PERSIST,
-            mappedBy = "resumes"
+            cascade = Relation.Cascade.PERSIST
     )
     @JoinColumn(name = "user_id")
     private User user;
@@ -59,7 +58,8 @@ public class Resume {
 
     @Relation(
             value = Relation.Kind.ONE_TO_MANY,
-            cascade = Relation.Cascade.ALL
+            cascade = Relation.Cascade.ALL,
+            mappedBy = "resume"
     )
     private Set<TeamRequest> requests = new HashSet<>();
 }

@@ -28,8 +28,7 @@ public class Team {
 
     @Relation(
             value = Relation.Kind.MANY_TO_ONE,
-            cascade = Relation.Cascade.PERSIST,
-            mappedBy = "teams"
+            cascade = Relation.Cascade.PERSIST
     )
     @JoinColumn(name = "leader_id")
     private User user;
@@ -48,7 +47,8 @@ public class Team {
 
     @Relation(
             value = Relation.Kind.ONE_TO_MANY,
-            cascade = Relation.Cascade.ALL
+            cascade = Relation.Cascade.ALL,
+            mappedBy = "team"
     )
     private Set<Participant> participants = new HashSet<>();
 }

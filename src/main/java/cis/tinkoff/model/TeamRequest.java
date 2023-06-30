@@ -26,24 +26,21 @@ public class TeamRequest {
 
     @Relation(
             value = Relation.Kind.MANY_TO_ONE,
-            cascade = Relation.Cascade.PERSIST,
-            mappedBy = "requests"
+            cascade = Relation.Cascade.PERSIST
     )
     @JoinColumn(name = "user_id")
     private User user;
 
     @Relation(
             value = Relation.Kind.MANY_TO_ONE,
-            cascade = Relation.Cascade.PERSIST,
-            mappedBy = "requests"
+            cascade = Relation.Cascade.PERSIST
     )
     @JoinColumn(name = "resume_id")
     private Resume resume;
 
     @Relation(
             value = Relation.Kind.MANY_TO_ONE,
-            cascade = Relation.Cascade.PERSIST,
-            mappedBy = "requests"
+            cascade = Relation.Cascade.PERSIST
     )
     @JoinColumn(name = "vacancy_id")
     private Participant vacancy;

@@ -35,31 +35,36 @@ public class User {
 
     @Relation(
             value = Relation.Kind.ONE_TO_MANY,
-            cascade = Relation.Cascade.ALL
+            cascade = Relation.Cascade.ALL,
+            mappedBy = "user"
     )
     private Set<ContactInformation> contacts = new HashSet<>();
 
     @Relation(
             value = Relation.Kind.ONE_TO_MANY,
-            cascade = Relation.Cascade.ALL
+            cascade = Relation.Cascade.ALL,
+            mappedBy = "user"
     )
     private Set<Resume> resumes = new HashSet<>();
 
     @Relation(
             value = Relation.Kind.ONE_TO_MANY,
-            cascade = Relation.Cascade.PERSIST
+            cascade = Relation.Cascade.PERSIST,
+            mappedBy = "user"
     )
     private Set<Team> teams = new HashSet<>();
 
     @Relation(
             value = Relation.Kind.ONE_TO_MANY,
-            cascade = Relation.Cascade.ALL
+            cascade = Relation.Cascade.ALL,
+            mappedBy = "user"
     )
     private Set<Participant> participants = new HashSet<>();
 
     @Relation(
             value = Relation.Kind.ONE_TO_MANY,
-            cascade = Relation.Cascade.ALL
+            cascade = Relation.Cascade.ALL,
+            mappedBy = "user"
     )
     private Set<TeamRequest> requests = new HashSet<>();
 }

@@ -1,5 +1,6 @@
 package cis.tinkoff.model;
 
+import io.micronaut.core.annotation.Nullable;
 import io.micronaut.data.annotation.GeneratedValue;
 import io.micronaut.data.annotation.Id;
 import io.micronaut.data.annotation.MappedEntity;
@@ -30,16 +31,15 @@ public class Participant {
 
     @Relation(
             value = Relation.Kind.MANY_TO_ONE,
-            cascade = Relation.Cascade.PERSIST,
-            mappedBy = "participants"
+            cascade = Relation.Cascade.PERSIST
     )
     @JoinColumn(name = "user_id")
+    @Nullable
     private User user;
 
     @Relation(
             value = Relation.Kind.MANY_TO_ONE,
-            cascade = Relation.Cascade.PERSIST,
-            mappedBy = "participants"
+            cascade = Relation.Cascade.PERSIST
     )
     @JoinColumn(name = "team_id")
     private Team team;
@@ -64,7 +64,8 @@ public class Participant {
 
     @Relation(
             value = Relation.Kind.ONE_TO_MANY,
-            cascade = Relation.Cascade.ALL
+            cascade = Relation.Cascade.ALL,
+            mappedBy = "vacancy"
     )
     private Set<TeamRequest> requests = new HashSet<>();
 }

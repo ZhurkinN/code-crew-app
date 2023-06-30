@@ -25,8 +25,7 @@ public class ContactInformation {
 
     @Relation(
             value = Relation.Kind.MANY_TO_ONE,
-            cascade = Relation.Cascade.PERSIST,
-            mappedBy = "contacts"
+            cascade = Relation.Cascade.PERSIST
     )
     @JoinColumn(name = "user_id")
     private User user;
