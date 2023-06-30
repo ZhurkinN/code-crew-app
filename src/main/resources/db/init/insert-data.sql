@@ -1,1 +1,1 @@
-insert into tbl_users (id, name) values (1, 'asda')
+-- insert into tbl_users (id, name) values (1, 'asda')
