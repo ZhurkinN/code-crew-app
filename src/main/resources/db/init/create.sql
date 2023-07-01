@@ -1,38 +1,29 @@
-create sequence public.contact_information_seq
+create sequence if not exists public.contact_information_seq
     increment by 50;
-alter sequence public.contact_information_seq owner to postgres;
 
-create sequence public.direction_seq
+create sequence if not exists public.direction_seq
     increment by 50;
-alter sequence public.direction_seq owner to postgres;
 
-create sequence public.participants_seq
+create sequence if not exists public.participants_seq
     increment by 50;
-alter sequence public.participants_seq owner to postgres;
 
-create sequence public.resume_seq
+create sequence if not exists public.resume_seq
     increment by 50;
-alter sequence public.resume_seq owner to postgres;
 
-create sequence public.skills_seq
+create sequence if not exists public.skills_seq
     increment by 50;
-alter sequence public.skills_seq owner to postgres;
 
-create sequence public.team_request_seq
+create sequence if not exists public.team_request_seq
     increment by 50;
-alter sequence public.team_request_seq owner to postgres;
 
-create sequence public.team_seq
+create sequence if not exists public.team_seq
     increment by 50;
-alter sequence public.team_seq owner to postgres;
 
-create sequence public.team_status_seq
+create sequence if not exists public.team_status_seq
     increment by 50;
-alter sequence public.team_status_seq owner to postgres;
 
-create sequence public.users_seq
+create sequence if not exists public.users_seq
     increment by 50;
-alter sequence public.users_seq owner to postgres;
 
 
 
@@ -42,8 +33,6 @@ create table if not exists public.direction
         primary key,
     direction_name varchar(255) not null
 );
-alter table public.direction
-    owner to postgres;
 
 create table if not exists public.skills
 (
@@ -51,8 +40,6 @@ create table if not exists public.skills
         primary key,
     skill_name varchar(255) not null
 );
-alter table public.skills
-    owner to postgres;
 
 create table if not exists public.team_status
 (
@@ -60,8 +47,6 @@ create table if not exists public.team_status
         primary key,
     status_name varchar(255) not null
 );
-alter table public.team_status
-    owner to postgres;
 
 create table if not exists public.users
 (
@@ -73,8 +58,6 @@ create table if not exists public.users
     password     varchar(255) not null,
     picture_link varchar(255)
 );
-alter table public.users
-    owner to postgres;
 
 create table if not exists public.contact_information
 (
@@ -86,8 +69,6 @@ create table if not exists public.contact_information
         constraint fk_user_id
             references public.users
 );
-alter table public.contact_information
-    owner to postgres;
 
 create table if not exists public.resume
 (
@@ -102,8 +83,6 @@ create table if not exists public.resume
         constraint fk_user_id
             references public.users
 );
-alter table public.resume
-    owner to postgres;
 
 create table if not exists public.resume_skills
 (
@@ -115,8 +94,6 @@ create table if not exists public.resume_skills
             references public.resume,
     primary key (skill_id, resume_id)
 );
-alter table public.resume_skills
-    owner to postgres;
 
 create table if not exists public.team
 (
@@ -133,8 +110,6 @@ create table if not exists public.team
         constraint fk_user_id
             references public.users
 );
-alter table public.team
-    owner to postgres;
 
 create table if not exists public.participants
 (
@@ -151,8 +126,6 @@ create table if not exists public.participants
         constraint fk_user_id
             references public.users
 );
-alter table public.participants
-    owner to postgres;
 
 create table if not exists public.participant_skills
 (
@@ -164,8 +137,6 @@ create table if not exists public.participant_skills
             references public.participants,
     primary key (skill_id, participant_id)
 );
-alter table public.participant_skills
-    owner to postgres;
 
 create table if not exists public.team_request
 (
@@ -182,5 +153,3 @@ create table if not exists public.team_request
         constraint fk_vacancy_id
             references public.participants
 );
-alter table public.team_request
-    owner to postgres;
