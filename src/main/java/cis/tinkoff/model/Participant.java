@@ -7,7 +7,6 @@ import io.micronaut.data.annotation.MappedEntity;
 import io.micronaut.data.annotation.Relation;
 import io.micronaut.data.jdbc.annotation.JoinColumn;
 import io.micronaut.data.jdbc.annotation.JoinTable;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,14 +18,14 @@ import java.util.Set;
 @Getter
 @Setter
 @Accessors(chain = true)
-@AllArgsConstructor
 @NoArgsConstructor
-@MappedEntity(alias = "participants")
+@MappedEntity(value = "participants")
 public class Participant {
 
     @Id
     @GeneratedValue
     private Long id;
+    @Nullable
     private String description;
 
     @Relation(
@@ -60,6 +59,7 @@ public class Participant {
             joinColumns = @JoinColumn(name = "participant_id"),
             inverseJoinColumns = @JoinColumn(name = "skill_id")
     )
+    @Nullable
     private Set<Skill> skills;
 
     @Relation(
@@ -67,5 +67,22 @@ public class Participant {
             cascade = Relation.Cascade.ALL,
             mappedBy = "vacancy"
     )
+    @Nullable
     private Set<TeamRequest> requests = new HashSet<>();
+
+    public Participant(Long id,
+                       @Nullable String description,
+                       @Nullable User user,
+                       Team team,
+                       Direction direction,
+                       @Nullable Set<Skill> skills,
+                       @Nullable Set<TeamRequest> requests) {
+        this.id = id;
+        this.description = description;
+        this.user = user;
+        this.team = team;
+        this.direction = direction;
+        this.skills = skills;
+        this.requests = requests;
+    }
 }

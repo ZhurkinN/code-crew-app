@@ -16,7 +16,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @AllArgsConstructor
 @NoArgsConstructor
-@MappedEntity(alias = "contact_information")
+@MappedEntity(value = "contact_information")
 public class ContactInformation {
 
     @Id

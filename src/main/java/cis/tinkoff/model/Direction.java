@@ -14,7 +14,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @AllArgsConstructor
 @NoArgsConstructor
-@MappedEntity(alias = "direction")
+@MappedEntity(value = "direction")
 public class Direction {
 
     @Id

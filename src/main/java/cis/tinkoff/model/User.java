@@ -5,7 +5,6 @@ import io.micronaut.data.annotation.GeneratedValue;
 import io.micronaut.data.annotation.Id;
 import io.micronaut.data.annotation.MappedEntity;
 import io.micronaut.data.annotation.Relation;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,9 +16,8 @@ import java.util.Set;
 @Getter
 @Setter
 @Accessors(chain = true)
-@AllArgsConstructor
 @NoArgsConstructor
-@MappedEntity(alias = "users")
+@MappedEntity(value = "users")
 public class User {
 
     @Id
@@ -38,6 +36,7 @@ public class User {
             cascade = Relation.Cascade.ALL,
             mappedBy = "user"
     )
+    @Nullable
     private Set<ContactInformation> contacts = new HashSet<>();
 
     @Relation(
@@ -45,6 +44,7 @@ public class User {
             cascade = Relation.Cascade.ALL,
             mappedBy = "user"
     )
+    @Nullable
     private Set<Resume> resumes = new HashSet<>();
 
     @Relation(
@@ -52,6 +52,7 @@ public class User {
             cascade = Relation.Cascade.PERSIST,
             mappedBy = "user"
     )
+    @Nullable
     private Set<Team> teams = new HashSet<>();
 
     @Relation(
@@ -59,6 +60,7 @@ public class User {
             cascade = Relation.Cascade.ALL,
             mappedBy = "user"
     )
+    @Nullable
     private Set<Participant> participants = new HashSet<>();
 
     @Relation(
@@ -66,6 +68,31 @@ public class User {
             cascade = Relation.Cascade.ALL,
             mappedBy = "user"
     )
+    @Nullable
     private Set<TeamRequest> requests = new HashSet<>();
+
+    public User(Long id,
+                String login,
+                String password,
+                String fullName,
+                @Nullable String email,
+                @Nullable String pictureLink,
+                @Nullable Set<ContactInformation> contacts,
+                @Nullable Set<Resume> resumes,
+                @Nullable Set<Team> teams,
+                @Nullable Set<Participant> participants,
+                @Nullable Set<TeamRequest> requests) {
+        this.id = id;
+        this.login = login;
+        this.password = password;
+        this.fullName = fullName;
+        this.email = email;
+        this.pictureLink = pictureLink;
+        this.contacts = contacts;
+        this.resumes = resumes;
+        this.teams = teams;
+        this.participants = participants;
+        this.requests = requests;
+    }
 }
 
