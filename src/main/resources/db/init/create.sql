@@ -66,7 +66,7 @@ create table if not exists public.resume
     unique (user_id, direction)
 );
 
-create table if not exists project
+create table if not exists public.project
 (
     id bigint not null primary key,
     leader_id bigint not null
@@ -81,7 +81,7 @@ create table if not exists project
             references public.project_status(status_name)
 );
 
-create table positions
+create table public.positions
 (
     id bigint not null primary key,
     project_id bigint not null
@@ -98,7 +98,7 @@ create table positions
 );
 
 
-create table if not exists position_request
+create table if not exists public.position_request
 (
     id bigint not null primary key,
     resume_id bigint not null
