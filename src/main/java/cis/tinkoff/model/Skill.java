@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -30,7 +31,7 @@ public class Skill {
             mappedBy = "skills"
     )
     @Nullable
-    private Set<Resume> resumes;
+    private List<Resume> resumes;
 
     @Relation(
             value = Relation.Kind.MANY_TO_MANY,
@@ -38,12 +39,12 @@ public class Skill {
             mappedBy = "skills"
     )
     @Nullable
-    private Set<Participant> participants;
+    private List<Participant> participants;
 
     public Skill(Long id,
                  String skillName,
-                 @Nullable Set<Resume> resumes,
-                 @Nullable Set<Participant> participants) {
+                 @Nullable List<Resume> resumes,
+                 @Nullable List<Participant> participants) {
         this.id = id;
         this.skillName = skillName;
         this.resumes = resumes;

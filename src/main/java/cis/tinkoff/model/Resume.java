@@ -12,7 +12,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -54,7 +56,7 @@ public class Resume {
             inverseJoinColumns = @JoinColumn(name = "skill_id")
     )
     @Nullable
-    private Set<Skill> skills;
+    private List<Skill> skills;
 
     @Relation(
             value = Relation.Kind.ONE_TO_MANY,
@@ -62,15 +64,15 @@ public class Resume {
             mappedBy = "resume"
     )
     @Nullable
-    private Set<TeamRequest> requests = new HashSet<>();
+    private List<TeamRequest> requests = new ArrayList<>();
 
     public Resume(Long id,
                   User user,
                   Direction direction,
                   @Nullable String description,
                   Boolean isActive,
-                  @Nullable Set<Skill> skills,
-                  @Nullable Set<TeamRequest> requests) {
+                  @Nullable List<Skill> skills,
+                  @Nullable List<TeamRequest> requests) {
         this.id = id;
         this.user = user;
         this.direction = direction;

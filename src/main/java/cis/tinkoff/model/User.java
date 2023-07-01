@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -37,7 +37,7 @@ public class User {
             mappedBy = "user"
     )
     @Nullable
-    private Set<ContactInformation> contacts = new HashSet<>();
+    private List<ContactInformation> contacts = new ArrayList<>();
 
     @Relation(
             value = Relation.Kind.ONE_TO_MANY,
@@ -45,7 +45,7 @@ public class User {
             mappedBy = "user"
     )
     @Nullable
-    private Set<Resume> resumes = new HashSet<>();
+    private List<Resume> resumes = new ArrayList<>();
 
     @Relation(
             value = Relation.Kind.ONE_TO_MANY,
@@ -53,7 +53,7 @@ public class User {
             mappedBy = "user"
     )
     @Nullable
-    private Set<Team> teams = new HashSet<>();
+    private List<Team> teams = new ArrayList<>();
 
     @Relation(
             value = Relation.Kind.ONE_TO_MANY,
@@ -61,7 +61,7 @@ public class User {
             mappedBy = "user"
     )
     @Nullable
-    private Set<Participant> participants = new HashSet<>();
+    private List<Participant> participants = new ArrayList<>();
 
     @Relation(
             value = Relation.Kind.ONE_TO_MANY,
@@ -69,7 +69,7 @@ public class User {
             mappedBy = "user"
     )
     @Nullable
-    private Set<TeamRequest> requests = new HashSet<>();
+    private List<TeamRequest> requests = new ArrayList<>();
 
     public User(Long id,
                 String login,
@@ -77,11 +77,11 @@ public class User {
                 String fullName,
                 @Nullable String email,
                 @Nullable String pictureLink,
-                @Nullable Set<ContactInformation> contacts,
-                @Nullable Set<Resume> resumes,
-                @Nullable Set<Team> teams,
-                @Nullable Set<Participant> participants,
-                @Nullable Set<TeamRequest> requests) {
+                @Nullable List<ContactInformation> contacts,
+                @Nullable List<Resume> resumes,
+                @Nullable List<Team> teams,
+                @Nullable List<Participant> participants,
+                @Nullable List<TeamRequest> requests) {
         this.id = id;
         this.login = login;
         this.password = password;
