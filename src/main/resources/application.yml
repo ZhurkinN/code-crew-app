@@ -31,7 +31,7 @@ micronaut:
       - pattern: /static/**
         http-method: GET
         access:
-          - isAnonymous()Anonymous
+          - isAnonymous()
       - pattern: /locales/**
         http-method: GET
         access:
