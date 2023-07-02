@@ -16,6 +16,6 @@ public interface PositionRequestRepository extends CrudRepository<PositionReques
     Page<PositionRequest> findAll(QuerySpecification<Position> spec, Pageable pageable);
 
 //    @Join(value = "resume", type = Join.Type.FETCH)
-    @Query(value = "select * from position_request ps join (resume rm join users us on rm.user_id = us.id) on ps.resume_id = rm.id")
-    Page<PositionRequest> findAllPositionRequestsWithUserResume(Pageable pageable);
+//    @Query(value = "select * from position_request ps join (resume rm join users us on rm.user_id = us.id) on ps.resume_id = rm.id")
+//    Page<PositionRequest> findAllPositionRequestsWithUserResume(Pageable pageable);
 }
