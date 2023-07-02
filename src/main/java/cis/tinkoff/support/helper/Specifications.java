@@ -1,4 +1,4 @@
-package cis.tinkoff.helper;
+package cis.tinkoff.support.helper;
 
 import cis.tinkoff.model.Position;
 import io.micronaut.data.repository.jpa.criteria.QuerySpecification;

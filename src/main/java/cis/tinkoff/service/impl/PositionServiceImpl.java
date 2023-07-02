@@ -1,6 +1,6 @@
 package cis.tinkoff.service.impl;
 
-import cis.tinkoff.helper.Specifications;
+import cis.tinkoff.support.helper.Specifications;
 import cis.tinkoff.model.Position;
 import cis.tinkoff.repository.PositionRepository;
 import cis.tinkoff.service.PositionService;
