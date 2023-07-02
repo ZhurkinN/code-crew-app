@@ -11,10 +11,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.FluxSink;
 
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static io.micronaut.security.errors.IssuingAnAccessTokenErrorCode.INVALID_GRANT;
 
@@ -54,10 +51,13 @@ public class UserRefreshTokenPersistence implements RefreshTokenPersistence {
             if(existingRefreshToken != null){
                 if(existingRefreshToken.isRevoked()){
                     emitter.error(new OauthErrorResponseException(INVALID_GRANT, "refresh token revoked", null));
-                }
-            }else {
+                } else {
                 emitter.next(Authentication.build(existingRefreshToken.getUsername(),existingRefreshToken.getRoles()));
                 emitter.complete();
+                }
+            }
+            else{
+                emitter.error(new OauthErrorResponseException(INVALID_GRANT, "refresh token not found", null));
             }
         }, FluxSink.OverflowStrategy.ERROR);
     }
