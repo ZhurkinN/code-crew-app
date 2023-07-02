@@ -43,6 +43,13 @@ dependencies {
     annotationProcessor("org.projectlombok:lombok")
     annotationProcessor("io.micronaut.data:micronaut-data-processor")
 
+    //TMP (from auth guide, will be refactor after testing)
+    implementation("io.micronaut.reactor:micronaut-reactor")
+    implementation("io.micronaut.reactor:micronaut-reactor-http-client")
+    implementation("io.micronaut.security:micronaut-security-jwt")
+    compileOnly("org.graalvm.nativeimage:svm")
+
+
 }
 
 application {
