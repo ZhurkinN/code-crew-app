@@ -8,7 +8,7 @@ RUN gradle clean build --no-daemon --warning-mode all
 
 FROM openjdk:17
 
-ENV JAR_NAME=code-crew-app-0.0.1-SNAPSHOT.jar
+ENV JAR_NAME=code-crew-0.1.jar
 ENV APP_HOME=/app
 WORKDIR $APP_HOME
 COPY --from=BUILD /app/build/libs/$JAR_NAME ./code-crew.jar

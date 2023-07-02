@@ -4,6 +4,8 @@ import cis.tinkoff.model.generic.GenericModel;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.data.annotation.MappedEntity;
 import io.micronaut.data.annotation.Relation;
+import io.micronaut.data.annotation.TypeDef;
+import io.micronaut.data.model.DataType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -25,7 +27,6 @@ public class User extends GenericModel {
     private String name;
     private String surname;
     private String mainInformation;
-    private Boolean isVisible;
     @Nullable
     private List<String> contacts;
 
@@ -61,7 +62,6 @@ public class User extends GenericModel {
                 String name,
                 String surname,
                 String mainInformation,
-                Boolean isVisible,
                 @Nullable List<String> contacts,
                 @Nullable List<Resume> resumes,
                 @Nullable List<Project> projects,
@@ -72,7 +72,6 @@ public class User extends GenericModel {
         this.name = name;
         this.surname = surname;
         this.mainInformation = mainInformation;
-        this.isVisible = isVisible;
         this.contacts = contacts;
         this.resumes = resumes;
         this.projects = projects;

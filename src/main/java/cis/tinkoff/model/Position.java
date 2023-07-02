@@ -25,6 +25,7 @@ public class Position extends GenericModel {
     private String description;
     @Nullable
     private String[] skills;
+    private Boolean isVisible;
 
     @Relation(
             value = Relation.Kind.MANY_TO_ONE,
@@ -63,6 +64,7 @@ public class Position extends GenericModel {
                     @Nullable String[] skills,
                     @Nullable User user,
                     Project project,
+                    Boolean isVisible,
                     Direction direction,
                     @Nullable List<PositionRequest> requests) {
         super(id, createdWhen, isDeleted);
@@ -70,6 +72,7 @@ public class Position extends GenericModel {
         this.skills = skills;
         this.user = user;
         this.project = project;
+        this.isVisible = isVisible;
         this.direction = direction;
         this.requests = requests;
     }
