@@ -2,3 +2,6 @@ datasources:
   default:
     url: jdbc:tc:postgresql:14:///postgres
     driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
+    username: 'sa'
+    password: ''
+

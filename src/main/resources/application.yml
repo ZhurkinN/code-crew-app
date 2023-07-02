@@ -11,6 +11,7 @@ micronaut:
         mapping: /swagger-ui/**
   security:
     authentication: cookie
+    enabled: false
 datasources:
   default:
     url: jdbc:postgresql://localhost:5432/postgres
