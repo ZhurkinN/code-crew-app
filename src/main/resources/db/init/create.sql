@@ -13,7 +13,8 @@ create sequence if not exists public.team_seq
 create sequence if not exists public.users_seq
     increment by 50;
 
-
+create sequence if not exists public.project_information
+    increment by 50;
 
 create table if not exists public.direction
 (
@@ -121,4 +122,14 @@ create table if not exists public.position_request
     cover_letter varchar(255),
     created_when timestamp default now(),
     is_deleted boolean default false
+);
+
+create table if not exists public.project_information
+(
+    id bigint not null primary key,
+    project_id bigint not null
+        constraint fk_project
+            references public.project(id),
+    link varchar not null,
+    description varchar not null
 );

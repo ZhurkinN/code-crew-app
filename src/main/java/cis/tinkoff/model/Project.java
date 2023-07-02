@@ -45,10 +45,18 @@ public class Project extends GenericModel {
     @Relation(
             value = Relation.Kind.ONE_TO_MANY,
             cascade = Relation.Cascade.ALL,
-            mappedBy = "team"
+            mappedBy = "project"
     )
     @Nullable
     private List<Position> positions = new ArrayList<>();
+
+    @Relation(
+            value = Relation.Kind.ONE_TO_MANY,
+            cascade = Relation.Cascade.ALL,
+            mappedBy = "project"
+    )
+    @Nullable
+    private List<ProjectContact> contacts = new ArrayList<>();
 
     public Project(Long id,
                    LocalDateTime createdWhen,
@@ -58,7 +66,8 @@ public class Project extends GenericModel {
                    String title,
                    @Nullable String theme,
                    @Nullable String description,
-                   @Nullable List<Position> positions) {
+                   @Nullable List<Position> positions,
+                   @Nullable List<ProjectContact> contacts) {
         super(id, createdWhen, isDeleted);
         this.user = user;
         this.projectStatus = projectStatus;
@@ -66,5 +75,6 @@ public class Project extends GenericModel {
         this.theme = theme;
         this.description = description;
         this.positions = positions;
+        this.contacts = contacts;
     }
 }
