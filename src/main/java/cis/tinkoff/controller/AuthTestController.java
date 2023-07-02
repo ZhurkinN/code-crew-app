@@ -7,12 +7,15 @@ import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Get;
 import io.micronaut.http.annotation.Produces;
 import io.micronaut.security.annotation.Secured;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 import java.security.Principal;
 
+@Tag(name = "Authorization", description = "All actions with authorization.")
 @Controller("/auth")
 @Secured({"ROLE_USER"})
 public class AuthTestController {
+
     @Get("/hello")
     @Produces(MediaType.APPLICATION_JSON)
     public HttpResponse<String> hello(final Principal principal) {
