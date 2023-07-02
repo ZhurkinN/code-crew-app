@@ -1,32 +1,25 @@
 package cis.tinkoff.model;
 
+import cis.tinkoff.model.generic.GenericModel;
 import io.micronaut.core.annotation.Nullable;
-import io.micronaut.data.annotation.GeneratedValue;
-import io.micronaut.data.annotation.Id;
 import io.micronaut.data.annotation.MappedEntity;
 import io.micronaut.data.annotation.Relation;
 import io.micronaut.data.jdbc.annotation.JoinColumn;
-import io.micronaut.data.jdbc.annotation.JoinTable;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
 @Accessors(chain = true)
 @NoArgsConstructor
 @MappedEntity(value = "resume")
-public class Resume {
-
-    @Id
-    @GeneratedValue
-    private Long id;
+public class Resume extends GenericModel {
 
     @Relation(
             value = Relation.Kind.MANY_TO_ONE,
@@ -39,24 +32,14 @@ public class Resume {
             value = Relation.Kind.MANY_TO_ONE,
             cascade = Relation.Cascade.NONE
     )
-    @JoinColumn(name = "direction_id")
+    @JoinColumn(name = "direction")
     private Direction direction;
 
     @Nullable
     private String description;
     private Boolean isActive;
-
-    @Relation(
-            value = Relation.Kind.MANY_TO_MANY,
-            cascade = Relation.Cascade.ALL
-    )
-    @JoinTable(
-            name = "resume_skills",
-            joinColumns = @JoinColumn(name = "resume_id"),
-            inverseJoinColumns = @JoinColumn(name = "skill_id")
-    )
     @Nullable
-    private List<Skill> skills;
+    private List<String> skills;
 
     @Relation(
             value = Relation.Kind.ONE_TO_MANY,
@@ -64,16 +47,18 @@ public class Resume {
             mappedBy = "resume"
     )
     @Nullable
-    private List<TeamRequest> requests = new ArrayList<>();
+    private List<PositionRequest> requests = new ArrayList<>();
 
     public Resume(Long id,
+                  LocalDateTime createdWhen,
+                  Boolean isDeleted,
                   User user,
                   Direction direction,
                   @Nullable String description,
                   Boolean isActive,
-                  @Nullable List<Skill> skills,
-                  @Nullable List<TeamRequest> requests) {
-        this.id = id;
+                  @Nullable List<String> skills,
+                  @Nullable List<PositionRequest> requests) {
+        super(id, createdWhen, isDeleted);
         this.user = user;
         this.direction = direction;
         this.description = description;

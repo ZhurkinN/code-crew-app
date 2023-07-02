@@ -1,17 +1,16 @@
 package cis.tinkoff.model;
 
+import cis.tinkoff.model.generic.GenericModel;
 import io.micronaut.core.annotation.Nullable;
-import io.micronaut.data.annotation.GeneratedValue;
-import io.micronaut.data.annotation.Id;
 import io.micronaut.data.annotation.MappedEntity;
 import io.micronaut.data.annotation.Relation;
 import io.micronaut.data.jdbc.annotation.JoinColumn;
-import io.micronaut.data.jdbc.annotation.JoinTable;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,14 +18,13 @@ import java.util.List;
 @Setter
 @Accessors(chain = true)
 @NoArgsConstructor
-@MappedEntity(value = "participants")
-public class Participant {
+@MappedEntity(value = "positions")
+public class Position extends GenericModel {
 
-    @Id
-    @GeneratedValue
-    private Long id;
     @Nullable
     private String description;
+    @Nullable
+    private String[] skills;
 
     @Relation(
             value = Relation.Kind.MANY_TO_ONE,
@@ -40,49 +38,39 @@ public class Participant {
             value = Relation.Kind.MANY_TO_ONE,
             cascade = Relation.Cascade.PERSIST
     )
-    @JoinColumn(name = "team_id")
-    private Team team;
+    @JoinColumn(name = "project_id")
+    private Project project;
 
     @Relation(
             value = Relation.Kind.MANY_TO_ONE,
             cascade = Relation.Cascade.NONE
     )
-    @JoinColumn(name = "direction_id")
+    @JoinColumn(name = "direction")
     private Direction direction;
-
-    @Relation(
-            value = Relation.Kind.MANY_TO_MANY,
-            cascade = Relation.Cascade.ALL
-    )
-    @JoinTable(
-            name = "participant_skills",
-            joinColumns = @JoinColumn(name = "participant_id"),
-            inverseJoinColumns = @JoinColumn(name = "skill_id")
-    )
-    @Nullable
-    private List<Skill> skills;
 
     @Relation(
             value = Relation.Kind.ONE_TO_MANY,
             cascade = Relation.Cascade.ALL,
-            mappedBy = "vacancy"
+            mappedBy = "position"
     )
     @Nullable
-    private List<TeamRequest> requests = new ArrayList<>();
+    private List<PositionRequest> requests = new ArrayList<>();
 
-    public Participant(Long id,
-                       @Nullable String description,
-                       @Nullable User user,
-                       Team team,
-                       Direction direction,
-                       @Nullable List<Skill> skills,
-                       @Nullable List<TeamRequest> requests) {
-        this.id = id;
+    public Position(Long id,
+                    LocalDateTime createdWhen,
+                    Boolean isDeleted,
+                    @Nullable String description,
+                    @Nullable String[] skills,
+                    @Nullable User user,
+                    Project project,
+                    Direction direction,
+                    @Nullable List<PositionRequest> requests) {
+        super(id, createdWhen, isDeleted);
         this.description = description;
-        this.user = user;
-        this.team = team;
-        this.direction = direction;
         this.skills = skills;
+        this.user = user;
+        this.project = project;
+        this.direction = direction;
         this.requests = requests;
     }
 }

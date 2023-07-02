@@ -46,7 +46,9 @@ create table if not exists public.users
     password     varchar(255) not null,
     picture_link varchar(255),
     main_information varchar(255) not null,
-    contacts varchar[] not null
+    contacts varchar[],
+    created_when timestamp default now(),
+    is_deleted boolean default false
 );
 
 create table if not exists public.resume
@@ -55,13 +57,15 @@ create table if not exists public.resume
         primary key,
     description  varchar(255),
     is_active    boolean default true,
+    created_when timestamp default now(),
+    is_deleted boolean default false,
     direction varchar(255) not null
         constraint fk_direction
             references public.direction(direction_name),
     user_id      bigint not null
         constraint fk_user_id
             references public.users,
-    skills varchar[] not null,
+    skills varchar[],
 
     unique (user_id, direction)
 );
@@ -75,7 +79,8 @@ create table if not exists public.project
     title varchar(255) not null,
     theme varchar(255) not null,
     description varchar(255),
-    is_visible boolean default true,
+    created_when timestamp default now(),
+    is_deleted boolean default false,
     status varchar(255) not null
         constraint fk_project_status
             references public.project_status(status_name)
@@ -84,6 +89,7 @@ create table if not exists public.project
 create table public.positions
 (
     id bigint not null primary key,
+    is_visible boolean default true,
     project_id bigint not null
         constraint fk_project
             references public.project(id),
@@ -94,7 +100,9 @@ create table public.positions
         constraint fk_user
             references public.users(id),
     description varchar(255) not null,
-    skills varchar[] not null
+    skills varchar[],
+    created_when timestamp default now(),
+    is_deleted boolean default false
 );
 
 
@@ -110,5 +118,7 @@ create table if not exists public.position_request
     status varchar(255)
         constraint fk_request_status
             references public.request_status(status_name),
-    cover_letter varchar(255) not null
+    cover_letter varchar(255),
+    created_when timestamp default now(),
+    is_deleted boolean default false
 );

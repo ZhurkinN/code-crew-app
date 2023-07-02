@@ -38,12 +38,12 @@ values (1, 'Hey, i want to work backend dev', 'backend', 1, ARRAY ['Java', 'Spri
        (7, 'Hey, i want to work backend dev', 'backend', 7, ARRAY ['Java', 'Spring', 'Micronaut', 'Docker', 'Postgres', 'Gradle', 'Maven']),
        (8, 'Hey, i want to work frontend dev', 'frontend', 8, ARRAY ['JavaScript', 'Next', 'React', 'Node', 'Postgres']);
 
-insert into project(id, leader_id, title, theme, description, is_visible, status)
-VALUES (1, 2, 'Новый сайт РЖД', 'Сайт РЖД', 'Проект разработки нового сайта РЖД', true, 'preparing'),
-       (2, 1, 'Новый Тиндер', 'Приложение Тиндер', 'Проект разработки Тиндера', true, 'closed'),
-       (3, 4, 'Новое приложение Спотифай', 'Спотифай', 'Проект разработки Спотифая', true, 'frozen'),
-       (4, 6, 'Новый сайт Авиасейлс', 'Сайт АвиаСейлс', 'Проект разработки ТуТу', true, 'preparing'),
-       (5, 3, 'Новый сайт Тинькофф', 'Сайт Тинькофф', 'Проект разработки нового сайта Тинькофф', true, 'in_progress');
+insert into project(id, leader_id, title, theme, description, status)
+VALUES (1, 2, 'Новый сайт РЖД', 'Сайт РЖД', 'Проект разработки нового сайта РЖД', 'preparing'),
+       (2, 1, 'Новый Тиндер', 'Приложение Тиндер', 'Проект разработки Тиндера', 'closed'),
+       (3, 4, 'Новое приложение Спотифай', 'Спотифай', 'Проект разработки Спотифая', 'frozen'),
+       (4, 6, 'Новый сайт Авиасейлс', 'Сайт АвиаСейлс', 'Проект разработки ТуТу', 'preparing'),
+       (5, 3, 'Новый сайт Тинькофф', 'Сайт Тинькофф', 'Проект разработки нового сайта Тинькофф', 'in_progress');
 
 insert into positions(id, project_id, direction, description, skills)
 VALUES (1, 1, 'backend', 'Позиция Backend-developer', ARRAY ['Java', 'Postgres', 'Spring', 'Maven']),

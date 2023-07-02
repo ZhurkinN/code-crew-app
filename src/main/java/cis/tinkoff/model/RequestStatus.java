@@ -13,10 +13,10 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @AllArgsConstructor
 @NoArgsConstructor
-@MappedEntity(value = "direction")
-public class Direction {
+@MappedEntity(value = "request_status")
+public class RequestStatus {
 
     @Id
-    private String directionName;
+    private String statusName;
     private String description;
 }

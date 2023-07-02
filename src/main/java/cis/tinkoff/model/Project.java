@@ -1,8 +1,7 @@
 package cis.tinkoff.model;
 
+import cis.tinkoff.model.generic.GenericModel;
 import io.micronaut.core.annotation.Nullable;
-import io.micronaut.data.annotation.GeneratedValue;
-import io.micronaut.data.annotation.Id;
 import io.micronaut.data.annotation.MappedEntity;
 import io.micronaut.data.annotation.Relation;
 import io.micronaut.data.jdbc.annotation.JoinColumn;
@@ -11,21 +10,16 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
 @Accessors(chain = true)
 @NoArgsConstructor
-@MappedEntity(value = "team")
-public class Team {
-
-    @Id
-    @GeneratedValue
-    private Long id;
+@MappedEntity(value = "project")
+public class Project extends GenericModel {
 
     @Relation(
             value = Relation.Kind.MANY_TO_ONE,
@@ -39,14 +33,14 @@ public class Team {
             value = Relation.Kind.MANY_TO_ONE,
             cascade = Relation.Cascade.NONE
     )
-    @JoinColumn(name = "status_id")
-    private TeamStatus teamStatus;
+    @JoinColumn(name = "status")
+    private ProjectStatus projectStatus;
 
+    private String title;
+    @Nullable
     private String theme;
     @Nullable
     private String description;
-    private Integer programmersCount;
-    private Boolean isVisible;
 
     @Relation(
             value = Relation.Kind.ONE_TO_MANY,
@@ -54,23 +48,23 @@ public class Team {
             mappedBy = "team"
     )
     @Nullable
-    private List<Participant> participants = new ArrayList<>();
+    private List<Position> positions = new ArrayList<>();
 
-    public Team(Long id,
-                @Nullable User user,
-                TeamStatus teamStatus,
-                String theme,
-                @Nullable String description,
-                Integer programmersCount,
-                Boolean isVisible,
-                @Nullable List<Participant> participants) {
-        this.id = id;
+    public Project(Long id,
+                   LocalDateTime createdWhen,
+                   Boolean isDeleted,
+                   @Nullable User user,
+                   ProjectStatus projectStatus,
+                   String title,
+                   @Nullable String theme,
+                   @Nullable String description,
+                   @Nullable List<Position> positions) {
+        super(id, createdWhen, isDeleted);
         this.user = user;
-        this.teamStatus = teamStatus;
+        this.projectStatus = projectStatus;
+        this.title = title;
         this.theme = theme;
         this.description = description;
-        this.programmersCount = programmersCount;
-        this.isVisible = isVisible;
-        this.participants = participants;
+        this.positions = positions;
     }
 }
