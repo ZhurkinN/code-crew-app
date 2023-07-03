@@ -54,14 +54,14 @@ public class Resume extends GenericModel {
                   LocalDateTime createdWhen,
                   Boolean isDeleted,
                   @Nullable User user,
-                  //Direction direction,
+                  Direction direction,
                   @Nullable String description,
                   Boolean isActive,
                   @Nullable List<String> skills,
                   @Nullable List<PositionRequest> requests) {
         super(id, createdWhen, isDeleted);
         this.user = user;
-        //this.direction = direction;
+        this.direction = direction;
         this.description = description;
         this.isActive = isActive;
         this.skills = skills;

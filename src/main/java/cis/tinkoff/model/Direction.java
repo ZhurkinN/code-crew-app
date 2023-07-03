@@ -24,4 +24,12 @@ public class Direction {
     @Id
     private String directionName;
     private String description;
+
+    @Relation(
+            value = Relation.Kind.ONE_TO_MANY,
+            cascade = Relation.Cascade.ALL,
+            mappedBy = "direction"
+    )
+    @Nullable
+    private List<Resume> resumes = new ArrayList<>();
 }
