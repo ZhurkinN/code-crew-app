@@ -1,17 +1,57 @@
 micronaut:
   application:
     name: codeCrew
-  router:
+  route:
     static-resources:
       swagger:
         paths: classpath:META-INF/swagger
         mapping: /swagger/**
+        enabled: true
       swagger-ui:
         paths: classpath:META-INF/swagger/views/swagger-ui
         mapping: /swagger-ui/**
+
+  # Micronaut Security configuration
   security:
-    authentication: cookie
-    enabled: false
+    enabled: true
+    authentication: bearer # LoginHandler: cookie, session, bearer, idtoken
+    endpoints:
+      login:
+        enabled: true
+        path: '/auth/login'
+      oauth:
+        enabled: true
+        path: '/oauth/access_token'
+        get-allowed: false
+    intercept-url-map:  # Anonymous for specific paths (e.g. index, static resources, ...)
+      - pattern: /*
+        http-method: GET
+        access:
+          - isAnonymous()
+      - pattern: /static/**
+        http-method: GET
+        access:
+          - isAnonymous()
+      - pattern: /locales/**
+        http-method: GET
+        access:
+          - isAnonymous()
+    token:
+      jwt:
+        generator:
+          access-token:
+            expiration: 60  # one hour
+          refresh-token:
+            enabled: true
+            jws-algorithm: HS512
+            secret: 'edShUTQIjFA/3+Ai0lUGcv0RmnN7Kh5ufgDd3ypXebN+B2+cuUZ446w99nUt0XBmvWaEbTsGStESonwFAVa4DsO2+yvbR1qYymbQsBFGwDHP70WjYs/tALe4fmiQy/c7h/uvkfndFLot136QOPo0jzibcreOV/1BxuQTyMgGTRRc7wHzPwGfvxujnd0myTyz2pI+FoPI4xhaOl1ZbR/GuOdeSeMDBiCtAqbDsA=='
+            base64: true
+        signatures:
+          secret:
+            generator:
+              secret: 'UaaOlcsrG2w7+rl/FN7O5GMEsviHy3bOIYq3V/PhtlYci1c4U5ITzmIos84/Ypq3Gqkcqm46q04/YMDXgCjCkDCtCqbB/EYGcCAadxWWt7nD2SLkmghiKQ99L6iP/HM4xyZqV3lD0PpN5Xq4SRBR/DwLRcbgRV17imK3pxvF8yeZMgovAg39qCsKXSGwIDWTd+imk8zPQ8cge70iCCWIa4o9PGrZTri6/PaveA=='
+              jws-algorithm: HS512
+
 datasources:
   default:
     url: jdbc:postgresql://localhost:5432/postgres
@@ -28,3 +68,8 @@ liquibase:
   datasources:
     default:
       change-log: classpath:db/changelog/liquibase-changelog.yml
+
+logger:
+  levels:
+    cis.tinkoff.micronaut.jwt: DEBUG
+    io.micronaut.security: DEBUG
