@@ -13,7 +13,7 @@ create sequence if not exists public.team_seq
 create sequence if not exists public.users_seq
     increment by 50;
 
-create sequence if not exists public.project_information
+create sequence if not exists public.project_information_seq
     increment by 50;
 
 create table if not exists public.direction
