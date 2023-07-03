@@ -1,6 +1,5 @@
 package cis.tinkoff.model;
 
-import io.micronaut.data.annotation.GeneratedValue;
 import io.micronaut.data.annotation.Id;
 import io.micronaut.data.annotation.MappedEntity;
 import lombok.AllArgsConstructor;
@@ -14,11 +13,10 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @AllArgsConstructor
 @NoArgsConstructor
-@MappedEntity(value = "team_status")
-public class TeamStatus {
+@MappedEntity(value = "project_status")
+public class ProjectStatus {
 
     @Id
-    @GeneratedValue
-    private Long id;
     private String statusName;
+    private String description;
 }
