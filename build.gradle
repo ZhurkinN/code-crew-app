@@ -56,7 +56,6 @@ dependencies {
     implementation("io.micronaut.security:micronaut-security-jwt")
     compileOnly("org.graalvm.nativeimage:svm")
 
-
 }
 
 application {
@@ -80,5 +79,10 @@ micronaut {
 //    }
 }
 
-
-
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'cis.tinkoff.Application'
+        )
+    }
+}
