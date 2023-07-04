@@ -1,12 +1,12 @@
 package cis.tinkoff.service.impl;
 
-import cis.tinkoff.support.helper.Specifications;
 import cis.tinkoff.model.Position;
 import cis.tinkoff.repository.PositionRepository;
 import cis.tinkoff.service.PositionService;
 import io.micronaut.context.annotation.Primary;
 import io.micronaut.data.model.Page;
 import io.micronaut.data.model.Pageable;
+import io.micronaut.data.model.Sort;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
@@ -23,17 +23,7 @@ public class PositionServiceImpl implements PositionService {
     public List<Position> searchVacancyList(Long date, String status, String direction, String skills) {
         List<String> skillList = Arrays.stream(skills.split(" ")).toList();
 
-        Page<Position> positionPage = positionRepository.findAll(Specifications.searchVacancies(date, status, direction, skills), new Pageable() {
-            @Override
-            public int getNumber() {
-                return 1;
-            }
-
-            @Override
-            public int getSize() {
-                return 5;
-            }
-        });
+        Page<Position> positionPage = positionRepository.findAll(Pageable.from(1, 3).order(new Sort.Order("createdWhen")));
 
         return positionPage.getContent();
     }
