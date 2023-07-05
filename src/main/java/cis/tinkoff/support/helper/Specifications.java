@@ -5,6 +5,7 @@ import cis.tinkoff.model.Position;
 import cis.tinkoff.model.Project;
 import cis.tinkoff.model.ProjectStatusDictionary;
 import cis.tinkoff.model.enumerated.Direction;
+import cis.tinkoff.model.enumerated.ProjectStatus;
 import io.micronaut.data.repository.jpa.criteria.QuerySpecification;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
