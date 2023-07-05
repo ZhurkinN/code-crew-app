@@ -38,7 +38,7 @@ public class User extends GenericModel {
 
     @Relation(
             value = Relation.Kind.ONE_TO_MANY,
-            cascade = Relation.Cascade.PERSIST,
+            cascade = Relation.Cascade.ALL,
             mappedBy = "user"
     )
     @Nullable

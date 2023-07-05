@@ -29,7 +29,7 @@ public class Position extends GenericModel {
 
     @Relation(
             value = Relation.Kind.MANY_TO_ONE,
-            cascade = Relation.Cascade.PERSIST
+            cascade = Relation.Cascade.NONE
     )
     @MappedProperty(value = "user_id")
     @Nullable
@@ -37,7 +37,7 @@ public class Position extends GenericModel {
 
     @Relation(
             value = Relation.Kind.MANY_TO_ONE,
-            cascade = Relation.Cascade.PERSIST
+            cascade = Relation.Cascade.NONE
     )
     @MappedProperty(value = "project_id")
     @Nullable

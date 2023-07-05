@@ -62,10 +62,14 @@ create table if not exists public.resume
     is_deleted boolean default false,
     direction varchar(255) not null
         constraint fk_direction
-            references public.dictionary_direction(direction_name),
+            references public.dictionary_direction(direction_name)
+            on delete set null
+            on update cascade,
     user_id      bigint not null
         constraint fk_user_id
-            references public.users on delete cascade,
+            references public.users
+            on delete cascade
+            on update cascade,
     skills varchar[],
 
     unique (user_id, direction)
@@ -74,17 +78,21 @@ create table if not exists public.resume
 create table if not exists public.project
 (
     id bigint not null primary key,
-    leader_id bigint not null
+    leader_id bigint
         constraint fk_leader_id
-            references public.users(id),
+            references public.users(id)
+            on delete set null
+            on update cascade,
     title varchar(255) not null,
     theme varchar(255) not null,
     description varchar(255),
     created_when timestamp default now(),
     is_deleted boolean default false,
-    status varchar(255) not null
+    status varchar(255) not null default 'PREPARING'
         constraint fk_project_status
             references public.dictionary_project_status(status_name)
+            on delete set default
+            on update cascade
 );
 
 create table public.position
@@ -93,13 +101,19 @@ create table public.position
     is_visible boolean default true,
     project_id bigint not null
         constraint fk_project
-            references public.project(id),
+            references public.project(id)
+            on delete cascade
+            on update cascade,
     direction varchar(255) not null
         constraint fk_direction
-            references public.dictionary_direction(direction_name),
+            references public.dictionary_direction(direction_name)
+            on delete set null
+            on update cascade,
     user_id bigint default null
         constraint fk_user
-            references public.users(id),
+            references public.users(id)
+            on delete set default
+            on update cascade,
     description varchar(255) not null,
     skills varchar[],
     created_when timestamp default now(),
@@ -112,13 +126,19 @@ create table if not exists public.position_request
     id bigint not null primary key,
     resume_id bigint not null
         constraint fk_resume
-            references public.resume(id),
+            references public.resume(id)
+            on delete cascade
+            on update cascade,
     position_id bigint not null
         constraint fk_positions
-            references public.position(id),
-    status varchar(255)
+            references public.position(id)
+            on delete cascade
+            on update cascade,
+    status varchar(255) default 'IN_CONSIDERATION'
         constraint fk_request_status
-            references public.dictionary_request_status(status_name),
+            references public.dictionary_request_status(status_name)
+            on delete set default
+            on update cascade,
     cover_letter varchar(255),
     created_when timestamp default now(),
     is_deleted boolean default false
@@ -129,7 +149,9 @@ create table if not exists public.project_information
     id bigint not null primary key,
     project_id bigint not null
         constraint fk_project
-            references public.project(id),
+            references public.project(id)
+            on delete cascade
+            on update cascade,
     link varchar not null,
     description varchar not null
 );
