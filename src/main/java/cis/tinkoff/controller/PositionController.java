@@ -1,8 +1,9 @@
 package cis.tinkoff.controller;
 
 import cis.tinkoff.model.Position;
-import cis.tinkoff.model.Project;
+import cis.tinkoff.model.enumerated.SortDirection;
 import cis.tinkoff.service.PositionService;
+import io.micronaut.core.annotation.Nullable;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.MediaType;
 import io.micronaut.http.annotation.Controller;
@@ -30,12 +31,21 @@ public class PositionController {
     @Operation(method = "findAll", description = "Finds all vacancies by searched parameters")
     @Get(uri = "/vacancies", produces = MediaType.APPLICATION_JSON)
     public HttpResponse<?> searchVacancies(
-            @QueryValue(value = "date", defaultValue = "0") Long date,
+            @QueryValue(value = "page", defaultValue = "0") Integer page,
+            @QueryValue(value = "size", defaultValue = "1") Integer sizeLimit,
+            @Nullable @QueryValue(value = "dateSort", defaultValue = "null") SortDirection dateSort,
             @QueryValue(value = "status", defaultValue = "PREPARING") String status,
             @QueryValue(value = "direction") String direction,
             @QueryValue("skills") String skills
     ) {
-        List<Position> vacancies = positionService.searchVacancyList(date, status, direction, skills);
+        List<Position> vacancies = positionService.searchVacancyList(
+                page,
+                sizeLimit,
+                dateSort,
+                status,
+                direction,
+                skills
+        );
 
         return HttpResponse.ok(vacancies);
     }
