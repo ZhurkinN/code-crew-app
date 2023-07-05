@@ -65,4 +65,10 @@ public class UserServiceImpl implements UserService {
         userRepository.update(createdUser.getId(), new String[0]);
         return createdUser;
     }
+
+    @Override
+    public User getByEmail(String email) throws RecordNotFoundException {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new RecordNotFoundException(RECORD_NOT_FOUND));
+    }
 }

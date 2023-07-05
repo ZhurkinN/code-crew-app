@@ -1,11 +1,13 @@
 package cis.tinkoff.auth;
 
 import cis.tinkoff.auth.model.RefreshToken;
+import cis.tinkoff.repository.UserRepository;
 import io.micronaut.runtime.event.annotation.EventListener;
 import io.micronaut.security.authentication.Authentication;
 import io.micronaut.security.errors.OauthErrorResponseException;
 import io.micronaut.security.token.event.RefreshTokenGeneratedEvent;
 import io.micronaut.security.token.refresh.RefreshTokenPersistence;
+import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
@@ -22,6 +24,9 @@ public class UserRefreshTokenPersistence implements RefreshTokenPersistence {
 
     // Note: old refresh tokens are never removed!
     private static final Map<String, RefreshToken> IN_MEMORY_REFRESH_TOKEN_STORE = new HashMap<>();
+
+    @Inject
+    private UserRepository userRepository;
 
     @Override
     @EventListener

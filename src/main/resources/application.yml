@@ -18,7 +18,7 @@ micronaut:
 
   # Micronaut Security configuration
   security:
-    enabled: false
+    enabled: true
     authentication: bearer # LoginHandler: cookie, session, bearer, idtoken
     endpoints:
       login:
@@ -32,6 +32,10 @@ micronaut:
         enabled: true
         path: '/auth/logout'
     intercept-url-map: # Anonymous for specific paths (e.g. index, static resources, ...)
+      - pattern: /register
+        http-method: POST
+        access:
+          - isAnonymous()
       - pattern: /swagger/**
         http-method: GET
         access:

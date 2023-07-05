@@ -47,4 +47,10 @@ public class UserController {
                                      User user) {
         return HttpResponse.ok(userService.update(id, user));
     }
+
+    @Operation(method = "findByEmail", description = "Finds user by email")
+    @Get(value = "/email", processes = MediaType.APPLICATION_JSON)
+    public HttpResponse<User> findByEmail(@QueryValue String email) throws RecordNotFoundException {
+        return HttpResponse.ok(userService.getByEmail(email));
+    }
 }

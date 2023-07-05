@@ -24,6 +24,7 @@ public class User extends GenericModel {
     private String password;
     private String name;
     private String surname;
+    @Nullable
     private String mainInformation;
     @Nullable
     private List<String> contacts;
@@ -59,7 +60,7 @@ public class User extends GenericModel {
                 String password,
                 String name,
                 String surname,
-                String mainInformation,
+                @Nullable String mainInformation,
                 @Nullable List<String> contacts,
                 @Nullable List<Resume> resumes,
                 @Nullable List<Project> projects,

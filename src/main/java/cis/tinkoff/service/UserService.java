@@ -21,4 +21,6 @@ public interface UserService {
                   String password,
                   String name,
                   String surname) throws UserAlreadyExistsException;
+
+    User getByEmail(String email) throws RecordNotFoundException;
 }
