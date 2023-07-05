@@ -3,8 +3,8 @@ package cis.tinkoff.model;
 import cis.tinkoff.model.generic.GenericModel;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.data.annotation.MappedEntity;
+import io.micronaut.data.annotation.MappedProperty;
 import io.micronaut.data.annotation.Relation;
-import io.micronaut.data.jdbc.annotation.JoinColumn;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -25,7 +25,7 @@ public class Resume extends GenericModel {
             value = Relation.Kind.MANY_TO_ONE,
             cascade = Relation.Cascade.PERSIST
     )
-    @JoinColumn(name = "user_id")
+    @MappedProperty(value = "user_id")
     @Nullable
     private User user;
 
@@ -33,8 +33,9 @@ public class Resume extends GenericModel {
             value = Relation.Kind.MANY_TO_ONE,
             cascade = Relation.Cascade.NONE
     )
-    @JoinColumn(name = "direction")
-    private Direction direction;
+    @MappedProperty(value = "direction")
+    @Nullable
+    private DirectionDictionary direction;
 
     @Nullable
     private String description;
@@ -54,7 +55,7 @@ public class Resume extends GenericModel {
                   LocalDateTime createdWhen,
                   Boolean isDeleted,
                   @Nullable User user,
-                  Direction direction,
+                  @Nullable DirectionDictionary direction,
                   @Nullable String description,
                   Boolean isActive,
                   @Nullable List<String> skills,

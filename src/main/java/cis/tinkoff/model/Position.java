@@ -3,8 +3,8 @@ package cis.tinkoff.model;
 import cis.tinkoff.model.generic.GenericModel;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.data.annotation.MappedEntity;
+import io.micronaut.data.annotation.MappedProperty;
 import io.micronaut.data.annotation.Relation;
-import io.micronaut.data.jdbc.annotation.JoinColumn;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,20 +18,20 @@ import java.util.List;
 @Setter
 @Accessors(chain = true)
 @NoArgsConstructor
-@MappedEntity(value = "positions")
+@MappedEntity(value = "position")
 public class Position extends GenericModel {
 
     @Nullable
     private String description;
     @Nullable
-    private String[] skills;
+    private List<String> skills;
     private Boolean isVisible;
 
     @Relation(
             value = Relation.Kind.MANY_TO_ONE,
             cascade = Relation.Cascade.PERSIST
     )
-    @JoinColumn(name = "user_id")
+    @MappedProperty(value = "user_id")
     @Nullable
     private User user;
 
@@ -39,15 +39,17 @@ public class Position extends GenericModel {
             value = Relation.Kind.MANY_TO_ONE,
             cascade = Relation.Cascade.PERSIST
     )
-    @JoinColumn(name = "project_id")
+    @MappedProperty(value = "project_id")
+    @Nullable
     private Project project;
 
     @Relation(
             value = Relation.Kind.MANY_TO_ONE,
             cascade = Relation.Cascade.NONE
     )
-    @JoinColumn(name = "direction")
-    private Direction direction;
+    @MappedProperty(value = "direction")
+    @Nullable
+    private DirectionDictionary direction;
 
     @Relation(
             value = Relation.Kind.ONE_TO_MANY,
@@ -61,11 +63,11 @@ public class Position extends GenericModel {
                     LocalDateTime createdWhen,
                     Boolean isDeleted,
                     @Nullable String description,
-                    @Nullable String[] skills,
+                    @Nullable List<String> skills,
                     @Nullable User user,
-                    Project project,
+                    @Nullable Project project,
                     Boolean isVisible,
-                    Direction direction,
+                    @Nullable DirectionDictionary direction,
                     @Nullable List<PositionRequest> requests) {
         super(id, createdWhen, isDeleted);
         this.description = description;

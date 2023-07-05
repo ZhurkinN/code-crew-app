@@ -3,8 +3,8 @@ package cis.tinkoff.model;
 import cis.tinkoff.model.generic.GenericModel;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.data.annotation.MappedEntity;
+import io.micronaut.data.annotation.MappedProperty;
 import io.micronaut.data.annotation.Relation;
-import io.micronaut.data.jdbc.annotation.JoinColumn;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -25,16 +25,16 @@ public class Project extends GenericModel {
             value = Relation.Kind.MANY_TO_ONE,
             cascade = Relation.Cascade.PERSIST
     )
-    @JoinColumn(name = "leader_id")
+    @MappedProperty(value = "leader_id")
     @Nullable
-    private User user;
+    private User leader;
 
     @Relation(
             value = Relation.Kind.MANY_TO_ONE,
             cascade = Relation.Cascade.NONE
     )
-    @JoinColumn(name = "status")
-    private ProjectStatus projectStatus;
+    @MappedProperty(value = "status")
+    private ProjectStatusDictionary status;
 
     private String title;
     @Nullable
@@ -61,16 +61,16 @@ public class Project extends GenericModel {
     public Project(Long id,
                    LocalDateTime createdWhen,
                    Boolean isDeleted,
-                   @Nullable User user,
-                   ProjectStatus projectStatus,
+                   @Nullable User leader,
+                   ProjectStatusDictionary status,
                    String title,
                    @Nullable String theme,
                    @Nullable String description,
                    @Nullable List<Position> positions,
                    @Nullable List<ProjectContact> contacts) {
         super(id, createdWhen, isDeleted);
-        this.user = user;
-        this.projectStatus = projectStatus;
+        this.leader = leader;
+        this.status = status;
         this.title = title;
         this.theme = theme;
         this.description = description;

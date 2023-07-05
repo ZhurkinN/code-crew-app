@@ -16,15 +16,24 @@ import java.util.List;
 @Primary
 @Singleton
 public class PositionServiceImpl implements PositionService {
+
     @Inject
     private PositionRepository positionRepository;
 
     @Override
-    public List<Position> searchVacancyList(Long date, String status, String direction, String skills) {
+    public List<Position> searchVacancyList(Long date,
+                                            String status,
+                                            String direction,
+                                            String skills) {
         List<String> skillList = Arrays.stream(skills.split(" ")).toList();
 
         Page<Position> positionPage = positionRepository.findAll(Pageable.from(1, 3).order(new Sort.Order("createdWhen")));
 
         return positionPage.getContent();
+    }
+
+    @Override
+    public List<Position> getAll() {
+        return (List<Position>) positionRepository.findAll();
     }
 }

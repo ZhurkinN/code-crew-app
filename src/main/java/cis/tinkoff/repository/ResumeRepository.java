@@ -12,6 +12,12 @@ import java.util.List;
 public interface ResumeRepository extends CrudRepository<Resume, Long> {
 
     @Join(value = "user", type = Join.Type.FETCH)
-    @Join(value = "direction", type = Join.Type.FETCH)
+    @Join(
+            value = "direction",
+            alias = "direction",
+            type = Join.Type.FETCH
+    )
     List<Resume> list();
+
+
 }

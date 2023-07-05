@@ -1,4 +1,4 @@
-insert into direction(direction_name, description)
+insert into dictionary_direction(direction_name, description)
     values ('BACKEND', 'Backend-developer'),
            ('FRONTEND', 'Frontend-developer'),
            ('DATA_SCIENCE', 'Data Science Developer'),
@@ -8,13 +8,13 @@ insert into direction(direction_name, description)
            ('DEVOPS', 'DevOps Engineer'),
            ('FULLSTACK', 'Fullstack-developer');
 
-insert into project_status(status_name, description)
+insert into dictionary_project_status(status_name, description)
 values ('PREPARING', 'Project is in preparation stage'),
        ('IN_PROGRESS', 'Project is in progress'),
        ('CLOSED', 'Project is closed'),
        ('FROZEN', 'Project is frozen');
 
-insert into request_status(status_name, description)
+insert into dictionary_request_status(status_name, description)
 VALUES ('ACCEPTED', 'Request is accepted'),
        ('DECLINED', 'Request is declined'),
        ('IN_CONSIDERATION', 'Request is under consideration');
@@ -47,7 +47,7 @@ VALUES (1, 2, 'Новый сайт РЖД', 'Сайт РЖД', 'Проект р�
        (4, 6, 'Новый сайт Авиасейлс', 'Сайт АвиаСейлс', 'Проект разработки ТуТу', 'PREPARING'),
        (5, 3, 'Новый сайт Тинькофф', 'Сайт Тинькофф', 'Проект разработки нового сайта Тинькофф', 'IN_PROGRESS');
 
-insert into positions(id, project_id, direction, description, skills)
+insert into position(id, project_id, direction, description, skills)
 VALUES (1, 1, 'BACKEND', 'Позиция Backend-developer', ARRAY ['Java', 'Postgres', 'Spring', 'Maven']),
        (2, 1, 'FRONTEND', 'Позиция Frontend-developer', ARRAY ['JavaScript', 'TypeScript', 'React', 'Next']),
        (3, 1, 'QA', 'Позиция QA-engineer', ARRAY ['Java', 'Mockito', 'JUnit']),

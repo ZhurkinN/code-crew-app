@@ -1,7 +1,10 @@
 package cis.tinkoff.model;
 
+import cis.tinkoff.model.enumerated.RequestStatus;
 import io.micronaut.data.annotation.Id;
 import io.micronaut.data.annotation.MappedEntity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,10 +16,11 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @AllArgsConstructor
 @NoArgsConstructor
-@MappedEntity(value = "project_status")
-public class ProjectStatus {
+@MappedEntity(value = "dictionary_request_status")
+public class RequestStatusDictionary {
 
     @Id
-    private String statusName;
+    @Enumerated(value = EnumType.STRING)
+    private RequestStatus statusName;
     private String description;
 }

@@ -1,4 +1,4 @@
-create sequence if not exists public.participants_seq
+create sequence if not exists public.position_seq
     increment by 50;
 
 create sequence if not exists public.resume_seq
@@ -7,7 +7,7 @@ create sequence if not exists public.resume_seq
 create sequence if not exists public.team_request_seq
     increment by 50;
 
-create sequence if not exists public.team_seq
+create sequence if not exists public.project_seq
     increment by 50;
 
 create sequence if not exists public.users_seq
@@ -16,21 +16,21 @@ create sequence if not exists public.users_seq
 create sequence if not exists public.project_information_seq
     increment by 50;
 
-create table if not exists public.direction
+create table if not exists public.dictionary_direction
 (
     direction_name varchar(255) not null
         primary key,
     description varchar(255) not null
 );
 
-create table if not exists public.project_status
+create table if not exists public.dictionary_project_status
 (
     status_name varchar(255) not null
         primary key,
     description varchar(255) not null
 );
 
-create table if not exists public.request_status
+create table if not exists public.dictionary_request_status
 (
     status_name varchar(255) not null
         primary key,
@@ -62,10 +62,10 @@ create table if not exists public.resume
     is_deleted boolean default false,
     direction varchar(255) not null
         constraint fk_direction
-            references public.direction(direction_name),
+            references public.dictionary_direction(direction_name),
     user_id      bigint not null
         constraint fk_user_id
-            references public.users,
+            references public.users on delete cascade,
     skills varchar[],
 
     unique (user_id, direction)
@@ -84,10 +84,10 @@ create table if not exists public.project
     is_deleted boolean default false,
     status varchar(255) not null
         constraint fk_project_status
-            references public.project_status(status_name)
+            references public.dictionary_project_status(status_name)
 );
 
-create table public.positions
+create table public.position
 (
     id bigint not null primary key,
     is_visible boolean default true,
@@ -96,7 +96,7 @@ create table public.positions
             references public.project(id),
     direction varchar(255) not null
         constraint fk_direction
-            references public.direction(direction_name),
+            references public.dictionary_direction(direction_name),
     user_id bigint default null
         constraint fk_user
             references public.users(id),
@@ -115,10 +115,10 @@ create table if not exists public.position_request
             references public.resume(id),
     position_id bigint not null
         constraint fk_positions
-            references public.positions(id),
+            references public.position(id),
     status varchar(255)
         constraint fk_request_status
-            references public.request_status(status_name),
+            references public.dictionary_request_status(status_name),
     cover_letter varchar(255),
     created_when timestamp default now(),
     is_deleted boolean default false
