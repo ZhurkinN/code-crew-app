@@ -9,12 +9,14 @@ import io.micronaut.data.model.DataType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @NoArgsConstructor
+@Accessors(chain = true)
 @Introspected
 public class GenericModel {
 
@@ -24,8 +26,8 @@ public class GenericModel {
 
     @DateCreated
     @TypeDef(type = DataType.TIMESTAMP)
-    private LocalDateTime createdWhen;
-    private Boolean isDeleted;
+    private LocalDateTime createdWhen = LocalDateTime.now();
+    private Boolean isDeleted = false;
 
     public GenericModel(Long id,
                         LocalDateTime createdWhen,

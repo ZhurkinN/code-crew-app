@@ -1,21 +1,3 @@
-create sequence if not exists public.position_seq
-    increment by 50;
-
-create sequence if not exists public.resume_seq
-    increment by 50;
-
-create sequence if not exists public.team_request_seq
-    increment by 50;
-
-create sequence if not exists public.project_seq
-    increment by 50;
-
-create sequence if not exists public.users_seq
-    increment by 50;
-
-create sequence if not exists public.project_information_seq
-    increment by 50;
-
 create table if not exists public.dictionary_direction
 (
     direction_name varchar(255) not null
@@ -40,14 +22,14 @@ create table if not exists public.dictionary_request_status
 create table if not exists public.users
 (
     id           bigint not null
-        primary key,
+        primary key generated always as identity,
     email        varchar(255),
     name    varchar(255) not null,
     surname    varchar(255) not null,
     password     varchar(255) not null,
     picture_link varchar(255),
-    main_information varchar(255) not null,
-    contacts varchar[],
+    main_information varchar(255),
+    contacts varchar[] default '{}'::varchar[],
     created_when timestamp default now(),
     is_deleted boolean default false
 );
@@ -55,7 +37,7 @@ create table if not exists public.users
 create table if not exists public.resume
 (
     id           bigint not null
-        primary key,
+        primary key generated always as identity,
     description  varchar(255),
     is_active    boolean default true,
     created_when timestamp default now(),
@@ -70,14 +52,14 @@ create table if not exists public.resume
             references public.users
             on delete cascade
             on update cascade,
-    skills varchar[],
+    skills varchar[] default '{}'::varchar[],
 
     unique (user_id, direction)
 );
 
 create table if not exists public.project
 (
-    id bigint not null primary key,
+    id bigint not null primary key generated always as identity,
     leader_id bigint
         constraint fk_leader_id
             references public.users(id)
@@ -97,7 +79,7 @@ create table if not exists public.project
 
 create table public.position
 (
-    id bigint not null primary key,
+    id bigint not null primary key generated always as identity,
     is_visible boolean default true,
     project_id bigint not null
         constraint fk_project
@@ -115,7 +97,7 @@ create table public.position
             on delete set default
             on update cascade,
     description varchar(255) not null,
-    skills varchar[],
+    skills varchar[] default '{}'::varchar[],
     created_when timestamp default now(),
     is_deleted boolean default false
 );
@@ -123,7 +105,7 @@ create table public.position
 
 create table if not exists public.position_request
 (
-    id bigint not null primary key,
+    id bigint not null primary key generated always as identity,
     resume_id bigint not null
         constraint fk_resume
             references public.resume(id)
@@ -146,7 +128,7 @@ create table if not exists public.position_request
 
 create table if not exists public.project_information
 (
-    id bigint not null primary key,
+    id bigint not null primary key generated always as identity,
     project_id bigint not null
         constraint fk_project
             references public.project(id)

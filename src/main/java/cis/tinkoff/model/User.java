@@ -34,7 +34,7 @@ public class User extends GenericModel {
             mappedBy = "user"
     )
     @Nullable
-    private List<Resume> resumes = new ArrayList<>();
+    private List<Resume> resumes;
 
     @Relation(
             value = Relation.Kind.ONE_TO_MANY,

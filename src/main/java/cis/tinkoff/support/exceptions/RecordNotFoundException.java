@@ -1,4 +1,4 @@
-package cis.tinkoff.support;
+package cis.tinkoff.support.exceptions;
 
 public class RecordNotFoundException extends Exception {
 

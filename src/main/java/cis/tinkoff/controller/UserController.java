@@ -2,7 +2,7 @@ package cis.tinkoff.controller;
 
 import cis.tinkoff.model.User;
 import cis.tinkoff.service.UserService;
-import cis.tinkoff.support.RecordNotFoundException;
+import cis.tinkoff.support.exceptions.RecordNotFoundException;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.MediaType;
 import io.micronaut.http.annotation.*;

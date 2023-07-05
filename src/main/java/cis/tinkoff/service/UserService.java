@@ -1,7 +1,8 @@
 package cis.tinkoff.service;
 
 import cis.tinkoff.model.User;
-import cis.tinkoff.support.RecordNotFoundException;
+import cis.tinkoff.support.exceptions.RecordNotFoundException;
+import cis.tinkoff.support.exceptions.UserAlreadyExistsException;
 
 public interface UserService {
 
@@ -15,4 +16,9 @@ public interface UserService {
 
     User update(Long id,
                 User user);
+
+    User register(String email,
+                  String password,
+                  String name,
+                  String surname) throws UserAlreadyExistsException;
 }

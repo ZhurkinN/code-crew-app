@@ -1,7 +1,6 @@
 package cis.tinkoff.controller;
 
 import cis.tinkoff.model.Position;
-import cis.tinkoff.model.Project;
 import cis.tinkoff.service.PositionService;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.MediaType;

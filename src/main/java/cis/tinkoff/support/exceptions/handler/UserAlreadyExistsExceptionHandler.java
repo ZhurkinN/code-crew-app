@@ -1,6 +1,6 @@
 package cis.tinkoff.support.exceptions.handler;
 
-import cis.tinkoff.support.exceptions.RecordNotFoundException;
+import cis.tinkoff.support.exceptions.UserAlreadyExistsException;
 import cis.tinkoff.support.exceptions.model.ErrorDTO;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.http.HttpRequest;
@@ -14,21 +14,21 @@ import java.time.LocalDateTime;
 
 @Produces
 @Singleton
-@Requires(classes = {RecordNotFoundException.class, ExceptionHandler.class})
-public class RecordNotFoundExceptionHandler implements ExceptionHandler<RecordNotFoundException, HttpResponse> {
+@Requires(classes = {UserAlreadyExistsExceptionHandler.class, ExceptionHandler.class})
+public class UserAlreadyExistsExceptionHandler implements ExceptionHandler<UserAlreadyExistsException, HttpResponse> {
 
     @Override
     public HttpResponse handle(HttpRequest request,
-                               RecordNotFoundException exception) {
+                               UserAlreadyExistsException exception) {
 
         ErrorDTO dto = new ErrorDTO(
                 request.getPath(),
                 exception.getMessage(),
-                HttpStatus.NOT_FOUND.getCode(),
+                HttpStatus.CONFLICT.getCode(),
                 LocalDateTime.now()
         );
         return HttpResponse
                 .serverError(dto)
-                .status(HttpStatus.BAD_REQUEST);
+                .status(HttpStatus.CONFLICT);
     }
 }
