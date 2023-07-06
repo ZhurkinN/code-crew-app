@@ -6,18 +6,21 @@ import io.micronaut.http.HttpResponse;
 import io.micronaut.http.MediaType;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Get;
+import io.micronaut.security.annotation.Secured;
+import io.micronaut.security.rules.SecurityRule;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.inject.Inject;
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
 @Tag(name = "Projects", description = "All actions with projects.")
-@Controller("/projects")
+@Controller("/api/v1/projects")
+@Secured(SecurityRule.IS_AUTHENTICATED)
+@RequiredArgsConstructor
 public class ProjectController {
 
-    @Inject
-    private ProjectService projectService;
+    private final ProjectService projectService;
 
     @Operation(method = "findAll", description = "Finds all projects")
     @Get(produces = MediaType.APPLICATION_JSON)

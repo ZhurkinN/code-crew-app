@@ -7,8 +7,8 @@ import io.micronaut.http.HttpRequest;
 import io.micronaut.security.authentication.AuthenticationProvider;
 import io.micronaut.security.authentication.AuthenticationRequest;
 import io.micronaut.security.authentication.AuthenticationResponse;
-import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+import lombok.RequiredArgsConstructor;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.FluxSink;
@@ -17,12 +17,12 @@ import java.util.List;
 import java.util.Optional;
 
 @Singleton
+@RequiredArgsConstructor
 public class UserPasswordProvider implements AuthenticationProvider {
 
     private final static List<String> BASIC_ROLES = List.of("USER_ROLE");
 
-    @Inject
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     @Override
     public Publisher<AuthenticationResponse> authenticate(HttpRequest<?> httpRequest,

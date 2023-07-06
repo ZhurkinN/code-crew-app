@@ -17,4 +17,7 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
     void update(@Id Long id,
                 String[] contacts);
+
+    void update(@Id Long id,
+                Boolean isDeleted);
 }

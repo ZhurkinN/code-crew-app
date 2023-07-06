@@ -23,4 +23,6 @@ public interface UserService {
                   String surname) throws UserAlreadyExistsException;
 
     User getByEmail(String email) throws RecordNotFoundException;
+
+    void softDelete(Long id);
 }

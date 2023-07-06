@@ -6,18 +6,21 @@ import io.micronaut.http.HttpResponse;
 import io.micronaut.http.MediaType;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Get;
+import io.micronaut.security.annotation.Secured;
+import io.micronaut.security.rules.SecurityRule;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.inject.Inject;
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
 @Tag(name = "Position requests", description = "All actions with requests for positions.")
-@Controller("/requests")
+@Controller("/api/v1/requests")
+@Secured(SecurityRule.IS_AUTHENTICATED)
+@RequiredArgsConstructor
 public class PositionRequestController {
 
-    @Inject
-    private PositionRequestService positionRequestService;
+    private final PositionRequestService positionRequestService;
 
     @Operation(method = "findAll", description = "Finds all position' requests")
     @Get(produces = MediaType.APPLICATION_JSON)

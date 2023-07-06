@@ -6,18 +6,18 @@ import cis.tinkoff.service.UserService;
 import cis.tinkoff.support.exceptions.RecordNotFoundException;
 import cis.tinkoff.support.exceptions.UserAlreadyExistsException;
 import io.micronaut.context.annotation.Primary;
-import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+import lombok.RequiredArgsConstructor;
 
 import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.RECORD_NOT_FOUND;
 import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.USER_ALREADY_EXISTS;
 
 @Primary
 @Singleton
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    @Inject
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     @Override
     public User save(User user) {
@@ -70,5 +70,10 @@ public class UserServiceImpl implements UserService {
     public User getByEmail(String email) throws RecordNotFoundException {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new RecordNotFoundException(RECORD_NOT_FOUND));
+    }
+
+    @Override
+    public void softDelete(Long id) {
+        userRepository.update(id, true);
     }
 }

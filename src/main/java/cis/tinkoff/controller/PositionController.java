@@ -7,6 +7,8 @@ import io.micronaut.http.MediaType;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Get;
 import io.micronaut.http.annotation.QueryValue;
+import io.micronaut.security.annotation.Secured;
+import io.micronaut.security.rules.SecurityRule;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.inject.Inject;
@@ -14,7 +16,8 @@ import jakarta.inject.Inject;
 import java.util.List;
 
 @Tag(name = "Positions/Vacancies", description = "All actions with positions of project including vacancies.")
-@Controller("/positions")
+@Controller("/api/v1/positions")
+@Secured(SecurityRule.IS_AUTHENTICATED)
 public class PositionController {
 
     @Inject

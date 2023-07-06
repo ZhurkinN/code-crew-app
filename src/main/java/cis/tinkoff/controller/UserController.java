@@ -6,16 +6,19 @@ import cis.tinkoff.support.exceptions.RecordNotFoundException;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.MediaType;
 import io.micronaut.http.annotation.*;
+import io.micronaut.security.annotation.Secured;
+import io.micronaut.security.rules.SecurityRule;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.inject.Inject;
+import lombok.RequiredArgsConstructor;
 
 @Tag(name = "Users", description = "All actions with users.")
-@Controller("/users")
+@Controller("/api/v1/users")
+@Secured(SecurityRule.IS_AUTHENTICATED)
+@RequiredArgsConstructor
 public class UserController {
 
-    @Inject
-    private UserService userService;
+    private final UserService userService;
 
     @Operation(method = "findAll", description = "Finds all users")
     @Get(produces = MediaType.APPLICATION_JSON)
@@ -29,23 +32,16 @@ public class UserController {
         return HttpResponse.ok(userService.getById(id));
     }
 
-    @Operation(method = "create", description = "Creates new user")
-    @Post(processes = MediaType.APPLICATION_JSON)
-    public HttpResponse<User> create(User user) {
-        return HttpResponse.ok(userService.save(user));
-    }
-
     @Operation(method = "delete", description = "Deletes users by id")
     @Delete("/{id}")
     public void delete(@PathVariable Long id) {
         userService.delete(id);
     }
 
-    @Operation(method = "update", description = "Updates users by id")
-    @Post(value = "/{id}", processes = MediaType.APPLICATION_JSON)
-    public HttpResponse<User> update(@PathVariable Long id,
-                                     User user) {
-        return HttpResponse.ok(userService.update(id, user));
+    @Operation(method = "softDelete", description = "Sets 'deleted' flag true")
+    @Post("/soft-delete/{id}")
+    public void softDelete(@PathVariable Long id) {
+        userService.softDelete(id);
     }
 
     @Operation(method = "findByEmail", description = "Finds user by email")

@@ -15,11 +15,10 @@ micronaut:
         paths: classpath:META-INF/swagger/views/swagger-ui
         mapping: /swagger-ui/**
 
-
   # Micronaut Security configuration
   security:
     enabled: true
-    authentication: bearer # LoginHandler: cookie, session, bearer, idtoken
+    authentication: bearer
     endpoints:
       login:
         enabled: true
@@ -31,7 +30,7 @@ micronaut:
       logout:
         enabled: true
         path: '/auth/logout'
-    intercept-url-map: # Anonymous for specific paths (e.g. index, static resources, ...)
+    intercept-url-map:
       - pattern: /register
         http-method: POST
         access:
@@ -56,7 +55,7 @@ micronaut:
       jwt:
         generator:
           access-token:
-            expiration: 60  # one hour
+            expiration: 1800  # 30 minutes
           refresh-token:
             enabled: true
             jws-algorithm: HS512
