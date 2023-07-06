@@ -5,7 +5,6 @@ import cis.tinkoff.model.Position;
 import cis.tinkoff.model.Project;
 import cis.tinkoff.model.ProjectStatusDictionary;
 import cis.tinkoff.model.enumerated.Direction;
-import cis.tinkoff.model.enumerated.ProjectStatus;
 import io.micronaut.data.repository.jpa.criteria.QuerySpecification;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
@@ -22,6 +21,7 @@ public class Specifications {
 //                            criteriaBuilder.equal(projectProjectStatusDictionaryJoin.get("statusName"), ProjectStatus.valueOf(status)),
 //                            criteriaBuilder.equal(projectJoin.get("title"), status)
                             criteriaBuilder.equal(directionDictionaryJoin.get("directionName"), Direction.valueOf(direction)),
+                            criteriaBuilder.isTrue(root.get("isVisible")),
                             criteriaBuilder.isNull(root.get("user"))
                     )
             );
