@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: changeset-users-table
+      author: AlexeyTimofeevRzn
+      changes:
+        - sqlFile:
+            relativeToChangelogFile: true
+            stripComments: true
+            path: create/create-users-table.sql
+      rollback:
+        - sqlFile:
+            relativeToChangelogFile: true
+            stripComments: true
+            path: drop/drop-users-table.sql

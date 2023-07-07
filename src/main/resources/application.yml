@@ -3,84 +3,20 @@ micronaut:
     name: codeCrew
   router:
     static-resources:
-      default:
-        enabled: true
-        mapping: /static/**
-        paths:
-          - classpath: public
       swagger:
         paths: classpath:META-INF/swagger
         mapping: /swagger/**
       swagger-ui:
         paths: classpath:META-INF/swagger/views/swagger-ui
         mapping: /swagger-ui/**
-
-
-  # Micronaut Security configuration
   security:
-    enabled: true
-    authentication: bearer # LoginHandler: cookie, session, bearer, idtoken
-    endpoints:
-      login:
-        enabled: true
-        path: '/auth/login'
-      oauth:
-        enabled: true
-        path: '/auth/access_token'
-        get-allowed: false
-      logout:
-        enabled: true
-        path: '/auth/logout'
-    intercept-url-map: # Anonymous for specific paths (e.g. index, static resources, ...)
-      - pattern: /register
-        http-method: POST
-        access:
-          - isAnonymous()
-      - pattern: /swagger/**
-        http-method: GET
-        access:
-          - isAnonymous()
-      - pattern: /swagger-ui/**
-        http-method: GET
-        access:
-          - isAnonymous()
-      - pattern: /static/**
-        http-method: GET
-        access:
-          - isAnonymous()
-      - pattern: /locales/**
-        http-method: GET
-        access:
-          - isAnonymous()
-    token:
-      jwt:
-        generator:
-          access-token:
-            expiration: 60  # one hour
-          refresh-token:
-            enabled: true
-            jws-algorithm: HS512
-            secret: 'edShUTQIjFA/3+Ai0lUGcv0RmnN7Kh5ufgDd3ypXebN+B2+cuUZ446w99nUt0XBmvWaEbTsGStESonwFAVa4DsO2+yvbR1qYymbQsBFGwDHP70WjYs/tALe4fmiQy/c7h/uvkfndFLot136QOPo0jzibcreOV/1BxuQTyMgGTRRc7wHzPwGfvxujnd0myTyz2pI+FoPI4xhaOl1ZbR/GuOdeSeMDBiCtAqbDsA=='
-            base64: true
-        signatures:
-          secret:
-            generator:
-              secret: 'UaaOlcsrG2w7+rl/FN7O5GMEsviHy3bOIYq3V/PhtlYci1c4U5ITzmIos84/Ypq3Gqkcqm46q04/YMDXgCjCkDCtCqbB/EYGcCAadxWWt7nD2SLkmghiKQ99L6iP/HM4xyZqV3lD0PpN5Xq4SRBR/DwLRcbgRV17imK3pxvF8yeZMgovAg39qCsKXSGwIDWTd+imk8zPQ8cge70iCCWIa4o9PGrZTri6/PaveA=='
-              jws-algorithm: HS512
-  server:
-    cors:
-      enabled: true
-      configurations:
-        ui:
-          allowed-origins:
-            - http://localhost:3000
-            - http://localhost:8080
-
+    authentication: cookie
+    enabled: false
 datasources:
   default:
-    url: jdbc:postgresql://localhost:5432/postgres
+    url: jdbc:postgresql://localhost:5432/code-crew-app
     username: postgres
-    password: g12nokona
+    password: Iissupe5
     driver-class-name: org.postgresql.Driver
     db-type: postgres
     dialect: POSTGRES
@@ -89,11 +25,7 @@ netty:
     allocator:
       max-order: 3
 liquibase:
+  enabled : true
   datasources:
     default:
-      change-log: classpath:db/changelog/liquibase-changelog.yml
-
-logger:
-  levels:
-    cis.tinkoff.micronaut.jwt: DEBUG
-    io.micronaut.security: DEBUG
+      change-log: classpath:db/changelog/changelog.yaml
