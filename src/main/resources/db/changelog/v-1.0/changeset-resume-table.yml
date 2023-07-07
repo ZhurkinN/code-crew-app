@@ -1,0 +1,15 @@
+databaseChangeLog:
+  - changeSet:
+      id: changeset-resume-table
+      dbms: postgres
+      author: AlexeyTimofeevRzn
+      changes:
+        - sqlFile:
+            relativeToChangelogFile: true
+            stripComments: true
+            path: create-resume-table.sql
+      rollback:
+        - sqlFile:
+            relativeToChangelogFile: true
+            stripComments: true
+            path: drop-resume-table.sql

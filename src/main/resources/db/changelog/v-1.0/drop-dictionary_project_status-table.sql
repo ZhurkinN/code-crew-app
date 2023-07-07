@@ -1,0 +1,1 @@
+drop table public.dictionary_project_status;

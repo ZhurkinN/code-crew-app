@@ -1,0 +1,15 @@
+databaseChangeLog:
+  - changeSet:
+      id: changeset-position_request-table
+      dbms: postgres
+      author: AlexeyTimofeevRzn
+      changes:
+        - sqlFile:
+            relativeToChangelogFile: true
+            stripComments: true
+            path: create-position_request-table.sql
+      rollback:
+        - sqlFile:
+            relativeToChangelogFile: true
+            stripComments: true
+            path: drop-position_request-table.sql

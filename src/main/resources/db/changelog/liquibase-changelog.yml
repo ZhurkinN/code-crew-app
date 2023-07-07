@@ -1,3 +1,5 @@
 databaseChangeLog:
-  - includeAll:
-      path: db/init
+#  - include:
+#      file: v-1.0/db.changelog-v1.0.yml
+#      relativeToChangelogFile: true
+

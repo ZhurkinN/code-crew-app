@@ -1,0 +1,15 @@
+databaseChangeLog:
+  - changeSet:
+      id: changeset-dictionary_project_status-table
+      dbms: postgres
+      author: AlexeyTimofeevRzn
+      changes:
+        - sqlFile:
+            relativeToChangelogFile: true
+            stripComments: true
+            path: create-dictionary_project_status-table.sql
+      rollback:
+        - sqlFile:
+            relativeToChangelogFile: true
+            stripComments: true
+            path: drop-dictionary_project_status-table.sql
