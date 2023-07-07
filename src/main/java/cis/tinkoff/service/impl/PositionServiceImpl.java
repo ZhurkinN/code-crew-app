@@ -1,11 +1,11 @@
 package cis.tinkoff.service.impl;
 
 import cis.tinkoff.model.Position;
+import cis.tinkoff.model.enumerated.Direction;
+import cis.tinkoff.model.enumerated.ProjectStatus;
 import cis.tinkoff.model.enumerated.SortDirection;
 import cis.tinkoff.repository.PositionRepository;
-import cis.tinkoff.repository.ProjectRepository;
 import cis.tinkoff.service.PositionService;
-import cis.tinkoff.support.helper.Specifications;
 import io.micronaut.context.annotation.Primary;
 import io.micronaut.data.model.Page;
 import io.micronaut.data.model.Pageable;
@@ -22,8 +22,6 @@ public class PositionServiceImpl implements PositionService {
 
     @Inject
     private PositionRepository positionRepository;
-    @Inject
-    private ProjectRepository projectRepository;
 
     @Override
     public List<Position> searchVacancyList(Integer page,
@@ -32,48 +30,34 @@ public class PositionServiceImpl implements PositionService {
                                             String status,
                                             String direction,
                                             String skills) {
-        List<String> skillList = Arrays.stream(skills.split(" ")).toList();
-        Page<Position> positionPage = positionRepository.findAll(Specifications.searchVacancies(status, direction, skills),
-                Pageable.from(page, sizeLimit));
+        String projectStatus = null;
+        String vacancyDirection = null;
+        List<String> skillList = null;
+
+        if (status != null) {
+            projectStatus = ProjectStatus.valueOf(status).toString();
+        }
+        if (direction != null) {
+            vacancyDirection = Direction.valueOf(direction).toString();
+        }
+        if (skills != null) {
+            skillList = Arrays.stream(skills.split(" ")).toList();
+        }
+
+        Page<Position> positionPage = positionRepository.searchAllVacancies(
+                vacancyDirection,
+                projectStatus,
+                skillList, Pageable.from(page, sizeLimit));
 
         if (dateSort != null) {
             positionPage.getSort().order("createdWhen", Sort.Order.Direction.valueOf(dateSort.name()));
         }
 
-//        List<Position> positions = positionPage.getContent();
-//        List<Long> projectIds = positions.stream().map(position -> position.getProject().getId()).toList();
-//        List<Project> projects = projectRepository.findByIdInList(projectIds);
-//
-//        positions = positions.stream().filter(position -> {
-//            assert position.getSkills() != null;
-//
-//            return new HashSet<>(position.getSkills()).containsAll(skillList);
-//        }).toList();
-//
-//        //TODO Mapping to DTO
-//
-//        List<VacancyDTO> vacancies = positions.stream().map(position -> {
-//            VacancyDTO vacancyDTO = new VacancyDTO();
-//            vacancyDTO.setId(position.getId());
-//            vacancyDTO.setDirection(position.getDirection());
-//            vacancyDTO.setCreatedWhen(position.getCreatedWhen());
-//            vacancyDTO.setSkills(position.getSkills());
-//            vacancyDTO.setProjectStatus(
-//                    projects.stream().filter(project -> project.getId().equals(position.getProject().getId()))
-//                            .findFirst().get().getStatus()
-//            );
-//            return vacancyDTO;
-//        }).toList();
+        List<Position> positionsToDto = (List<Position>) positionRepository.findByIdInList(
+                positionPage.getContent().stream().map(position -> position.getId()).toList()
+        );
 
-        //--------test------------
-//        List<Position> positionPage = positionRepository.searchAllVacancies(direction, status, skillList);
-//
-//        if (dateSort != null) {
-//            positionPage.getSort().order("createdWhen", Sort.Order.Direction.valueOf(dateSort.name()));
-//        }
-        //-----------------------
-
-        return positionPage.getContent();
+        return positionsToDto;
     }
 
     @Override

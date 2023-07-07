@@ -34,6 +34,7 @@ public class Project extends GenericModel {
             cascade = Relation.Cascade.NONE
     )
     @MappedProperty(value = "status")
+    @Nullable
     private ProjectStatusDictionary status;
 
     private String title;
@@ -62,7 +63,7 @@ public class Project extends GenericModel {
                    LocalDateTime createdWhen,
                    Boolean isDeleted,
                    @Nullable User leader,
-                   ProjectStatusDictionary status,
+                   @Nullable ProjectStatusDictionary status,
                    String title,
                    @Nullable String theme,
                    @Nullable String description,

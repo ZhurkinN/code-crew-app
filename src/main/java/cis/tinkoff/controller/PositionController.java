@@ -34,9 +34,9 @@ public class PositionController {
             @QueryValue(value = "page", defaultValue = "0") Integer page,
             @QueryValue(value = "size", defaultValue = "1") Integer sizeLimit,
             @Nullable @QueryValue(value = "dateSort", defaultValue = "null") SortDirection dateSort,
-            @QueryValue(value = "status", defaultValue = "PREPARING") String status,
-            @QueryValue(value = "direction") String direction,
-            @QueryValue("skills") String skills
+            @Nullable @QueryValue(value = "status", defaultValue = "PREPARING") String status,
+            @Nullable @QueryValue(value = "direction") String direction,
+            @Nullable @QueryValue("skills") String skills
     ) {
         List<Position> vacancies = positionService.searchVacancyList(
                 page,
