@@ -5,6 +5,8 @@ import io.micronaut.core.annotation.Nullable;
 import io.micronaut.data.annotation.MappedEntity;
 import io.micronaut.data.annotation.MappedProperty;
 import io.micronaut.data.annotation.Relation;
+import io.micronaut.data.annotation.TypeDef;
+import io.micronaut.data.model.DataType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -23,8 +25,10 @@ public class Position extends GenericModel {
 
     @Nullable
     private String description;
+
     @Nullable
-    private List<String> skills;
+    @TypeDef(type = DataType.STRING_ARRAY)
+    private List<String> skills = new ArrayList<>();
     private Boolean isVisible;
 
     @Relation(

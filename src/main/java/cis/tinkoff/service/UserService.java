@@ -4,6 +4,8 @@ import cis.tinkoff.model.User;
 import cis.tinkoff.support.exceptions.RecordNotFoundException;
 import cis.tinkoff.support.exceptions.UserAlreadyExistsException;
 
+import java.util.List;
+
 public interface UserService {
 
     User save(User user);
@@ -14,8 +16,12 @@ public interface UserService {
 
     void delete(Long id);
 
-    User update(Long id,
-                User user);
+    User update(String email,
+                String name,
+                String surname,
+                List<String> contacts,
+                String pictureLink,
+                String mainInformation) throws RecordNotFoundException;
 
     User register(String email,
                   String password,

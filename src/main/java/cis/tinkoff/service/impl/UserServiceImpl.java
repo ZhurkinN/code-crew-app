@@ -9,6 +9,8 @@ import io.micronaut.context.annotation.Primary;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
+
 import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.RECORD_NOT_FOUND;
 import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.USER_ALREADY_EXISTS;
 
@@ -41,9 +43,24 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User update(Long id,
-                       User user) {
-        user.setId(id);
+    public User update(String email,
+                       String name,
+                       String surname,
+                       List<String> contacts,
+                       String pictureLink,
+                       String mainInformation) throws RecordNotFoundException {
+
+        if (!userRepository.existsByEmail(email)) {
+            throw new RecordNotFoundException(RECORD_NOT_FOUND);
+        }
+        User user = userRepository.findByEmail(email).orElseThrow();
+        user.setName(name)
+                .setSurname(surname)
+                .setPictureLink(pictureLink)
+                .setMainInformation(mainInformation);
+        if (!contacts.isEmpty()) {
+            user.setContacts(contacts);
+        }
         return userRepository.save(user);
     }
 
@@ -61,9 +78,7 @@ public class UserServiceImpl implements UserService {
                 .setPassword(password)
                 .setName(name)
                 .setSurname(surname);
-        User createdUser = userRepository.save(user);
-        userRepository.update(createdUser.getId(), new String[0]);
-        return createdUser;
+        return userRepository.save(user);
     }
 
     @Override

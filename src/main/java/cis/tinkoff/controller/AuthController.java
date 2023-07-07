@@ -16,7 +16,7 @@ import lombok.RequiredArgsConstructor;
 
 @Tag(name = "Authorization", description = "All actions with users authorization/registration.")
 @Controller
-@Secured(SecurityRule.IS_AUTHENTICATED)
+@Secured(SecurityRule.IS_ANONYMOUS)
 @RequiredArgsConstructor
 public class AuthController {
 

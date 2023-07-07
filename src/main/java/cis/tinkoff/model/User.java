@@ -4,6 +4,8 @@ import cis.tinkoff.model.generic.GenericModel;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.data.annotation.MappedEntity;
 import io.micronaut.data.annotation.Relation;
+import io.micronaut.data.annotation.TypeDef;
+import io.micronaut.data.model.DataType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -27,7 +29,11 @@ public class User extends GenericModel {
     @Nullable
     private String mainInformation;
     @Nullable
-    private List<String> contacts;
+    private String pictureLink;
+
+    @Nullable
+    @TypeDef(type = DataType.STRING_ARRAY)
+    private List<String> contacts = new ArrayList<>();
 
     @Relation(
             value = Relation.Kind.ONE_TO_MANY,
@@ -61,6 +67,7 @@ public class User extends GenericModel {
                 String name,
                 String surname,
                 @Nullable String mainInformation,
+                @Nullable String pictureLink,
                 @Nullable List<String> contacts,
                 @Nullable List<Resume> resumes,
                 @Nullable List<Project> projects,
@@ -71,6 +78,7 @@ public class User extends GenericModel {
         this.name = name;
         this.surname = surname;
         this.mainInformation = mainInformation;
+        this.pictureLink = pictureLink;
         this.contacts = contacts;
         this.resumes = resumes;
         this.projects = projects;
