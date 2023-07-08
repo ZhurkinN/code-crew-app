@@ -1,12 +1,10 @@
 databaseChangeLog:
   - changeSet:
       id: changeset-dictionary_direction-table
-      dbms: postgres
       author: AlexeyTimofeevRzn
       changes:
         - sqlFile:
             relativeToChangelogFile: true
-            stripComments: true
             path: create-dictionary_direction-table.sql
       rollback:
         - sqlFile:

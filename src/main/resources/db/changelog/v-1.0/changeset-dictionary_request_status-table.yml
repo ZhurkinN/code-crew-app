@@ -1,7 +1,6 @@
 databaseChangeLog:
   - changeSet:
       id: changeset-dictionary_request_status-table
-      dbms: postgres
       author: AlexeyTimofeevRzn
       changes:
         - sqlFile:

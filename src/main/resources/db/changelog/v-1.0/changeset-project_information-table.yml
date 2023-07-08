@@ -1,7 +1,6 @@
 databaseChangeLog:
   - changeSet:
       id: changeset-project_information-table
-      dbms: postgres
       author: AlexeyTimofeevRzn
       changes:
         - sqlFile:

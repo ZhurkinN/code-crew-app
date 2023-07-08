@@ -1,7 +1,6 @@
 databaseChangeLog:
   - changeSet:
       id: changeset-position_request-table
-      dbms: postgres
       author: AlexeyTimofeevRzn
       changes:
         - sqlFile:
