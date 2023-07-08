@@ -25,10 +25,9 @@ public class Position extends GenericModel {
 
     @Nullable
     private String description;
-
     @Nullable
     @TypeDef(type = DataType.STRING_ARRAY)
-    private List<String> skills = new ArrayList<>();
+    private List<String> skills;
     private Boolean isVisible;
 
     @Relation(
