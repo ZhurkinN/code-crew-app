@@ -10,4 +10,6 @@ public interface ProjectService {
     List<Project> getAll();
 
     List<ProjectDTO> getAllUserProjects(String login, Boolean isLead);
+
+    ProjectDTO getProjectById(Long id);
 }

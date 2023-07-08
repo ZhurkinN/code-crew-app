@@ -10,6 +10,7 @@ import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 
+import java.util.Collection;
 import java.util.List;
 
 @Primary
@@ -38,5 +39,13 @@ public class ProjectServiceImpl implements ProjectService {
         List<ProjectDTO> projectDTOList = projectMapper.toProjectDTO(projects);
 
         return projectDTOList;
+    }
+
+    @Override
+    public ProjectDTO getProjectById(Long id) {
+        Project project = projectRepository.findByIdInList(List.of(id)).get(0);
+        ProjectDTO projectDTO = projectMapper.toProjectDTO(project);
+
+        return projectDTO;
     }
 }

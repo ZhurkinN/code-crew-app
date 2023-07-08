@@ -10,10 +10,14 @@ import io.micronaut.data.repository.CrudRepository;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @JdbcRepository(dialect = Dialect.POSTGRES)
 public interface ProjectRepository extends CrudRepository<Project, Long> {
-    List<Project> findByIdInList(Collection<Long> id);
+    @Join(value = "positions", type = Join.Type.FETCH)
+    @Join(value = "status", type = Join.Type.FETCH)
+    @Join(value = "positions", type = Join.Type.FETCH)
+    List<Project> findByIdInList(List<Long> id);
 
     @Join(value = "leader", type = Join.Type.FETCH)
     @Join(value = "status", type = Join.Type.FETCH)

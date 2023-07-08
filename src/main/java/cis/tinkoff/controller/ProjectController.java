@@ -8,6 +8,7 @@ import io.micronaut.http.HttpResponse;
 import io.micronaut.http.MediaType;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Get;
+import io.micronaut.http.annotation.PathVariable;
 import io.micronaut.http.annotation.QueryValue;
 import io.micronaut.security.annotation.Secured;
 import io.micronaut.security.authentication.Authentication;
@@ -26,12 +27,6 @@ public class ProjectController {
 
     private final ProjectService projectService;
 
-//    @Operation(method = "findAll", description = "Finds all projects")
-//    @Get(produces = MediaType.APPLICATION_JSON)
-//    public HttpResponse<List<Project>> findAll() {
-//        return HttpResponse.ok(projectService.getAll());
-//    }
-
     @Operation(method = "getAllUserProjects", description = "Finds all user projects")
     @Get(produces = MediaType.APPLICATION_JSON)
     public HttpResponse<?> getAllUserProjects(
@@ -43,5 +38,13 @@ public class ProjectController {
                 isLead);
 
         return HttpResponse.ok(projectDTOList);
+    }
+
+    @Operation(method = "getAllUserProjects", description = "Finds all user projects")
+    @Get(value = "/{id}",  produces = MediaType.APPLICATION_JSON)
+    public HttpResponse<?> getProjectById(@PathVariable(value = "id") Long id) {
+        ProjectDTO projectDTO = projectService.getProjectById(id);
+
+        return HttpResponse.ok(projectDTO);
     }
 }
