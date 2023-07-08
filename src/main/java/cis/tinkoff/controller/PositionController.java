@@ -1,5 +1,6 @@
 package cis.tinkoff.controller;
 
+import cis.tinkoff.controller.model.VacancyDTO;
 import cis.tinkoff.model.Position;
 import cis.tinkoff.model.enumerated.SortDirection;
 import cis.tinkoff.service.PositionService;
@@ -38,7 +39,7 @@ public class PositionController {
             @Nullable @QueryValue(value = "direction") String direction,
             @Nullable @QueryValue("skills") String skills
     ) {
-        List<Position> vacancies = positionService.searchVacancyList(
+        List<VacancyDTO> vacancies = positionService.searchVacancyList(
                 page,
                 sizeLimit,
                 dateSort,

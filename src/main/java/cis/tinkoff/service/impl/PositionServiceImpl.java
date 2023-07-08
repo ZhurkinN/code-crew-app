@@ -1,11 +1,13 @@
 package cis.tinkoff.service.impl;
 
+import cis.tinkoff.controller.model.VacancyDTO;
 import cis.tinkoff.model.Position;
 import cis.tinkoff.model.enumerated.Direction;
 import cis.tinkoff.model.enumerated.ProjectStatus;
 import cis.tinkoff.model.enumerated.SortDirection;
 import cis.tinkoff.repository.PositionRepository;
 import cis.tinkoff.service.PositionService;
+import cis.tinkoff.support.mapper.PositionMapper;
 import io.micronaut.context.annotation.Primary;
 import io.micronaut.data.model.Page;
 import io.micronaut.data.model.Pageable;
@@ -22,14 +24,16 @@ public class PositionServiceImpl implements PositionService {
 
     @Inject
     private PositionRepository positionRepository;
+    @Inject
+    private PositionMapper positionMapper;
 
     @Override
-    public List<Position> searchVacancyList(Integer page,
-                                            Integer sizeLimit,
-                                            SortDirection dateSort,
-                                            String status,
-                                            String direction,
-                                            String skills) {
+    public List<VacancyDTO> searchVacancyList(Integer page,
+                                              Integer sizeLimit,
+                                              SortDirection dateSort,
+                                              String status,
+                                              String direction,
+                                              String skills) {
         String projectStatus = null;
         String vacancyDirection = null;
         List<String> skillList = null;
@@ -53,11 +57,11 @@ public class PositionServiceImpl implements PositionService {
             positionPage.getSort().order("createdWhen", Sort.Order.Direction.valueOf(dateSort.name()));
         }
 
-        List<Position> positionsToDto = (List<Position>) positionRepository.findByIdInList(
+        List<Position> positions = (List<Position>) positionRepository.findByIdInList(
                 positionPage.getContent().stream().map(position -> position.getId()).toList()
         );
 
-        return positionsToDto;
+        return positionMapper.toVacancyDTO(positions);
     }
 
     @Override
