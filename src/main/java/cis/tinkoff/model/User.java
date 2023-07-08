@@ -46,7 +46,7 @@ public class User extends GenericModel {
     @Relation(
             value = Relation.Kind.ONE_TO_MANY,
             cascade = Relation.Cascade.ALL,
-            mappedBy = "user"
+            mappedBy = "leader"
     )
     @Nullable
     private List<Project> projects = new ArrayList<>();

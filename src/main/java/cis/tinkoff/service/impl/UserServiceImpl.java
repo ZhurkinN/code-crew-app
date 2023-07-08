@@ -1,8 +1,11 @@
 package cis.tinkoff.service.impl;
 
+import cis.tinkoff.model.Resume;
 import cis.tinkoff.model.User;
+import cis.tinkoff.repository.ResumeRepository;
 import cis.tinkoff.repository.UserRepository;
 import cis.tinkoff.service.UserService;
+import cis.tinkoff.support.exceptions.DeletedRecordFoundException;
 import cis.tinkoff.support.exceptions.RecordNotFoundException;
 import cis.tinkoff.support.exceptions.UserAlreadyExistsException;
 import io.micronaut.context.annotation.Primary;
@@ -11,8 +14,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.RECORD_NOT_FOUND;
-import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.USER_ALREADY_EXISTS;
+import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.*;
 
 @Primary
 @Singleton
@@ -20,11 +22,7 @@ import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-
-    @Override
-    public User save(User user) {
-        return userRepository.save(user);
-    }
+    private final ResumeRepository resumeRepository;
 
     @Override
     public Iterable<User> getAll() {
@@ -32,9 +30,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getById(Long id) throws RecordNotFoundException {
-        return userRepository.findById(id)
+    public User getById(Long id) throws RecordNotFoundException, DeletedRecordFoundException {
+
+        User user = userRepository.findById(id)
                 .orElseThrow(() -> new RecordNotFoundException(RECORD_NOT_FOUND));
+        if (user.getIsDeleted()) {
+            throw new DeletedRecordFoundException(DELETED_RECORD_FOUND);
+        }
+        List<Resume> userResumes = resumeRepository.findByUser(user);
+        user.setResumes(userResumes);
+        return user;
     }
 
     @Override
@@ -61,7 +66,7 @@ public class UserServiceImpl implements UserService {
         if (!contacts.isEmpty()) {
             user.setContacts(contacts);
         }
-        return userRepository.save(user);
+        return userRepository.update(user);
     }
 
     @Override
@@ -82,13 +87,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getByEmail(String email) throws RecordNotFoundException {
-        return userRepository.findByEmail(email)
+    public User getByEmail(String email) throws RecordNotFoundException, DeletedRecordFoundException {
+
+        User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RecordNotFoundException(RECORD_NOT_FOUND));
+        if (user.getIsDeleted()) {
+            throw new DeletedRecordFoundException(DELETED_RECORD_FOUND);
+        }
+        List<Resume> userResumes = resumeRepository.findByUser(user);
+        user.setResumes(userResumes);
+        return user;
     }
 
     @Override
-    public void softDelete(Long id) {
-        userRepository.update(id, true);
+    public void softDelete(String email) {
+        userRepository.updateByEmail(email, true);
     }
 }

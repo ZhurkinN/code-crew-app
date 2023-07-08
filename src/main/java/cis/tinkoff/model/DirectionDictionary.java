@@ -11,6 +11,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import java.util.Objects;
+
 @Getter
 @Setter
 @Accessors(chain = true)
@@ -24,4 +26,16 @@ public class DirectionDictionary {
     private Direction directionName;
     private String description;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        DirectionDictionary that = (DirectionDictionary) o;
+        return directionName == that.directionName && Objects.equals(description, that.description);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(directionName, description);
+    }
 }

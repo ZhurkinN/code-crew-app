@@ -4,11 +4,13 @@ import cis.tinkoff.model.DirectionDictionary;
 import cis.tinkoff.model.ProjectStatusDictionary;
 import cis.tinkoff.model.RequestStatusDictionary;
 import cis.tinkoff.service.DictionaryService;
+import cis.tinkoff.support.exceptions.RecordNotFoundException;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.MediaType;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Get;
 import io.micronaut.security.annotation.Secured;
+import io.micronaut.security.authentication.Authentication;
 import io.micronaut.security.rules.SecurityRule;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -29,6 +31,16 @@ public class DictionaryController {
     public HttpResponse<List<DirectionDictionary>> getDirections() {
 
         return HttpResponse.ok(dictionaryService.getAllDirections());
+    }
+
+    @Secured(SecurityRule.IS_AUTHENTICATED)
+    @Operation(method = "getUsersResumeAvailableDirections", description = "Returns all available directions for making resumes")
+    @Get(value = "/directions/resumes", produces = MediaType.APPLICATION_JSON)
+    public HttpResponse<List<DirectionDictionary>> getUsersResumeAvailableDirections(Authentication authentication)
+            throws RecordNotFoundException {
+
+        String email = authentication.getName();
+        return HttpResponse.ok(dictionaryService.getAllAvailableDirections(email));
     }
 
     @Operation(method = "getProjectStatuses", description = "Returns all project statuses")

@@ -2,6 +2,11 @@ package cis.tinkoff.support.exceptions.constants;
 
 public interface ErrorDisplayMessageKeeper {
 
-    String RECORD_NOT_FOUND = "Запись по такому запросы не была найдена!";
-    String USER_ALREADY_EXISTS = "Пользователь м таким email уже зарегистрирован!";
+    //CRUD action errors
+    String RECORD_NOT_FOUND = "The record for this query was not found.";
+    String USER_ALREADY_EXISTS = "A user with this email is already registered.";
+    String DELETED_RECORD_FOUND = "Received data has been deleted or is unavailable.";
+
+    //Access errors
+    String RESUME_WRONG_ACCESS = "Action with this resume is not available.";
 }

@@ -34,7 +34,8 @@ public class UserPasswordProvider implements AuthenticationProvider {
             String password = (String) authenticationRequest.getSecret();
             Optional<User> userOptional = userRepository.findByEmail(login);
             boolean isValid = userOptional.isPresent()
-                    && CredentialsValidator.validCredentials(password, userOptional.get());
+                    && CredentialsValidator.validCredentials(password, userOptional.get())
+                    && !userOptional.get().getIsDeleted();
 
             if (!isValid) {
                 emitter.error(AuthenticationResponse.exception("Auth error"));

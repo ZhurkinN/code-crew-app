@@ -41,7 +41,7 @@ public class Resume extends GenericModel {
 
     @Nullable
     private String description;
-    private Boolean isActive;
+    private Boolean isActive = true;
 
     @Nullable
     @TypeDef(type = DataType.STRING_ARRAY)
