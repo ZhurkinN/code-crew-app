@@ -40,7 +40,7 @@ public class ProjectController {
         return HttpResponse.ok(projectDTOList);
     }
 
-    @Operation(method = "getAllUserProjects", description = "Finds all user projects")
+    @Operation(method = "getProjectById", description = "Find project by id")
     @Get(value = "/{id}",  produces = MediaType.APPLICATION_JSON)
     public HttpResponse<?> getProjectById(@PathVariable(value = "id") Long id) {
         ProjectDTO projectDTO = projectService.getProjectById(id);
