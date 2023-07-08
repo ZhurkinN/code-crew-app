@@ -6,9 +6,9 @@ databaseChangeLog:
         - sqlFile:
             relativeToChangelogFile: true
             stripComments: true
-            path: create-users-table.sql
+            path: create/create-users-table.sql
       rollback:
         - sqlFile:
             relativeToChangelogFile: true
             stripComments: true
-            path: drop-users-table.sql
+            path: drop/drop-users-table.sql

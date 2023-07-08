@@ -6,9 +6,9 @@ databaseChangeLog:
         - sqlFile:
             relativeToChangelogFile: true
             stripComments: true
-            path: create-dictionary_project_status-table.sql
+            path: create/create-dictionary_project_status-table.sql
       rollback:
         - sqlFile:
             relativeToChangelogFile: true
             stripComments: true
-            path: drop-dictionary_project_status-table.sql
+            path: drop/drop-dictionary_project_status-table.sql

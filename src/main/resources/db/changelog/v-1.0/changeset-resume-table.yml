@@ -6,9 +6,9 @@ databaseChangeLog:
         - sqlFile:
             relativeToChangelogFile: true
             stripComments: true
-            path: create-resume-table.sql
+            path: create/create-resume-table.sql
       rollback:
         - sqlFile:
             relativeToChangelogFile: true
             stripComments: true
-            path: drop-resume-table.sql
+            path: drop/drop-resume-table.sql

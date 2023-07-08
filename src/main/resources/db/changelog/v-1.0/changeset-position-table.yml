@@ -6,9 +6,9 @@ databaseChangeLog:
         - sqlFile:
             relativeToChangelogFile: true
             stripComments: true
-            path: create-position-table.sql
+            path: create/create-position-table.sql
       rollback:
         - sqlFile:
             relativeToChangelogFile: true
             stripComments: true
-            path: drop-position-table.sql
+            path: drop/drop-position-table.sql

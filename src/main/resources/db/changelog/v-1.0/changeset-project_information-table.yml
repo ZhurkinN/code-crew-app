@@ -6,9 +6,9 @@ databaseChangeLog:
         - sqlFile:
             relativeToChangelogFile: true
             stripComments: true
-            path: create-project_information-table.sql
+            path: create/create-project_information-table.sql
       rollback:
         - sqlFile:
             relativeToChangelogFile: true
             stripComments: true
-            path: drop-project_information-table.sql
+            path: drop/drop-project_information-table.sql

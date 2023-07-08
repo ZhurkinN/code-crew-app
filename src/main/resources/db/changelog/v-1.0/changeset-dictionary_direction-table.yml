@@ -5,9 +5,9 @@ databaseChangeLog:
       changes:
         - sqlFile:
             relativeToChangelogFile: true
-            path: create-dictionary_direction-table.sql
+            path: create/create-dictionary_direction-table.sql
       rollback:
         - sqlFile:
             relativeToChangelogFile: true
             stripComments: true
-            path: drop-dictionary_direction-table.sql
+            path: drop/drop-dictionary_direction-table.sql
