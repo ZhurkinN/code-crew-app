@@ -55,7 +55,7 @@ micronaut:
       jwt:
         generator:
           access-token:
-            expiration: 1800  # 30 minutes
+            expiration: 5000  # 30 minutes
           refresh-token:
             enabled: true
             jws-algorithm: HS512
