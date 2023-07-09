@@ -45,8 +45,8 @@ public interface ProjectRepository extends CrudRepository<Project, Long> {
     List<Project> findAllProjectsByLeadEmail(String login);
 
     @Query(value = """
-UPDATE project SET is_deleted = true WHERE id = :id
-""",
-    nativeQuery = true)
+            UPDATE project SET is_deleted = true WHERE id = :id
+            """,
+            nativeQuery = true)
     Project softDeleteProject(Long id);
 }

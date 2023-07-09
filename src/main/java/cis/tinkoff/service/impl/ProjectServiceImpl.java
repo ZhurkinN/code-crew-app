@@ -96,6 +96,5 @@ public class ProjectServiceImpl implements ProjectService {
 
         projectRepository.softDeleteProject(id);
 
-        return;
     }
 }
