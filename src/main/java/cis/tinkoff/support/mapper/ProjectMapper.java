@@ -4,7 +4,6 @@ import cis.tinkoff.controller.model.ProjectDTO;
 import cis.tinkoff.model.Project;
 import jakarta.inject.Singleton;
 
-import java.time.ZoneOffset;
 import java.util.Collection;
 import java.util.List;
 

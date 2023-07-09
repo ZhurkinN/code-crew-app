@@ -77,7 +77,7 @@ public class ProjectServiceImpl implements ProjectService {
         );
 
         projectDTO.setIsLeader(project.getLeader().getEmail().equals(login));
-        projectDTO.setMembersCount((int)projectDTO.getMembers().stream()
+        projectDTO.setMembersCount((int) projectDTO.getMembers().stream()
                 .filter(projectMemberDTO -> projectMemberDTO != null)
                 .count());
 

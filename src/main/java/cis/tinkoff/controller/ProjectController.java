@@ -1,7 +1,6 @@
 package cis.tinkoff.controller;
 
 import cis.tinkoff.controller.model.ProjectDTO;
-import cis.tinkoff.model.Project;
 import cis.tinkoff.service.ProjectService;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.http.HttpResponse;
@@ -41,7 +40,7 @@ public class ProjectController {
     }
 
     @Operation(method = "getProjectById", description = "Find project by id")
-    @Get(value = "/{id}",  produces = MediaType.APPLICATION_JSON)
+    @Get(value = "/{id}", produces = MediaType.APPLICATION_JSON)
     public HttpResponse<?> getProjectById(
             Authentication authentication,
             @PathVariable(value = "id") Long id) {
