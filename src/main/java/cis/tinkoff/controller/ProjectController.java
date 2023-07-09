@@ -47,12 +47,22 @@ public class ProjectController {
         return HttpResponse.ok(projectDTO);
     }
 
-    @Operation(method = "getProjectById", description = "Soft delete project by id")
+    @Operation(method = "deleteProjectById", description = "Soft delete project by id")
     @Delete(value = "/{id}", produces = MediaType.APPLICATION_JSON)
     public HttpResponse<?> deleteProjectById(
             Authentication authentication,
             @PathVariable(value = "id") Long id) throws InaccessibleActionException {
         projectService.deleteProjectById(id, authentication.getName());
+
+        return HttpResponse.ok();
+    }
+
+    @Operation(method = "leaveUserFromProject", description = "Leave from project")
+    @Post(value = "/leave/{id}", produces = MediaType.APPLICATION_JSON)
+    public HttpResponse<?> leaveUserFromProject(
+            Authentication authentication,
+            @PathVariable(value = "id") Long id) throws Exception {
+        projectService.leaveUserFromProject(id, authentication.getName());
 
         return HttpResponse.ok();
     }

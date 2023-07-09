@@ -15,4 +15,6 @@ public interface ProjectService {
     ProjectDTO getProjectById(Long id, String login);
 
     void deleteProjectById(Long id, String login) throws InaccessibleActionException;
+
+    void leaveUserFromProject(Long id, String login) throws Exception;
 }

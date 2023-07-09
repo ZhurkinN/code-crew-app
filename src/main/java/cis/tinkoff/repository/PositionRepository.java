@@ -41,5 +41,6 @@ public interface PositionRepository extends PageableRepository<Position, Long>, 
     @Join(value = "project", type = Join.Type.FETCH)
     @Join(value = "project.status", type = Join.Type.FETCH)
     @Join(value = "direction", type = Join.Type.FETCH)
+    @Join(value = "user", type = Join.Type.FETCH)
     Iterable<Position> findByIdInList(Collection<Long> id);
 }

@@ -9,6 +9,7 @@ import cis.tinkoff.repository.ProjectRepository;
 import cis.tinkoff.repository.UserRepository;
 import cis.tinkoff.service.ProjectService;
 import cis.tinkoff.support.exceptions.InaccessibleActionException;
+import cis.tinkoff.support.exceptions.RecordNotFoundException;
 import cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper;
 import cis.tinkoff.support.mapper.PositionMapper;
 import cis.tinkoff.support.mapper.ProjectMapper;
@@ -96,5 +97,25 @@ public class ProjectServiceImpl implements ProjectService {
 
         projectRepository.softDeleteProject(id);
 
+    }
+
+    //Доделать
+    @Override
+    public void leaveUserFromProject(Long id, String login) throws Exception{
+        Project project = projectRepository.findByIdInList(List.of(id)).get(0);
+
+        if (project == null) {
+            throw new RecordNotFoundException(ErrorDisplayMessageKeeper.RECORD_NOT_FOUND);
+        }
+
+        if (project.getLeader().getEmail().equals(login)) {
+
+            List<Position> positions = (List<Position>) positionRepository.findByIdInList(project.getPositions().stream()
+                    .map(position -> position.getId())
+                    .toList()
+            );
+
+            projectRepository.updateLeaderByLeaderEmail(positions.get((int) Math.random()).getUser().getEmail());
+        }
     }
 }
