@@ -11,5 +11,5 @@ public interface ProjectService {
 
     List<ProjectDTO> getAllUserProjects(String login, Boolean isLead);
 
-    ProjectDTO getProjectById(Long id);
+    ProjectDTO getProjectById(Long id, String login);
 }

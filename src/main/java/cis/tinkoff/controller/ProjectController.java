@@ -42,8 +42,10 @@ public class ProjectController {
 
     @Operation(method = "getProjectById", description = "Find project by id")
     @Get(value = "/{id}",  produces = MediaType.APPLICATION_JSON)
-    public HttpResponse<?> getProjectById(@PathVariable(value = "id") Long id) {
-        ProjectDTO projectDTO = projectService.getProjectById(id);
+    public HttpResponse<?> getProjectById(
+            Authentication authentication,
+            @PathVariable(value = "id") Long id) {
+        ProjectDTO projectDTO = projectService.getProjectById(id, authentication.getName());
 
         return HttpResponse.ok(projectDTO);
     }

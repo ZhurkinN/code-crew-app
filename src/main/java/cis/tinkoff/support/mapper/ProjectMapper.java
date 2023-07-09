@@ -17,11 +17,11 @@ public class ProjectMapper {
 
         ProjectDTO projectDTO = ProjectDTO.builder()
                 .id(project.getId())
-                .id(project.getId())
                 .title(project.getTitle())
                 .theme(project.getTheme())
                 .description(project.getDescription())
                 .status(project.getStatus())
+                .contacts(project.getContacts())
                 .build();
 
         return projectDTO;
