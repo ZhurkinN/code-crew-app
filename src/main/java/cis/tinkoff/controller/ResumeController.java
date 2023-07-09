@@ -35,6 +35,8 @@ public class ResumeController {
         return HttpResponse.ok(resumeService.getAll());
     }
 
+
+
     @Operation(method = "findUsersResumes", description = "Finds all user's resumes")
     @Get(value = "/users", produces = MediaType.APPLICATION_JSON)
     public HttpResponse<List<Resume>> findUsersResumes(Authentication authentication)

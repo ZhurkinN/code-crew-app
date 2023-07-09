@@ -21,6 +21,7 @@ public class PositionRequest extends GenericModel {
 
     @Nullable
     private String coverLetter;
+    private Boolean isInvite;
 
     @Relation(
             value = Relation.Kind.MANY_TO_ONE,
@@ -47,11 +48,13 @@ public class PositionRequest extends GenericModel {
                            LocalDateTime createdWhen,
                            Boolean isDeleted,
                            @Nullable String coverLetter,
+                           Boolean isInvite,
                            RequestStatusDictionary status,
                            Resume resume,
                            Position position) {
         super(id, createdWhen, isDeleted);
         this.coverLetter = coverLetter;
+        this.isInvite = isInvite;
         this.status = status;
         this.resume = resume;
         this.position = position;
