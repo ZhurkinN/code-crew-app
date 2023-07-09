@@ -1,6 +1,8 @@
 package cis.tinkoff.repository;
 
 import cis.tinkoff.model.Resume;
+import cis.tinkoff.model.User;
+import io.micronaut.data.annotation.Id;
 import io.micronaut.data.annotation.Join;
 import io.micronaut.data.jdbc.annotation.JdbcRepository;
 import io.micronaut.data.model.query.builder.sql.Dialect;
@@ -19,5 +21,11 @@ public interface ResumeRepository extends CrudRepository<Resume, Long> {
     )
     List<Resume> list();
 
+    @Join(value = "direction", type = Join.Type.FETCH)
+    List<Resume> findByUser(User user);
 
+    void updateById(@Id Long id,
+                    Boolean isDeleted);
+
+    User getUserById(Long id);
 }

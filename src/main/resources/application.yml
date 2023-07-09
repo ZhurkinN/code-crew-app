@@ -31,10 +31,6 @@ micronaut:
         enabled: true
         path: '/auth/logout'
     intercept-url-map:
-      - pattern: /register
-        http-method: POST
-        access:
-          - isAnonymous()
       - pattern: /swagger/**
         http-method: GET
         access:

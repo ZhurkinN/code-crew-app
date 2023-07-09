@@ -1,28 +1,33 @@
 package cis.tinkoff.service;
 
 import cis.tinkoff.model.User;
+import cis.tinkoff.support.exceptions.DeletedRecordFoundException;
 import cis.tinkoff.support.exceptions.RecordNotFoundException;
 import cis.tinkoff.support.exceptions.UserAlreadyExistsException;
 
-public interface UserService {
+import java.util.List;
 
-    User save(User user);
+public interface UserService {
 
     Iterable<User> getAll();
 
-    User getById(Long id) throws RecordNotFoundException;
+    User getById(Long id) throws RecordNotFoundException, DeletedRecordFoundException;
 
     void delete(Long id);
 
-    User update(Long id,
-                User user);
+    User update(String email,
+                String name,
+                String surname,
+                List<String> contacts,
+                String pictureLink,
+                String mainInformation) throws RecordNotFoundException;
 
     User register(String email,
                   String password,
                   String name,
                   String surname) throws UserAlreadyExistsException;
 
-    User getByEmail(String email) throws RecordNotFoundException;
+    User getByEmail(String email) throws RecordNotFoundException, DeletedRecordFoundException;
 
-    void softDelete(Long id);
+    void softDelete(String email);
 }

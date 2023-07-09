@@ -10,8 +10,6 @@ import io.micronaut.http.annotation.Produces;
 import io.micronaut.http.server.exceptions.ExceptionHandler;
 import jakarta.inject.Singleton;
 
-import java.time.LocalDateTime;
-
 @Produces
 @Singleton
 @Requires(classes = {UserAlreadyExistsExceptionHandler.class, ExceptionHandler.class})
@@ -25,7 +23,7 @@ public class UserAlreadyExistsExceptionHandler implements ExceptionHandler<UserA
                 request.getPath(),
                 exception.getMessage(),
                 HttpStatus.CONFLICT.getCode(),
-                LocalDateTime.now()
+                System.currentTimeMillis()
         );
         return HttpResponse
                 .serverError(dto)

@@ -1,6 +1,6 @@
 package cis.tinkoff.support.exceptions.handler;
 
-import cis.tinkoff.support.exceptions.RecordNotFoundException;
+import cis.tinkoff.support.exceptions.DeletedRecordFoundException;
 import cis.tinkoff.support.exceptions.model.ErrorDTO;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.http.HttpRequest;
@@ -12,12 +12,12 @@ import jakarta.inject.Singleton;
 
 @Produces
 @Singleton
-@Requires(classes = {RecordNotFoundException.class, ExceptionHandler.class})
-public class RecordNotFoundExceptionHandler implements ExceptionHandler<RecordNotFoundException, HttpResponse> {
+@Requires(classes = {DeletedRecordFoundException.class, ExceptionHandler.class})
+public class DeletedRecordFoundExceptionHandler implements ExceptionHandler<DeletedRecordFoundException, HttpResponse> {
 
     @Override
     public HttpResponse handle(HttpRequest request,
-                               RecordNotFoundException exception) {
+                               DeletedRecordFoundException exception) {
 
         ErrorDTO dto = new ErrorDTO(
                 request.getPath(),

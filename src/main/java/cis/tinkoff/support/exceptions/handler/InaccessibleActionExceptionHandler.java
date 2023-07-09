@@ -1,6 +1,6 @@
 package cis.tinkoff.support.exceptions.handler;
 
-import cis.tinkoff.support.exceptions.RecordNotFoundException;
+import cis.tinkoff.support.exceptions.InaccessibleActionException;
 import cis.tinkoff.support.exceptions.model.ErrorDTO;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.http.HttpRequest;
@@ -12,21 +12,21 @@ import jakarta.inject.Singleton;
 
 @Produces
 @Singleton
-@Requires(classes = {RecordNotFoundException.class, ExceptionHandler.class})
-public class RecordNotFoundExceptionHandler implements ExceptionHandler<RecordNotFoundException, HttpResponse> {
+@Requires(classes = {InaccessibleActionException.class, ExceptionHandler.class})
+public class InaccessibleActionExceptionHandler implements ExceptionHandler<InaccessibleActionException, HttpResponse> {
 
     @Override
     public HttpResponse handle(HttpRequest request,
-                               RecordNotFoundException exception) {
+                               InaccessibleActionException exception) {
 
         ErrorDTO dto = new ErrorDTO(
                 request.getPath(),
                 exception.getMessage(),
-                HttpStatus.NOT_FOUND.getCode(),
+                HttpStatus.NOT_ACCEPTABLE.getCode(),
                 System.currentTimeMillis()
         );
         return HttpResponse
                 .serverError(dto)
-                .status(HttpStatus.BAD_REQUEST);
+                .status(HttpStatus.CONFLICT);
     }
 }
