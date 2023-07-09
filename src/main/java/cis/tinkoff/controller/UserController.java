@@ -37,7 +37,7 @@ public class UserController {
         return HttpResponse.ok(userService.getById(id));
     }
 
-    @Operation(method = "find", description = "Finds user by email")
+    @Operation(method = "find", description = "Finds user")
     @Get(processes = MediaType.APPLICATION_JSON)
     public HttpResponse<User> find(Authentication authentication) throws RecordNotFoundException, DeletedRecordFoundException {
 

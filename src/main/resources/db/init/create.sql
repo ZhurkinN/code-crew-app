@@ -53,7 +53,6 @@ create table if not exists public.resume
             on delete cascade
             on update cascade,
     skills       varchar[] default '{}'::varchar[],
-    join_date   timestamp default null,
 
     unique (user_id, direction)
 );
@@ -99,6 +98,7 @@ create table public.position
             on update cascade,
     description  varchar(255) not null,
     skills       varchar[] default '{}'::varchar[],
+    join_date    timestamp default null,
     created_when timestamp default now(),
     is_deleted   boolean   default false
 );
@@ -106,13 +106,13 @@ create table public.position
 
 create table if not exists public.position_request
 (
-    id           bigint not null primary key generated always as identity,
-    resume_id    bigint not null
+    id           bigint  not null primary key generated always as identity,
+    resume_id    bigint  not null
         constraint fk_resume
             references public.resume (id)
             on delete cascade
             on update cascade,
-    position_id  bigint not null
+    position_id  bigint  not null
         constraint fk_positions
             references public.position (id)
             on delete cascade
@@ -123,7 +123,7 @@ create table if not exists public.position_request
             on delete set default
             on update cascade,
     cover_letter varchar(255),
-    is_invite boolean not null,
+    is_invite    boolean not null,
     created_when timestamp    default now(),
     is_deleted   boolean      default false
 
@@ -139,4 +139,20 @@ create table if not exists public.project_information
             on update cascade,
     link        varchar not null,
     description varchar not null
+);
+
+create table if not exists public.project_members
+(
+    user_id    bigint not null
+        constraint fk_users_project_members
+            references public.users (id)
+            on delete cascade
+            on update cascade,
+    project_id bigint not null
+        constraint fk_project_project_members
+            references public.project (id)
+            on delete cascade
+            on update cascade,
+
+    primary key (user_id, project_id)
 );

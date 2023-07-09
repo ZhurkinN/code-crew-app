@@ -59,6 +59,14 @@ public class Project extends GenericModel {
     @Nullable
     private List<ProjectContact> contacts = new ArrayList<>();
 
+    @Relation(
+            value = Relation.Kind.MANY_TO_MANY,
+            cascade = Relation.Cascade.ALL,
+            mappedBy = "projects"
+    )
+    @Nullable
+    private List<User> members = new ArrayList<>();
+
     public Project(Long id,
                    LocalDateTime createdWhen,
                    Boolean isDeleted,

@@ -1,5 +1,6 @@
 package cis.tinkoff.service.impl;
 
+import cis.tinkoff.model.Project;
 import cis.tinkoff.model.Resume;
 import cis.tinkoff.model.User;
 import cis.tinkoff.repository.ResumeRepository;
@@ -39,6 +40,7 @@ public class UserServiceImpl implements UserService {
         }
         List<Resume> userResumes = resumeRepository.findByUser(user);
         user.setResumes(userResumes);
+
         return user;
     }
 

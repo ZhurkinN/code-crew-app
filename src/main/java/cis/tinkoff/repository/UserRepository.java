@@ -16,4 +16,5 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
     void updateByEmail(String email,
                        Boolean isDeleted);
+
 }

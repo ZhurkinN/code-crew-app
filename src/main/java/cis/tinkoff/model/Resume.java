@@ -1,7 +1,6 @@
 package cis.tinkoff.model;
 
 import cis.tinkoff.model.generic.GenericModel;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.data.annotation.MappedEntity;
 import io.micronaut.data.annotation.MappedProperty;
@@ -45,11 +44,6 @@ public class Resume extends GenericModel {
     private Boolean isActive = true;
 
     @Nullable
-    @TypeDef(type = DataType.TIMESTAMP)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime joinDate;
-
-    @Nullable
     @TypeDef(type = DataType.STRING_ARRAY)
     private List<String> skills = new ArrayList<>();
 
@@ -68,7 +62,6 @@ public class Resume extends GenericModel {
                   @Nullable DirectionDictionary direction,
                   @Nullable String description,
                   Boolean isActive,
-                  @Nullable LocalDateTime joinDate,
                   @Nullable List<String> skills,
                   @Nullable List<PositionRequest> requests) {
         super(id, createdWhen, isDeleted);
@@ -76,7 +69,6 @@ public class Resume extends GenericModel {
         this.direction = direction;
         this.description = description;
         this.isActive = isActive;
-        this.joinDate = joinDate;
         this.skills = skills;
         this.requests = requests;
     }

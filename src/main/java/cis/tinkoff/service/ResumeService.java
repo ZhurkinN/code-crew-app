@@ -11,12 +11,15 @@ public interface ResumeService {
 
     List<Resume> getAll();
 
-    List<Resume> getALlByUser(User resumeAuthor) throws RecordNotFoundException;
+    Resume getById(Long id) throws RecordNotFoundException;
+
+    List<Resume> getALlByUser(String authorEmail) throws RecordNotFoundException;
 
     Resume create(User author,
                   String description,
                   List<String> skills,
                   String directionName) throws RecordNotFoundException;
 
-    void softDelete(Long id, String authorEmail) throws InaccessibleActionException;
+    void softDelete(Long id,
+                    String authorEmail) throws InaccessibleActionException;
 }

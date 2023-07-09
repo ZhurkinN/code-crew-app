@@ -1,6 +1,7 @@
 package cis.tinkoff.model;
 
 import cis.tinkoff.model.generic.GenericModel;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.data.annotation.MappedEntity;
 import io.micronaut.data.annotation.MappedProperty;
@@ -29,6 +30,11 @@ public class Position extends GenericModel {
     @TypeDef(type = DataType.STRING_ARRAY)
     private List<String> skills;
     private Boolean isVisible;
+
+    @Nullable
+    @TypeDef(type = DataType.TIMESTAMP)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime joinDate;
 
     @Relation(
             value = Relation.Kind.MANY_TO_ONE,

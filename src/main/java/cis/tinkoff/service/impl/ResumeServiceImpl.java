@@ -5,6 +5,7 @@ import cis.tinkoff.model.Resume;
 import cis.tinkoff.model.User;
 import cis.tinkoff.model.enumerated.Direction;
 import cis.tinkoff.repository.ResumeRepository;
+import cis.tinkoff.repository.UserRepository;
 import cis.tinkoff.repository.dictionary.DirectionRepository;
 import cis.tinkoff.service.ResumeService;
 import cis.tinkoff.support.exceptions.InaccessibleActionException;
@@ -23,6 +24,7 @@ import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper
 @RequiredArgsConstructor
 public class ResumeServiceImpl implements ResumeService {
 
+    private final UserRepository userRepository;
     private final ResumeRepository resumeRepository;
     private final DirectionRepository directionRepository;
 
@@ -32,9 +34,21 @@ public class ResumeServiceImpl implements ResumeService {
     }
 
     @Override
-    public List<Resume> getALlByUser(User resumeAuthor) {
+    public Resume getById(Long id) throws RecordNotFoundException {
 
-        return resumeRepository.findByUser(resumeAuthor);
+        Resume resume = resumeRepository.findById(id)
+                .orElseThrow(() -> new RecordNotFoundException(RECORD_NOT_FOUND));
+        User author = resumeRepository.getUserById(id);
+        resume.setUser(author);
+        return resume;
+    }
+
+    @Override
+    public List<Resume> getALlByUser(String authorEmail) throws RecordNotFoundException {
+
+        User author = userRepository.findByEmail(authorEmail)
+                .orElseThrow(() -> new RecordNotFoundException(RECORD_NOT_FOUND));
+        return resumeRepository.findByUser(author);
     }
 
     @Override
@@ -64,4 +78,5 @@ public class ResumeServiceImpl implements ResumeService {
 
         resumeRepository.updateById(id, true);
     }
+
 }

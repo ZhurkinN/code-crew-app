@@ -35,16 +35,23 @@ public class ResumeController {
         return HttpResponse.ok(resumeService.getAll());
     }
 
+    @Operation(method = "findById", description = "Finds resume by it's id")
+    @Get("/{id}")
+    public HttpResponse<Resume> findById(@PathVariable Long id)
+            throws RecordNotFoundException {
 
+        Resume resume = resumeService.getById(id);
+        return HttpResponse.ok(resume);
+    }
 
     @Operation(method = "findUsersResumes", description = "Finds all user's resumes")
     @Get(value = "/users", produces = MediaType.APPLICATION_JSON)
     public HttpResponse<List<Resume>> findUsersResumes(Authentication authentication)
-            throws RecordNotFoundException, DeletedRecordFoundException {
+            throws RecordNotFoundException {
 
-        String email = authentication.getName();
-        User resumeAuthor = userService.getByEmail(email);
-        return HttpResponse.ok(resumeService.getALlByUser(resumeAuthor));
+        String authorEmail = authentication.getName();
+        List<Resume> resumes = resumeService.getALlByUser(authorEmail);
+        return HttpResponse.ok(resumes);
     }
 
     @Operation(method = "create", description = "Creates new resume")
