@@ -29,7 +29,6 @@ micronaut:
         get-allowed: false
       logout:
         enabled: true
-        path: '/auth/logout'
     intercept-url-map:
       - pattern: /swagger/**
         http-method: GET

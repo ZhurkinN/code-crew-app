@@ -1,8 +1,11 @@
 package cis.tinkoff.controller;
 
-import cis.tinkoff.controller.model.RegisterUserDTO;
+import cis.tinkoff.controller.model.UserDTO;
+import cis.tinkoff.controller.model.custom.RegisterUserDTO;
+import cis.tinkoff.model.User;
 import cis.tinkoff.service.UserService;
 import cis.tinkoff.support.exceptions.UserAlreadyExistsException;
+import cis.tinkoff.support.mapper.UserMapper;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.MediaType;
 import io.micronaut.http.annotation.Body;
@@ -16,24 +19,26 @@ import lombok.RequiredArgsConstructor;
 
 @Tag(name = "Authorization", description = "All actions with users authorization/registration.")
 @Controller
-@Secured(SecurityRule.IS_ANONYMOUS)
 @RequiredArgsConstructor
 public class AuthController {
 
     private final UserService userService;
+    private final UserMapper userMapper;
 
+    @Secured(SecurityRule.IS_ANONYMOUS)
     @Operation(method = "register", description = "Registers new user")
     @Post(uri = "/register", processes = MediaType.APPLICATION_JSON)
-    public HttpResponse<RegisterUserDTO> register(@Body RegisterUserDTO dto)
+    public HttpResponse<UserDTO> register(@Body RegisterUserDTO dto)
             throws UserAlreadyExistsException {
 
-        userService.register(
+        User user = userService.register(
                 dto.email(),
                 dto.password(),
                 dto.name(),
                 dto.surname()
         );
-        return HttpResponse.ok(dto);
+        UserDTO responseDto = userMapper.toDto(user);
+        return HttpResponse.ok(responseDto);
 
     }
 

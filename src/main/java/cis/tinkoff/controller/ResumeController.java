@@ -1,6 +1,6 @@
 package cis.tinkoff.controller;
 
-import cis.tinkoff.controller.model.CreateResumeDTO;
+import cis.tinkoff.controller.model.custom.CreateResumeDTO;
 import cis.tinkoff.model.Resume;
 import cis.tinkoff.model.User;
 import cis.tinkoff.service.ResumeService;
