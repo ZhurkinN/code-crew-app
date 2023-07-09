@@ -8,6 +8,8 @@ import cis.tinkoff.repository.PositionRepository;
 import cis.tinkoff.repository.ProjectRepository;
 import cis.tinkoff.repository.UserRepository;
 import cis.tinkoff.service.ProjectService;
+import cis.tinkoff.support.exceptions.InaccessibleActionException;
+import cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper;
 import cis.tinkoff.support.mapper.PositionMapper;
 import cis.tinkoff.support.mapper.ProjectMapper;
 import cis.tinkoff.support.mapper.ProjectMemberDTOMapper;
@@ -82,5 +84,18 @@ public class ProjectServiceImpl implements ProjectService {
                 .count());
 
         return projectDTO;
+    }
+
+    @Override
+    public void deleteProjectById(Long id, String login) throws InaccessibleActionException {
+        Project project = projectRepository.findByIdInList(List.of(id)).get(0);
+
+        if (project == null || project.getLeader().getEmail().equals(login)) {
+            throw new InaccessibleActionException(ErrorDisplayMessageKeeper.PROJECT_WRONG_ACCESS);
+        }
+
+        projectRepository.softDeleteProject(id);
+
+        return;
     }
 }

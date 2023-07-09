@@ -2,13 +2,11 @@ package cis.tinkoff.controller;
 
 import cis.tinkoff.controller.model.ProjectDTO;
 import cis.tinkoff.service.ProjectService;
+import cis.tinkoff.support.exceptions.InaccessibleActionException;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.MediaType;
-import io.micronaut.http.annotation.Controller;
-import io.micronaut.http.annotation.Get;
-import io.micronaut.http.annotation.PathVariable;
-import io.micronaut.http.annotation.QueryValue;
+import io.micronaut.http.annotation.*;
 import io.micronaut.security.annotation.Secured;
 import io.micronaut.security.authentication.Authentication;
 import io.micronaut.security.rules.SecurityRule;
@@ -47,5 +45,15 @@ public class ProjectController {
         ProjectDTO projectDTO = projectService.getProjectById(id, authentication.getName());
 
         return HttpResponse.ok(projectDTO);
+    }
+
+    @Operation(method = "getProjectById", description = "Soft delete project by id")
+    @Delete(value = "/{id}", produces = MediaType.APPLICATION_JSON)
+    public HttpResponse<?> deleteProjectById(
+            Authentication authentication,
+            @PathVariable(value = "id") Long id) throws InaccessibleActionException {
+        projectService.deleteProjectById(id, authentication.getName());
+
+        return HttpResponse.ok();
     }
 }

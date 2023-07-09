@@ -9,4 +9,5 @@ public interface ErrorDisplayMessageKeeper {
 
     //Access errors
     String RESUME_WRONG_ACCESS = "Action with this resume is not available.";
+    String PROJECT_WRONG_ACCESS = "Action with this project is not available.";
 }
