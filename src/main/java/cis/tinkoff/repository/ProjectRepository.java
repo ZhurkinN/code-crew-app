@@ -16,7 +16,7 @@ import java.util.Optional;
 public interface ProjectRepository extends CrudRepository<Project, Long> {
     @Join(value = "positions", type = Join.Type.FETCH)
     @Join(value = "status", type = Join.Type.FETCH)
-    @Join(value = "positions", type = Join.Type.FETCH)
+    @Join(value = "leader", type = Join.Type.FETCH)
     List<Project> findByIdInList(List<Long> id);
 
     @Join(value = "leader", type = Join.Type.FETCH)

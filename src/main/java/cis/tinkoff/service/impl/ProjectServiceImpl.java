@@ -1,10 +1,10 @@
 package cis.tinkoff.service.impl;
 
 import cis.tinkoff.controller.model.ProjectDTO;
-import cis.tinkoff.controller.model.ProjectMemberDTO;
-import cis.tinkoff.controller.model.VacancyDTO;
+import cis.tinkoff.model.Position;
 import cis.tinkoff.model.Project;
 import cis.tinkoff.model.User;
+import cis.tinkoff.repository.PositionRepository;
 import cis.tinkoff.repository.ProjectRepository;
 import cis.tinkoff.repository.UserRepository;
 import cis.tinkoff.service.ProjectService;
@@ -16,7 +16,6 @@ import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 
-import java.util.Collection;
 import java.util.List;
 
 @Primary
@@ -28,6 +27,8 @@ public class ProjectServiceImpl implements ProjectService {
     private final ProjectRepository projectRepository;
     @Inject
     private final UserRepository userRepository;
+    @Inject
+    private final PositionRepository positionRepository;
     @Inject
     private final ProjectMapper projectMapper;
     @Inject
@@ -57,17 +58,28 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public ProjectDTO getProjectById(Long id, String login) {
         Project project = projectRepository.findByIdInList(List.of(id)).get(0);
-        ProjectDTO projectDTO = projectMapper.toProjectDTO(project);
-        List<User> users = userRepository.findByIdInList(project.getPositions().stream()
+
+        List<Long> positionIds = project.getPositions().stream()
+                .map(position -> position.getId())
+                .toList();
+        List<Position> positions = (List<Position>) positionRepository.findByIdInList(positionIds);
+
+        List<Long> userIds = positions.stream()
                 .filter(position -> position.getUser() != null)
                 .map(position -> position.getUser().getId())
-                .toList()
-        );
+                .toList();
+        List<User> users = userRepository.findByIdInList(userIds);
 
+        ProjectDTO projectDTO = projectMapper.toProjectDTO(project);
         projectDTO.setMembers(projectMemberDTOMapper.toProjectMemberDTO(users, project.getPositions()));
         projectDTO.setVacanciesCount((int) project.getPositions().stream()
                 .filter(position -> position.getUser() == null).count()
         );
+
+        projectDTO.setIsLeader(project.getLeader().getEmail().equals(login));
+        projectDTO.setMembersCount((int)projectDTO.getMembers().stream()
+                .filter(projectMemberDTO -> projectMemberDTO != null)
+                .count());
 
         return projectDTO;
     }
