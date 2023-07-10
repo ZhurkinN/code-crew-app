@@ -70,7 +70,6 @@ micronaut:
           allowed-origins:
             - http://localhost:3000
             - http://localhost:8080
-
 datasources:
   default:
     url: jdbc:postgresql://localhost:5432/postgres
@@ -78,7 +77,13 @@ datasources:
     password: g12nokona
     driver-class-name: org.postgresql.Driver
     db-type: postgres
-    dialect: POSTGRES
+  warehouse:
+    url: jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;INIT=RUNSCRIPT FROM 'classpath:init.sql';DATABASE_TO_UPPER=false;
+    username: root
+    password: root
+    driverClassName: org.h2.Driver
+    schema-generate: create_drop
+    dialect: h2
 netty:
   default:
     allocator:

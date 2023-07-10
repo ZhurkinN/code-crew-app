@@ -21,6 +21,7 @@ dependencies {
     runtimeOnly("io.micronaut.sql:micronaut-jdbc-hikari")
     runtimeOnly("ch.qos.logback:logback-classic")
     runtimeOnly("org.postgresql:postgresql")
+    compileOnly("com.h2database:h2")
 
     //SECURITY
     annotationProcessor("io.micronaut:micronaut-http-validation")
