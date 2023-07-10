@@ -19,6 +19,7 @@ create table public.position
             on update cascade,
     description varchar(255) not null,
     skills varchar[] default '{}'::varchar[],
+    join_date timestamp default null,
     created_when timestamp default now(),
     is_deleted boolean default false
 );

@@ -16,6 +16,7 @@ create table public.position_request
             references public.dictionary_request_status(status_name)
             on delete set default
             on update cascade,
+    is_invite boolean not null,
     cover_letter varchar(255),
     created_when timestamp default now(),
     is_deleted boolean default false
