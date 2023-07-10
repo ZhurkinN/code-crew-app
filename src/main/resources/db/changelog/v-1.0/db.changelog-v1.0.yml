@@ -29,3 +29,6 @@ databaseChangeLog:
   - include:
       relativeToChangelogFile: true
       file: changeset-project_members-table.yml
+  - include:
+      relativeToChangelogFile: true
+      file: changeset-insert-data.yml
