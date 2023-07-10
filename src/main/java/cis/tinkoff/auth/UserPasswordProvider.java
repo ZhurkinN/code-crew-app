@@ -1,5 +1,7 @@
 package cis.tinkoff.auth;
 
+import cis.tinkoff.auth.model.RefreshTokenEntity;
+import cis.tinkoff.auth.repo.RefreshTokenRepository;
 import cis.tinkoff.model.User;
 import cis.tinkoff.repository.UserRepository;
 import cis.tinkoff.support.helper.CredentialsValidator;
@@ -23,6 +25,7 @@ public class UserPasswordProvider implements AuthenticationProvider {
     private final static List<String> BASIC_ROLES = List.of("USER_ROLE");
 
     private final UserRepository userRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     @Override
     public Publisher<AuthenticationResponse> authenticate(HttpRequest<?> httpRequest,
@@ -33,10 +36,17 @@ public class UserPasswordProvider implements AuthenticationProvider {
             String login = (String) authenticationRequest.getIdentity();
             String password = (String) authenticationRequest.getSecret();
             Optional<User> userOptional = userRepository.findByEmail(login);
+            Optional<RefreshTokenEntity> refreshTokenEntityOptional = refreshTokenRepository.findByUsername(login);
+
             boolean isValid = userOptional.isPresent()
                     && CredentialsValidator.validCredentials(password, userOptional.get())
                     && !userOptional.get().getIsDeleted();
 
+            if(refreshTokenEntityOptional.isPresent() && refreshTokenEntityOptional.get().getRevoked() == Boolean.FALSE){
+//                refreshTokenRepository.deleteByUsername(login);
+                refreshTokenEntityOptional.get().setRevoked(true);
+                refreshTokenRepository.updateRefreshToken(refreshTokenEntityOptional.get());
+            }
             if (!isValid) {
                 emitter.error(AuthenticationResponse.exception("Auth error"));
             } else
