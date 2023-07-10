@@ -4,6 +4,7 @@ import cis.tinkoff.controller.model.ProjectDTO;
 import cis.tinkoff.model.Position;
 import cis.tinkoff.model.Project;
 import cis.tinkoff.model.User;
+import cis.tinkoff.model.enumerated.Direction;
 import cis.tinkoff.repository.PositionRepository;
 import cis.tinkoff.repository.ProjectRepository;
 import cis.tinkoff.repository.UserRepository;
@@ -126,5 +127,48 @@ public class ProjectServiceImpl implements ProjectService {
 
         positions.forEach(position -> position.setUser(null));
         positionRepository.updateAll(positions);
+    }
+
+    @Transactional
+    @Override
+    public ProjectDTO deleteUserFromProject(Long id, String login, Long userId, Direction direction) throws RecordNotFoundException, InaccessibleActionException {
+        Project project = projectRepository.findByIdInList(List.of(id)).get(0);
+
+        if (project == null) {
+            throw new RecordNotFoundException(ErrorDisplayMessageKeeper.RECORD_NOT_FOUND);
+        }
+
+        if (!project.getLeader().getEmail().equals(login)) {
+            throw new InaccessibleActionException(ErrorDisplayMessageKeeper.PROJECT_WRONG_ACCESS);
+        }
+
+        List<Long> positionIds = project.getPositions().stream()
+                .map(position -> position.getId())
+                .toList();
+        List<Position> positions = (List<Position>) positionRepository.findByIdInList(positionIds);
+        positions = positions.stream().filter(position -> position.getUser().getId() != userId ||
+                !position.getDirection().getDirectionName().equals(direction)
+                ).toList();
+
+        positionRepository.updateAll(positions);
+
+        List<Long> userIds = positions.stream()
+                .filter(position -> position.getUser() != null)
+                .map(position -> position.getUser().getId())
+                .toList();
+        List<User> users = userRepository.findByIdInList(userIds);
+
+        ProjectDTO projectDTO = projectMapper.toProjectDTO(project);
+        projectDTO.setMembers(projectMemberDTOMapper.toProjectMemberDTO(users, project.getPositions()));
+        projectDTO.setVacanciesCount((int) project.getPositions().stream()
+                .filter(position -> position.getUser() == null).count()
+        );
+
+        projectDTO.setIsLeader(project.getLeader().getEmail().equals(login));
+        projectDTO.setMembersCount((int) projectDTO.getMembers().stream()
+                .filter(projectMemberDTO -> projectMemberDTO != null)
+                .count());
+
+        return projectDTO;
     }
 }
