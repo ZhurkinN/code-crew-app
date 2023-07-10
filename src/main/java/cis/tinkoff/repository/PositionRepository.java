@@ -13,6 +13,7 @@ import io.micronaut.data.repository.jpa.JpaSpecificationExecutor;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @JdbcRepository(dialect = Dialect.POSTGRES)
 public interface PositionRepository extends PageableRepository<Position, Long>, JpaSpecificationExecutor<Position> {
@@ -43,4 +44,6 @@ public interface PositionRepository extends PageableRepository<Position, Long>, 
     @Join(value = "direction", type = Join.Type.FETCH)
     @Join(value = "user", type = Join.Type.FETCH)
     Iterable<Position> findByIdInList(Collection<Long> id);
+
+    List<Position> findByUserIdAndProjectId(Long user_id, Long project_id);
 }

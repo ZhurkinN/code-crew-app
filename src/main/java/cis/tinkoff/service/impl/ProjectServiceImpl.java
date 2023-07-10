@@ -19,7 +19,9 @@ import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 
+import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 @Primary
 @Singleton
@@ -99,23 +101,27 @@ public class ProjectServiceImpl implements ProjectService {
 
     }
 
-    //Доделать
+    @Transactional
     @Override
-    public void leaveUserFromProject(Long id, String login) throws Exception{
+    public void leaveUserFromProject(Long id, String login, Long newLeaderId) throws Exception{
         Project project = projectRepository.findByIdInList(List.of(id)).get(0);
 
         if (project == null) {
             throw new RecordNotFoundException(ErrorDisplayMessageKeeper.RECORD_NOT_FOUND);
         }
 
-        if (project.getLeader().getEmail().equals(login)) {
+        User oldUser = userRepository.findByEmail(login).orElseThrow(() -> new RecordNotFoundException(ErrorDisplayMessageKeeper.RECORD_NOT_FOUND));
+        List<Position> positions = positionRepository.findByUserIdAndProjectId(oldUser.getId(), project.getId());
 
-            List<Position> positions = (List<Position>) positionRepository.findByIdInList(project.getPositions().stream()
-                    .map(position -> position.getId())
-                    .toList()
-            );
-
-            projectRepository.updateLeaderByLeaderEmail(positions.get((int) Math.random()).getUser().getEmail());
+        if (positions.size() == 0) {
+            throw new RecordNotFoundException(ErrorDisplayMessageKeeper.RECORD_NOT_FOUND);
         }
+
+        if (project.getLeader().getEmail().equals(login)) {
+            projectRepository.updateLeaderByLeaderId(newLeaderId);
+        }
+
+        positions.forEach(position -> position.setUser(null));
+        positionRepository.updateAll(positions);
     }
 }

@@ -50,5 +50,5 @@ public interface ProjectRepository extends CrudRepository<Project, Long> {
             nativeQuery = true)
     Project softDeleteProject(Long id);
 
-    Project updateLeaderByLeaderEmail(String leader_email);
+    Project updateLeaderByLeaderId(Long leader_id);
 }

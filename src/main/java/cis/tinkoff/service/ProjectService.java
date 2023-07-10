@@ -16,5 +16,5 @@ public interface ProjectService {
 
     void deleteProjectById(Long id, String login) throws InaccessibleActionException;
 
-    void leaveUserFromProject(Long id, String login) throws Exception;
+    void leaveUserFromProject(Long id, String login, Long newLeaderId) throws Exception;
 }
