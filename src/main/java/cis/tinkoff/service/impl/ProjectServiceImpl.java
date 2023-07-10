@@ -21,7 +21,6 @@ import lombok.RequiredArgsConstructor;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Optional;
 
 @Primary
 @Singleton
@@ -90,10 +89,14 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public void deleteProjectById(Long id, String login) throws InaccessibleActionException {
+    public void deleteProjectById(Long id, String login) throws RecordNotFoundException, InaccessibleActionException {
         Project project = projectRepository.findByIdInList(List.of(id)).get(0);
 
-        if (project == null || project.getLeader().getEmail().equals(login)) {
+        if (project == null) {
+            throw new RecordNotFoundException(ErrorDisplayMessageKeeper.RECORD_NOT_FOUND);
+        }
+
+        if (!project.getLeader().getEmail().equals(login)) {
             throw new InaccessibleActionException(ErrorDisplayMessageKeeper.PROJECT_WRONG_ACCESS);
         }
 
@@ -103,7 +106,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Transactional
     @Override
-    public void leaveUserFromProject(Long id, String login, Long newLeaderId) throws Exception{
+    public void leaveUserFromProject(Long id, String login, Long newLeaderId) throws Exception {
         Project project = projectRepository.findByIdInList(List.of(id)).get(0);
 
         if (project == null) {

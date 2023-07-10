@@ -3,6 +3,7 @@ package cis.tinkoff.controller;
 import cis.tinkoff.controller.model.ProjectDTO;
 import cis.tinkoff.service.ProjectService;
 import cis.tinkoff.support.exceptions.InaccessibleActionException;
+import cis.tinkoff.support.exceptions.RecordNotFoundException;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.MediaType;
@@ -51,7 +52,7 @@ public class ProjectController {
     @Delete(value = "/{id}", produces = MediaType.APPLICATION_JSON)
     public HttpResponse<?> deleteProjectById(
             Authentication authentication,
-            @PathVariable(value = "id") Long id) throws InaccessibleActionException {
+            @PathVariable(value = "id") Long id) throws InaccessibleActionException, RecordNotFoundException {
         projectService.deleteProjectById(id, authentication.getName());
 
         return HttpResponse.ok();

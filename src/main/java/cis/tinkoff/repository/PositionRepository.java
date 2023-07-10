@@ -13,7 +13,6 @@ import io.micronaut.data.repository.jpa.JpaSpecificationExecutor;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 @JdbcRepository(dialect = Dialect.POSTGRES)
 public interface PositionRepository extends PageableRepository<Position, Long>, JpaSpecificationExecutor<Position> {

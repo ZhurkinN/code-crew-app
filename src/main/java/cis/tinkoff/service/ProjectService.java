@@ -3,6 +3,7 @@ package cis.tinkoff.service;
 import cis.tinkoff.controller.model.ProjectDTO;
 import cis.tinkoff.model.Project;
 import cis.tinkoff.support.exceptions.InaccessibleActionException;
+import cis.tinkoff.support.exceptions.RecordNotFoundException;
 
 import java.util.List;
 
@@ -14,7 +15,7 @@ public interface ProjectService {
 
     ProjectDTO getProjectById(Long id, String login);
 
-    void deleteProjectById(Long id, String login) throws InaccessibleActionException;
+    void deleteProjectById(Long id, String login) throws InaccessibleActionException, RecordNotFoundException;
 
     void leaveUserFromProject(Long id, String login, Long newLeaderId) throws Exception;
 }
