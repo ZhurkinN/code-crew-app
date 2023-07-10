@@ -13,19 +13,19 @@ import java.util.List;
 @JdbcRepository(dialect = Dialect.POSTGRES)
 public interface ResumeRepository extends CrudRepository<Resume, Long> {
 
-    @Join(value = "user", type = Join.Type.FETCH)
-    @Join(
-            value = "direction",
-            alias = "direction",
-            type = Join.Type.FETCH
-    )
-    List<Resume> list();
+    @Join(value = "direction", type = Join.Type.FETCH)
+    List<Resume> findByUserAndIsDeletedFalse(User user);
 
     @Join(value = "direction", type = Join.Type.FETCH)
-    List<Resume> findByUser(User user);
+    List<Resume> findByUserAndIsDeletedFalseAndIsActiveTrue(User user);
 
     void updateById(@Id Long id,
                     Boolean isDeleted);
+
+    Boolean getIsActiveById(@Id Long id);
+
+    void updateIsActiveById(@Id Long id,
+                            Boolean isActive);
 
     User getUserById(Long id);
 }

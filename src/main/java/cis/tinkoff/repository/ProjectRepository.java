@@ -16,4 +16,5 @@ public interface ProjectRepository extends CrudRepository<Project, Long> {
     @Join(value = "leader", type = Join.Type.FETCH)
     @Join(value = "status", type = Join.Type.FETCH)
     List<Project> list();
+
 }

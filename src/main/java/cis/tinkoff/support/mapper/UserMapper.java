@@ -5,7 +5,6 @@ import cis.tinkoff.model.User;
 import cis.tinkoff.support.mapper.generic.GenericMapper;
 import jakarta.inject.Singleton;
 
-import java.time.ZoneOffset;
 import java.util.Objects;
 
 @Singleton
@@ -29,9 +28,7 @@ public class UserMapper extends GenericMapper<User, UserDTO> {
                 .setLeadProjects(user.getLeadProjects())
                 .setPositions(user.getPositions())
                 .setProjects(user.getProjects());
-        dto.setId(user.getId());
-        dto.setCreatedWhen(user.getCreatedWhen().toEpochSecond(ZoneOffset.UTC));
-        dto.setIsDeleted(user.getIsDeleted());
+        setGenericFields(user, dto);
         return dto;
     }
 

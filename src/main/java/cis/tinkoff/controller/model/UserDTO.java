@@ -24,15 +24,13 @@ public class UserDTO extends GenericDTO {
     private String mainInformation;
     private String pictureLink;
     private List<Position> positions;
+    private List<Project> leadProjects;
 
     @JsonInclude
     private List<String> contacts;
 
     @JsonInclude
     private List<Resume> resumes;
-
-    @JsonInclude
-    private List<Project> leadProjects;
 
     @JsonInclude
     private List<Project> projects;

@@ -49,7 +49,7 @@ public class DictionaryServiceImpl implements DictionaryService {
         List<DirectionDictionary> allDirections = (List<DirectionDictionary>) directionRepository.findAll();
         User resumeAuthor = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RecordNotFoundException(RECORD_NOT_FOUND));
-        List<Resume> userResumes = resumeRepository.findByUser(resumeAuthor);
+        List<Resume> userResumes = resumeRepository.findByUserAndIsDeletedFalse(resumeAuthor);
         List<DirectionDictionary> usedDirections = new ArrayList<>();
 
         userResumes.forEach(e -> usedDirections.add(e.getDirection()));

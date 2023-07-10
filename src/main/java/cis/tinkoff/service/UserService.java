@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface UserService {
 
-    Iterable<User> getAll();
+    List<User> getAll();
 
     User getById(Long id) throws RecordNotFoundException, DeletedRecordFoundException;
 

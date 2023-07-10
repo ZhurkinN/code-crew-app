@@ -3,6 +3,7 @@ package cis.tinkoff.service.impl;
 import cis.tinkoff.model.Project;
 import cis.tinkoff.model.Resume;
 import cis.tinkoff.model.User;
+import cis.tinkoff.model.generic.GenericModel;
 import cis.tinkoff.repository.ResumeRepository;
 import cis.tinkoff.repository.UserRepository;
 import cis.tinkoff.service.UserService;
@@ -26,8 +27,8 @@ public class UserServiceImpl implements UserService {
     private final ResumeRepository resumeRepository;
 
     @Override
-    public Iterable<User> getAll() {
-        return userRepository.findAll();
+    public List<User> getAll() {
+        return (List<User>) userRepository.findAll();
     }
 
     @Override
@@ -103,12 +104,11 @@ public class UserServiceImpl implements UserService {
 
     private User setOtherModelsData(User user) {
 
-        List<Resume> userResumes = resumeRepository.findByUser(user);
+        List<Resume> userResumes = resumeRepository.findByUserAndIsDeletedFalse(user);
         List<Project> userProjects = userRepository.findProjectsById(user.getId());
-        List<Project> leaderProjects = userRepository.findLeadProjectsById(user.getId());
+        userProjects.removeIf(GenericModel::getIsDeleted);
         user.setResumes(userResumes);
         user.setProjects(userProjects);
-        user.setLeadProjects(leaderProjects);
 
         return user;
     }

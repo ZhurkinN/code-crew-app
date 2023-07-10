@@ -9,4 +9,5 @@ public interface ErrorDisplayMessageKeeper {
 
     //Access errors
     String RESUME_WRONG_ACCESS = "Action with this resume is not available.";
+    String DELETED_OR_HIDDEN_RESUME_FOUND = "This resume has been deleted or hidden.";
 }

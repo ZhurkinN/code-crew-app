@@ -17,6 +17,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
+
 @Tag(name = "Users", description = "All actions with users.")
 @Controller("/api/v1/users")
 @Secured(SecurityRule.IS_AUTHENTICATED)
@@ -28,9 +30,11 @@ public class UserController {
 
     @Operation(method = "findAll", description = "Finds all users")
     @Get(value = "/all", produces = MediaType.APPLICATION_JSON)
-    public HttpResponse<Iterable<User>> findAll() {
+    public HttpResponse<List<UserDTO>> findAll() {
 
-        return HttpResponse.ok(userService.getAll());
+        List<User> users = userService.getAll();
+        List<UserDTO> responseDtos = userMapper.toDtos(users);
+        return HttpResponse.ok(responseDtos);
     }
 
     @Operation(method = "findById", description = "Finds user by id")
