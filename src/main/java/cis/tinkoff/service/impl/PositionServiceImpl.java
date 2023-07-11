@@ -61,7 +61,7 @@ public class PositionServiceImpl implements PositionService {
                 positionPage.getContent().stream().map(position -> position.getId()).toList()
         );
 
-        return positionMapper.toVacancyDTO(positions);
+        return VacancyDTO.toVacancyDTO(positions);
     }
 
     @Override

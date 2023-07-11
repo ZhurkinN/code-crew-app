@@ -1,6 +1,7 @@
 package cis.tinkoff.service.impl;
 
 import cis.tinkoff.controller.model.ProjectDTO;
+import cis.tinkoff.controller.model.ProjectMemberDTO;
 import cis.tinkoff.model.Position;
 import cis.tinkoff.model.Project;
 import cis.tinkoff.model.User;
@@ -55,7 +56,7 @@ public class ProjectServiceImpl implements ProjectService {
             projects = projectRepository.findAllByUserEmail(login);
         }
 
-        List<ProjectDTO> projectDTOList = projectMapper.toProjectDTO(projects);
+        List<ProjectDTO> projectDTOList = ProjectDTO.toProjectDTO(projects);
 
         return projectDTOList;
     }
@@ -75,8 +76,8 @@ public class ProjectServiceImpl implements ProjectService {
                 .toList();
         List<User> users = userRepository.findByIdInList(userIds);
 
-        ProjectDTO projectDTO = projectMapper.toProjectDTO(project);
-        projectDTO.setMembers(projectMemberDTOMapper.toProjectMemberDTO(users, project.getPositions()));
+        ProjectDTO projectDTO = ProjectDTO.toProjectDTO(project);
+        projectDTO.setMembers(ProjectMemberDTO.toProjectMemberDTO(users, project.getPositions()));
         projectDTO.setVacanciesCount((int) project.getPositions().stream()
                 .filter(position -> position.getUser() == null).count()
         );
@@ -158,8 +159,8 @@ public class ProjectServiceImpl implements ProjectService {
                 .toList();
         List<User> users = userRepository.findByIdInList(userIds);
 
-        ProjectDTO projectDTO = projectMapper.toProjectDTO(project);
-        projectDTO.setMembers(projectMemberDTOMapper.toProjectMemberDTO(users, project.getPositions()));
+        ProjectDTO projectDTO = ProjectDTO.toProjectDTO(project);
+        projectDTO.setMembers(ProjectMemberDTO.toProjectMemberDTO(users, project.getPositions()));
         projectDTO.setVacanciesCount((int) project.getPositions().stream()
                 .filter(position -> position.getUser() == null).count()
         );
