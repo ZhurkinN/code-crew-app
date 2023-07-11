@@ -28,14 +28,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> getAll() {
-        return (List<User>) userRepository.findAll();
+
+        List<User> users = (List<User>) userRepository.findAll();
+        users.forEach(this::setOtherModelsData);
+        return users;
     }
 
     @Override
     public User getById(Long id) throws RecordNotFoundException, DeletedRecordFoundException {
 
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new RecordNotFoundException(RECORD_NOT_FOUND));
+                .orElseThrow(() -> new RecordNotFoundException(USER_NOT_FOUND));
         if (user.getIsDeleted()) {
             throw new DeletedRecordFoundException(DELETED_RECORD_FOUND);
         }
@@ -47,7 +50,7 @@ public class UserServiceImpl implements UserService {
     public User getByEmail(String email) throws RecordNotFoundException, DeletedRecordFoundException {
 
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RecordNotFoundException(RECORD_NOT_FOUND));
+                .orElseThrow(() -> new RecordNotFoundException(USER_NOT_FOUND));
         if (user.getIsDeleted()) {
             throw new DeletedRecordFoundException(DELETED_RECORD_FOUND);
         }
@@ -81,7 +84,7 @@ public class UserServiceImpl implements UserService {
                        String mainInformation) throws RecordNotFoundException {
 
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RecordNotFoundException(RECORD_NOT_FOUND));
+                .orElseThrow(() -> new RecordNotFoundException(USER_NOT_FOUND));
         user.setName(name)
                 .setSurname(surname)
                 .setPictureLink(pictureLink)

@@ -22,6 +22,12 @@ public interface ResumeService {
                   List<String> skills,
                   String directionName) throws RecordNotFoundException;
 
+    Resume update(String authorEmail,
+                  Long resumeId,
+                  String description,
+                  List<String> skills,
+                  String directionName) throws RecordNotFoundException, InaccessibleActionException;
+
     Resume updateActivity(Long id,
                           String authorEmail) throws InaccessibleActionException, RecordNotFoundException;
 

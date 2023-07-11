@@ -9,6 +9,7 @@ import io.micronaut.data.model.query.builder.sql.Dialect;
 import io.micronaut.data.repository.CrudRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @JdbcRepository(dialect = Dialect.POSTGRES)
 public interface ResumeRepository extends CrudRepository<Resume, Long> {
@@ -28,4 +29,6 @@ public interface ResumeRepository extends CrudRepository<Resume, Long> {
                             Boolean isActive);
 
     User getUserById(Long id);
+
+    Optional<Resume> findByIdAndIsDeletedFalse(@Id Long id);
 }

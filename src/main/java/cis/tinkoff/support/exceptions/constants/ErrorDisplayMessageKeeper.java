@@ -4,6 +4,9 @@ public interface ErrorDisplayMessageKeeper {
 
     //CRUD action errors
     String RECORD_NOT_FOUND = "The record for this query was not found.";
+    String USER_NOT_FOUND = "User was not found.";
+    String RESUME_NOT_FOUND = "Resume was not found.";
+    String DIRECTION_NOT_FOUND = "Resume was not found.";
     String USER_ALREADY_EXISTS = "A user with this email is already registered.";
     String DELETED_RECORD_FOUND = "Received data has been deleted or is unavailable.";
 

@@ -1,11 +1,10 @@
 package cis.tinkoff.controller;
 
 import cis.tinkoff.controller.model.ResumeDTO;
-import cis.tinkoff.controller.model.custom.CreateResumeDTO;
+import cis.tinkoff.controller.model.custom.InteractResumeDTO;
 import cis.tinkoff.controller.model.custom.RequestsChoiceResumeDTO;
 import cis.tinkoff.model.Resume;
 import cis.tinkoff.service.ResumeService;
-import cis.tinkoff.service.UserService;
 import cis.tinkoff.support.exceptions.DeletedRecordFoundException;
 import cis.tinkoff.support.exceptions.InaccessibleActionException;
 import cis.tinkoff.support.exceptions.RecordNotFoundException;
@@ -28,7 +27,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ResumeController {
 
-    private final UserService userService;
     private final ResumeService resumeService;
     private final ResumeMapper resumeMapper;
 
@@ -79,19 +77,37 @@ public class ResumeController {
 
     @Operation(method = "create", description = "Creates new resume")
     @Post(processes = MediaType.APPLICATION_JSON)
-    public HttpResponse<ResumeDTO> create(@Body CreateResumeDTO dto,
+    public HttpResponse<ResumeDTO> create(@Body InteractResumeDTO requestDto,
                                           Authentication authentication) throws RecordNotFoundException, DeletedRecordFoundException {
 
         String authorEmail = authentication.getName();
         Resume resume = resumeService.create(
                 authorEmail,
-                dto.description(),
-                dto.skills(),
-                dto.direction()
+                requestDto.description(),
+                requestDto.skills(),
+                requestDto.direction()
         );
-        ResumeDTO resumeDTO = resumeMapper.toDto(resume);
+        ResumeDTO responseDto = resumeMapper.toDto(resume);
+        return HttpResponse.ok(responseDto);
+    }
 
-        return HttpResponse.ok(resumeDTO);
+    @Operation(method = "update", description = "Updates information about resume")
+    @Patch(value = "/{id}", processes = MediaType.APPLICATION_JSON)
+    public HttpResponse<ResumeDTO> update(@PathVariable Long id,
+                                          @Body InteractResumeDTO requestDto,
+                                          Authentication authentication)
+            throws RecordNotFoundException, InaccessibleActionException {
+
+        String authorEmail = authentication.getName();
+        Resume updatedResume = resumeService.update(
+                authorEmail,
+                id,
+                requestDto.description(),
+                requestDto.skills(),
+                requestDto.direction()
+        );
+        ResumeDTO responseDto = resumeMapper.toDto(updatedResume);
+        return HttpResponse.ok(responseDto);
     }
 
     @Operation(method = "changeVisibility", description = "Changes resume's activity")

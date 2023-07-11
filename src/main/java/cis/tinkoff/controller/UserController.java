@@ -63,12 +63,14 @@ public class UserController {
     public HttpResponse<UserDTO> update(@Body UpdateUserDTO requestDto,
                                         Authentication authentication) throws RecordNotFoundException {
 
-        User user = userService.update(authentication.getName(),
+        User user = userService.update(
+                authentication.getName(),
                 requestDto.name(),
                 requestDto.surname(),
                 requestDto.contacts(),
                 requestDto.pictureLink(),
-                requestDto.mainInformation());
+                requestDto.mainInformation()
+        );
         UserDTO responseDto = userMapper.toDto(user);
         return HttpResponse.ok(responseDto);
     }
