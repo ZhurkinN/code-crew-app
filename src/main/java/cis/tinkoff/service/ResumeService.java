@@ -1,6 +1,8 @@
 package cis.tinkoff.service;
 
+import cis.tinkoff.controller.model.SearchResumeDTO;
 import cis.tinkoff.model.Resume;
+import cis.tinkoff.model.enumerated.SortDirection;
 import cis.tinkoff.support.exceptions.DeletedRecordFoundException;
 import cis.tinkoff.support.exceptions.InaccessibleActionException;
 import cis.tinkoff.support.exceptions.RecordNotFoundException;
@@ -33,4 +35,10 @@ public interface ResumeService {
 
     void softDelete(Long id,
                     String authorEmail) throws InaccessibleActionException, RecordNotFoundException;
+
+    List<SearchResumeDTO> searchResumes(Integer page,
+                                  Integer sizeLimit,
+                                  SortDirection dateSort,
+                                  String direction,
+                                  String skills);
 }
