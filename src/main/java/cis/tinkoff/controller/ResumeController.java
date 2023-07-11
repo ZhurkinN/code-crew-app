@@ -1,14 +1,17 @@
 package cis.tinkoff.controller;
 
 import cis.tinkoff.controller.model.ResumeDTO;
+import cis.tinkoff.controller.model.SearchResumeDTO;
 import cis.tinkoff.controller.model.custom.InteractResumeDTO;
 import cis.tinkoff.controller.model.custom.RequestsChoiceResumeDTO;
 import cis.tinkoff.model.Resume;
+import cis.tinkoff.model.enumerated.SortDirection;
 import cis.tinkoff.service.ResumeService;
 import cis.tinkoff.support.exceptions.DeletedRecordFoundException;
 import cis.tinkoff.support.exceptions.InaccessibleActionException;
 import cis.tinkoff.support.exceptions.RecordNotFoundException;
 import cis.tinkoff.support.mapper.ResumeMapper;
+import io.micronaut.core.annotation.Nullable;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.MediaType;
 import io.micronaut.http.annotation.*;
@@ -130,5 +133,25 @@ public class ResumeController {
 
         String email = authentication.getName();
         resumeService.softDelete(id, email);
+    }
+
+    @Operation(method = "softDelete", description = "Sets 'deleted' flag true")
+    @Get(value = "/search", produces = MediaType.APPLICATION_JSON)
+    public HttpResponse<?> searchResumes(
+            @QueryValue(value = "page", defaultValue = "0") Integer page,
+            @QueryValue(value = "size", defaultValue = "1") Integer sizeLimit,
+            @Nullable @QueryValue(value = "dateSort", defaultValue = "null") SortDirection dateSort,
+            @Nullable @QueryValue(value = "direction") String direction,
+            @Nullable @QueryValue("skills") String skills
+    ) {
+        List<SearchResumeDTO> searchResumeDTO = resumeService.searchResumes(
+                page,
+                sizeLimit,
+                dateSort,
+                direction,
+                skills
+        );
+
+        return HttpResponse.ok(searchResumeDTO);
     }
 }

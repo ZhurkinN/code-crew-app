@@ -1,9 +1,11 @@
 package cis.tinkoff.service.impl;
 
+import cis.tinkoff.controller.model.SearchResumeDTO;
 import cis.tinkoff.model.DirectionDictionary;
 import cis.tinkoff.model.Resume;
 import cis.tinkoff.model.User;
 import cis.tinkoff.model.enumerated.Direction;
+import cis.tinkoff.model.enumerated.SortDirection;
 import cis.tinkoff.repository.ResumeRepository;
 import cis.tinkoff.repository.UserRepository;
 import cis.tinkoff.repository.dictionary.DirectionRepository;
@@ -12,9 +14,13 @@ import cis.tinkoff.support.exceptions.DeletedRecordFoundException;
 import cis.tinkoff.support.exceptions.InaccessibleActionException;
 import cis.tinkoff.support.exceptions.RecordNotFoundException;
 import io.micronaut.context.annotation.Primary;
+import io.micronaut.data.model.Page;
+import io.micronaut.data.model.Pageable;
+import io.micronaut.data.model.Sort;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.*;
@@ -134,6 +140,38 @@ public class ResumeServiceImpl implements ResumeService {
         }
 
         resumeRepository.updateById(id, true);
+    }
+
+    @Override
+    public List<SearchResumeDTO> searchResumes(Integer page,
+                                         Integer sizeLimit,
+                                         SortDirection dateSort,
+                                         String direction,
+                                         String skills) {
+        String resumeDirection = null;
+        List<String> skillList = null;
+
+        if (direction != null) {
+            resumeDirection = Direction.valueOf(direction).toString();
+        }
+        if (skills != null) {
+            skillList = Arrays.stream(skills.split(" ")).toList();
+        }
+
+        Page<Resume> resumePage = resumeRepository.searchAllResumes(
+                resumeDirection,
+                skillList,
+                Pageable.from(page, sizeLimit)
+        );
+
+        if (dateSort != null) {
+            resumePage.getSort().order("createdWhen", Sort.Order.Direction.valueOf(dateSort.name()));
+        }
+
+        List<Resume> resumes = resumeRepository.findByIdInList(
+                resumePage.getContent().stream().map(resume -> resume.getId()).toList());
+
+        return SearchResumeDTO.toDtoList(resumes);
     }
 
 }

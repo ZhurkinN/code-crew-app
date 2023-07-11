@@ -2,12 +2,17 @@ package cis.tinkoff.repository;
 
 import cis.tinkoff.model.Resume;
 import cis.tinkoff.model.User;
+import io.micronaut.core.annotation.Nullable;
 import io.micronaut.data.annotation.Id;
 import io.micronaut.data.annotation.Join;
+import io.micronaut.data.annotation.Query;
 import io.micronaut.data.jdbc.annotation.JdbcRepository;
+import io.micronaut.data.model.Page;
+import io.micronaut.data.model.Pageable;
 import io.micronaut.data.model.query.builder.sql.Dialect;
 import io.micronaut.data.repository.CrudRepository;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,4 +36,27 @@ public interface ResumeRepository extends CrudRepository<Resume, Long> {
     User getUserById(Long id);
 
     Optional<Resume> findByIdAndIsDeletedFalse(@Id Long id);
+
+    @Query(value = """
+SELECT  resume_.* FROM resume resume_
+    JOIN dictionary_direction dd ON resume_.direction = dd.direction_name
+WHERE resume_.is_active = true
+  AND resume_.is_deleted = false
+  AND resume_.direction ilike coalesce(:direction, '%')
+  AND resume_.skills @> coalesce(:skills, resume_.skills)
+""",
+    nativeQuery = true,
+    countQuery = """
+SELECT  count(resume_.*) FROM resume resume_
+    JOIN dictionary_direction dd ON resume_.direction = dd.direction_name
+WHERE resume_.is_active = true
+  AND resume_.is_deleted = false
+  AND resume_.direction ilike coalesce(:direction, '%')
+  AND resume_.skills @> coalesce(:skills, resume_.skills)
+""")
+    Page<Resume> searchAllResumes(@Nullable String direction, @Nullable List<String> skills, Pageable from);
+
+    @Join(value = "direction", type = Join.Type.FETCH)
+    @Join(value = "user", type = Join.Type.FETCH)
+    List<Resume> findByIdInList(Collection<Long> id);
 }
