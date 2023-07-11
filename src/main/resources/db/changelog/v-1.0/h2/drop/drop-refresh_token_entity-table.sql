@@ -1,0 +1,1 @@
+drop table refresh_token_entity
