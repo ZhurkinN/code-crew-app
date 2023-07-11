@@ -1,6 +1,7 @@
 package cis.tinkoff.service.impl;
 
 import cis.tinkoff.controller.model.request.PositionRequestDTO;
+import cis.tinkoff.controller.model.request.ResumeRequestDTO;
 import cis.tinkoff.model.*;
 import cis.tinkoff.model.enumerated.RequestStatus;
 import cis.tinkoff.repository.*;
@@ -13,6 +14,7 @@ import io.micronaut.context.annotation.Primary;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Primary
@@ -97,10 +99,10 @@ public class PositionRequestServiceImpl implements PositionRequestService {
             positionRequest.setPosition(position);
             positionRequest.setStatus(requestStatusDictionary);
 
+            positionRequestRepository.save(positionRequest);
             return positionRequest;
-
         } else {
-            throw new InaccessibleActionException("Lead cannot send requests from this project");
+            throw new InaccessibleActionException("User cannot send requests from this project");
         }
     }
 
@@ -116,6 +118,32 @@ public class PositionRequestServiceImpl implements PositionRequestService {
             return positionRequestMapper.toDtos(requests);
         } else {
             throw new InaccessibleActionException("User cannot check request to this vacancy");
+        }
+    }
+
+    @Override
+    public List<ResumeRequestDTO> getResumeRequestsByResumeId(Long resumeId, String email) throws RecordNotFoundException, InaccessibleActionException {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RecordNotFoundException("User cannot be found"));
+        User resumeOwner = resumeRepository.getUserById(resumeId);
+        Resume resume = resumeRepository.findById(resumeId)
+                .orElseThrow(() -> new RecordNotFoundException("Resume cannot be found"));;
+
+        if (user.getId().equals(resumeOwner.getId())) {
+            List<ResumeRequestDTO> dtos = new ArrayList<>();
+//            List<PositionRequest> requests = resumeRepository.getRequestsById(resumeId);
+            List<PositionRequest> requests = positionRequestRepository.findAllByResumeIdAndIsInviteTrue(resumeId);
+            for (PositionRequest request : requests) {
+                ResumeRequestDTO dto = new ResumeRequestDTO()
+                        .setCoverLetter(request.getCoverLetter())
+                        .setVacancy(request.getPosition())
+                        .setIsInvite(request.getIsInvite())
+                        .setStatus(request.getStatus());
+                dtos.add(dto);
+            }
+            return dtos;
+        } else {
+            throw new InaccessibleActionException("User cannot see requests to this resume");
         }
     }
 

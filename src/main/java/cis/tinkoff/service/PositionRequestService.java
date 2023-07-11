@@ -1,6 +1,7 @@
 package cis.tinkoff.service;
 
 import cis.tinkoff.controller.model.request.PositionRequestDTO;
+import cis.tinkoff.controller.model.request.ResumeRequestDTO;
 import cis.tinkoff.model.PositionRequest;
 import cis.tinkoff.support.exceptions.InaccessibleActionException;
 import cis.tinkoff.support.exceptions.RecordNotFoundException;
@@ -23,4 +24,7 @@ public interface PositionRequestService {
 
     List<PositionRequestDTO> getVacancyRequestsByVacancyId(Long id,
                                                            String email) throws RecordNotFoundException, InaccessibleActionException;
+
+    List<ResumeRequestDTO> getResumeRequestsByResumeId(Long resumeId,
+                                                       String email) throws RecordNotFoundException, InaccessibleActionException;
 }

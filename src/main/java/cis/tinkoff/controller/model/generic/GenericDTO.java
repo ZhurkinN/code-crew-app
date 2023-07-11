@@ -4,11 +4,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 
 @Getter
 @Setter
+@Accessors(chain = true)
 public abstract class GenericDTO implements Serializable {
 
     @JsonInclude

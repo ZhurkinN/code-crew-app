@@ -1,6 +1,7 @@
 package cis.tinkoff.controller;
 
 import cis.tinkoff.controller.model.request.PositionRequestDTO;
+import cis.tinkoff.controller.model.request.ResumeRequestDTO;
 import cis.tinkoff.controller.model.request.SendRequestDTO;
 import cis.tinkoff.model.PositionRequest;
 import cis.tinkoff.service.PositionRequestService;
@@ -60,7 +61,6 @@ public class PositionRequestController {
         return HttpResponse.ok(dto);
     }
 
-    // TODO: fix loading inner entities in vacancyRequestDTO
     @Operation(method = "getVacancyRequestsByVacancyId", description = "Get vacancy requests by vacancy id")
     @Get(value = "/vacancies/{id}", produces = MediaType.APPLICATION_JSON)
     public HttpResponse<List<PositionRequestDTO>> getVacancyRequestsByVacancyId(@PathVariable Long id,
@@ -73,10 +73,11 @@ public class PositionRequestController {
     // Доделать
     @Operation(method = "getResumeRequestsByResumeId", description = "Get resume requests by resume id")
     @Get(value = "/resumes/{id}", produces = MediaType.APPLICATION_JSON)
-    public HttpResponse<List<PositionRequestDTO>> getResumeRequestsByResumeId(@PathVariable Long id,
-                                                                                Authentication authentication) throws RecordNotFoundException, InaccessibleActionException {
+    public HttpResponse<List<ResumeRequestDTO>> getResumeRequestsByResumeId(@PathVariable Long id,
+                                                                            Authentication authentication) throws RecordNotFoundException, InaccessibleActionException {
         String email = authentication.getName();
-        return null;
+        List<ResumeRequestDTO> dtos = positionRequestService.getResumeRequestsByResumeId(id, email);
+        return HttpResponse.ok(dtos);
     }
 
 }

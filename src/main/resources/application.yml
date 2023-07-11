@@ -73,9 +73,9 @@ micronaut:
 
 datasources:
   default:
-    url: jdbc:postgresql://localhost:5432/postgres
+    url: jdbc:postgresql://localhost:5432/code-crew-app
     username: postgres
-    password: g12nokona
+    password: Iissupe5
     driver-class-name: org.postgresql.Driver
     db-type: postgres
     dialect: POSTGRES

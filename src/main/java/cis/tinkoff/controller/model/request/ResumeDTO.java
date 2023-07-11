@@ -1,8 +1,6 @@
 package cis.tinkoff.controller.model.request;
 
-import cis.tinkoff.controller.model.generic.GenericDTO;
 import cis.tinkoff.model.DirectionDictionary;
-import cis.tinkoff.model.Project;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import lombok.experimental.Accessors;
@@ -15,7 +13,10 @@ import java.util.List;
 @Setter
 @Builder
 @Accessors(chain = true)
-public class VacancyRequestDTO extends GenericDTO {
+public class ResumeDTO {
+
+    protected Long id;
+    private Long createdWhen;
     private String description;
     private List<String> skills;
 
@@ -23,6 +24,6 @@ public class VacancyRequestDTO extends GenericDTO {
     private DirectionDictionary direction;
 
     @JsonInclude
-    private Project project;
+    private UserRequestDTO user;
 
 }

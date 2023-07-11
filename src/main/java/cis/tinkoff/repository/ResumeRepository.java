@@ -1,5 +1,7 @@
 package cis.tinkoff.repository;
 
+import cis.tinkoff.model.DirectionDictionary;
+import cis.tinkoff.model.PositionRequest;
 import cis.tinkoff.model.Resume;
 import cis.tinkoff.model.User;
 import io.micronaut.data.annotation.Id;
@@ -22,10 +24,13 @@ public interface ResumeRepository extends CrudRepository<Resume, Long> {
     List<Resume> list();
 
     @Join(value = "direction", type = Join.Type.FETCH)
+    @Join(value = "requests", type = Join.Type.FETCH)
     List<Resume> findByUser(User user);
 
     void updateById(@Id Long id,
                     Boolean isDeleted);
 
     User getUserById(Long id);
+
+    DirectionDictionary getDirectionById(Long id);
 }
