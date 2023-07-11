@@ -1,14 +1,15 @@
 package cis.tinkoff.service.impl;
 
+import cis.tinkoff.controller.model.ProjectCreateDTO;
 import cis.tinkoff.controller.model.ProjectDTO;
 import cis.tinkoff.controller.model.ProjectMemberDTO;
-import cis.tinkoff.model.Position;
-import cis.tinkoff.model.Project;
-import cis.tinkoff.model.User;
+import cis.tinkoff.model.*;
 import cis.tinkoff.model.enumerated.Direction;
 import cis.tinkoff.repository.PositionRepository;
 import cis.tinkoff.repository.ProjectRepository;
 import cis.tinkoff.repository.UserRepository;
+import cis.tinkoff.repository.dictionary.DirectionRepository;
+import cis.tinkoff.repository.dictionary.ProjectStatusRepository;
 import cis.tinkoff.service.ProjectService;
 import cis.tinkoff.support.exceptions.InaccessibleActionException;
 import cis.tinkoff.support.exceptions.RecordNotFoundException;
@@ -35,6 +36,10 @@ public class ProjectServiceImpl implements ProjectService {
     private final UserRepository userRepository;
     @Inject
     private final PositionRepository positionRepository;
+    @Inject
+    private final ProjectStatusRepository projectStatusRepository;
+    @Inject
+    private final DirectionRepository directionRepository;
     @Inject
     private final ProjectMapper projectMapper;
     @Inject
@@ -123,7 +128,7 @@ public class ProjectServiceImpl implements ProjectService {
         }
 
         if (project.getLeader().getEmail().equals(login)) {
-            projectRepository.updateLeaderByLeaderId(newLeaderId);
+//            projectRepository.updateLeaderByLeaderId(newLeaderId);
         }
 
         positions.forEach(position -> position.setUser(null));
@@ -149,7 +154,7 @@ public class ProjectServiceImpl implements ProjectService {
         List<Position> positions = (List<Position>) positionRepository.findByIdInList(positionIds);
         positions = positions.stream().filter(position -> position.getUser().getId() != userId ||
                 !position.getDirection().getDirectionName().equals(direction)
-                ).toList();
+        ).toList();
 
         positionRepository.updateAll(positions);
 
@@ -171,5 +176,53 @@ public class ProjectServiceImpl implements ProjectService {
                 .count());
 
         return projectDTO;
+    }
+
+    @Override
+    public Long createProject(String login, ProjectCreateDTO projectCreateDTO) throws RecordNotFoundException {
+        User leader = userRepository.findByEmail(login)
+                .orElseThrow(() -> new RecordNotFoundException("user not found"));
+        ProjectStatusDictionary status = projectStatusRepository.findById(projectCreateDTO.getStatus())
+                .orElseThrow(() -> new RecordNotFoundException("status not found"));
+        DirectionDictionary direction = directionRepository.findById(projectCreateDTO.getDirection())
+                .orElseThrow(() -> new RecordNotFoundException("direction not found"));
+
+        Project newProject = new Project();
+
+        newProject.setLeader(leader);
+        newProject.setStatus(status);
+        newProject.setTitle(projectCreateDTO.getTitle());
+        newProject.setTheme(projectCreateDTO.getTheme());
+        newProject.setDescription(projectCreateDTO.getDescription());
+
+        newProject = projectRepository.save(newProject);
+
+        Position newPosition = new Position();
+
+        newPosition.setUser(leader);
+        newPosition.setProject(newProject);
+        newPosition.setDirection(direction);
+        newPosition.setDescription("leader of the project");
+        newPosition.setIsVisible(false);
+
+        newPosition = positionRepository.save(newPosition);
+
+        newProject.setPositions(List.of(newPosition));
+
+        if (projectCreateDTO.getContacts() != null || projectCreateDTO.getContacts().size() != 0) {
+            List<ProjectContact> projectContactList = projectCreateDTO.getContacts().stream()
+                    .map(contactDTO -> new ProjectContact().setLink(contactDTO.getLink()).setDescription(contactDTO.getDescription()))
+                    .toList();
+
+            for (ProjectContact projectContact : projectContactList) {
+                projectContact.setProject(newProject);
+            }
+
+            newProject.setContacts(projectContactList);
+        }
+
+        projectRepository.update(newProject);
+
+        return newProject.getId();
     }
 }

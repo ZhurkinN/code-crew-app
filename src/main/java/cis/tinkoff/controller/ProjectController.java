@@ -1,7 +1,7 @@
 package cis.tinkoff.controller;
 
+import cis.tinkoff.controller.model.ProjectCreateDTO;
 import cis.tinkoff.controller.model.ProjectDTO;
-import cis.tinkoff.model.DirectionDictionary;
 import cis.tinkoff.model.enumerated.Direction;
 import cis.tinkoff.service.ProjectService;
 import cis.tinkoff.support.exceptions.InaccessibleActionException;
@@ -82,5 +82,16 @@ public class ProjectController {
         ProjectDTO projectDTO = projectService.deleteUserFromProject(id, authentication.getName(), userId, direction);
 
         return HttpResponse.ok(projectDTO);
+    }
+
+    @Operation(method = "createProject", description = "Delete user from project")
+    @Post(produces = MediaType.APPLICATION_JSON)
+    public HttpResponse<?> createProject(
+            Authentication authentication,
+            @Body ProjectCreateDTO projectCreateDTO
+    ) throws RecordNotFoundException {
+        Long id = projectService.createProject(authentication.getName(), projectCreateDTO);
+
+        return HttpResponse.ok();
     }
 }
