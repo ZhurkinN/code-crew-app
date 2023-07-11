@@ -88,10 +88,9 @@ public class UserServiceImpl implements UserService {
         user.setName(name)
                 .setSurname(surname)
                 .setPictureLink(pictureLink)
-                .setMainInformation(mainInformation);
-        if (!contacts.isEmpty()) {
-            user.setContacts(contacts);
-        }
+                .setMainInformation(mainInformation)
+                .setContacts(contacts);
+
         return userRepository.update(user);
     }
 
