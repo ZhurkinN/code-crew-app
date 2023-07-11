@@ -178,6 +178,7 @@ public class ProjectServiceImpl implements ProjectService {
         return projectDTO;
     }
 
+    @Transactional
     @Override
     public Long createProject(String login, ProjectCreateDTO projectCreateDTO) throws RecordNotFoundException {
         User leader = userRepository.findByEmail(login)
