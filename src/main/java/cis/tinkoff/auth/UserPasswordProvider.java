@@ -23,6 +23,7 @@ import java.util.Optional;
 public class UserPasswordProvider implements AuthenticationProvider {
 
     private final static List<String> BASIC_ROLES = List.of("USER_ROLE");
+    private final static Integer MAX_COUNT_OF_ACTIVE_REFRESH_TOKENS = 5;
 
     private final UserRepository userRepository;
     private final RefreshTokenRepository refreshTokenRepository;
@@ -30,7 +31,6 @@ public class UserPasswordProvider implements AuthenticationProvider {
     @Override
     public Publisher<AuthenticationResponse> authenticate(HttpRequest<?> httpRequest,
                                                           AuthenticationRequest<?, ?> authenticationRequest) {
-
         return Flux.create(emitter -> {
 
             String login = (String) authenticationRequest.getIdentity();
@@ -42,14 +42,10 @@ public class UserPasswordProvider implements AuthenticationProvider {
                     && CredentialsValidator.validCredentials(password, userOptional.get())
                     && !userOptional.get().getIsDeleted();
 
-            if(refreshTokenEntityOptional.isPresent() && refreshTokenEntityOptional.get().getRevoked() == Boolean.FALSE){
-//                refreshTokenRepository.deleteByUsername(login);
-                refreshTokenEntityOptional.get().setRevoked(true);
-                refreshTokenRepository.updateRefreshToken(refreshTokenEntityOptional.get());
-            }
             if (!isValid) {
                 emitter.error(AuthenticationResponse.exception("Auth error"));
             } else
+                refreshTokenRepository.checkAndUpdateActiveRefreshTokensByUsername(login, MAX_COUNT_OF_ACTIVE_REFRESH_TOKENS);
                 emitter.next(AuthenticationResponse.success(userOptional.get().getEmail(), BASIC_ROLES));
             emitter.complete();
         }, FluxSink.OverflowStrategy.ERROR);
