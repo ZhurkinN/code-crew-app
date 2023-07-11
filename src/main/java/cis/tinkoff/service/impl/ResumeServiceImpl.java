@@ -170,10 +170,6 @@ public class ResumeServiceImpl implements ResumeService {
                 Pageable.from(page, sizeLimit).order(sortOrder)
         );
 
-        if (dateSort != null) {
-            resumePage.getSort().order("createdWhen", Sort.Order.Direction.valueOf(dateSort.name()));
-        }
-
         List<Resume> resumes = resumeRepository.findByIdInList(
                 resumePage.getContent().stream().map(resume -> resume.getId()).toList());
 
