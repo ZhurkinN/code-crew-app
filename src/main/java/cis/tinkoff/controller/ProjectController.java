@@ -2,6 +2,7 @@ package cis.tinkoff.controller;
 
 import cis.tinkoff.controller.model.ProjectCreateDTO;
 import cis.tinkoff.controller.model.ProjectDTO;
+import cis.tinkoff.model.Project;
 import cis.tinkoff.model.enumerated.Direction;
 import cis.tinkoff.service.ProjectService;
 import cis.tinkoff.support.exceptions.InaccessibleActionException;
@@ -93,5 +94,17 @@ public class ProjectController {
         Long id = projectService.createProject(authentication.getName(), projectCreateDTO);
 
         return HttpResponse.ok();
+    }
+
+    @Operation(method = "updateProject", description = "Update project information")
+    @Patch(value = "/{id}", produces = MediaType.APPLICATION_JSON)
+    public HttpResponse<?> updateProject(
+            Authentication authentication,
+            @PathVariable(name = "id") Long id,
+            @Body Project projectForUpdate
+    ) throws RecordNotFoundException, InaccessibleActionException {
+        ProjectDTO project = projectService.updateProject(id, authentication.getName(), projectForUpdate);
+
+        return HttpResponse.ok(project);
     }
 }

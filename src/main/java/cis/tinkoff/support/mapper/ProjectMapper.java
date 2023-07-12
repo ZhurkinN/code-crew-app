@@ -20,7 +20,7 @@ public class ProjectMapper {
                 .theme(project.getTheme())
                 .description(project.getDescription())
                 .status(project.getStatus())
-                .contacts(project.getContacts())
+//                .contacts(project.getContacts())
                 .build();
 
         return projectDTO;

@@ -14,9 +14,6 @@ import cis.tinkoff.service.ProjectService;
 import cis.tinkoff.support.exceptions.InaccessibleActionException;
 import cis.tinkoff.support.exceptions.RecordNotFoundException;
 import cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper;
-import cis.tinkoff.support.mapper.PositionMapper;
-import cis.tinkoff.support.mapper.ProjectMapper;
-import cis.tinkoff.support.mapper.ProjectMemberDTOMapper;
 import io.micronaut.context.annotation.Primary;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
@@ -40,12 +37,6 @@ public class ProjectServiceImpl implements ProjectService {
     private final ProjectStatusRepository projectStatusRepository;
     @Inject
     private final DirectionRepository directionRepository;
-    @Inject
-    private final ProjectMapper projectMapper;
-    @Inject
-    private final PositionMapper positionMapper;
-    @Inject
-    private final ProjectMemberDTOMapper projectMemberDTOMapper;
 
     @Override
     public List<Project> getAll() {
@@ -230,5 +221,34 @@ public class ProjectServiceImpl implements ProjectService {
         projectRepository.update(newProject);
 
         return newProject.getId();
+    }
+
+    @Override
+    public ProjectDTO updateProject(Long id, String login, Project projectForUpdate) throws RecordNotFoundException, InaccessibleActionException {
+        List<Project> projects = projectRepository.findByIdInList(List.of(id));
+
+        if (projects.size() == 0) {
+            throw new RecordNotFoundException("project whith " + id + " not found");
+        }
+
+        Project updatedProject = projects.get(0);
+
+        if (!updatedProject.getLeader().getEmail().equals(login)) {
+            throw new InaccessibleActionException(ErrorDisplayMessageKeeper.PROJECT_WRONG_ACCESS);
+        }
+
+        List<ProjectContact> contacts = projectForUpdate.getContacts();
+        ProjectStatusDictionary status = projectStatusRepository.findById(projectForUpdate.getStatus().getStatusName())
+                        .orElseThrow(() -> new RecordNotFoundException("status " + projectForUpdate.getStatus().getStatusName() + " not found"));
+
+        updatedProject.setTitle(projectForUpdate.getTitle());
+        updatedProject.setTheme(projectForUpdate.getTheme());
+        updatedProject.setDescription(projectForUpdate.getDescription());
+        updatedProject.setContacts(contacts);
+        updatedProject.setStatus(status);
+
+        projectRepository.update(updatedProject);
+
+        return ProjectDTO.toProjectDTO(updatedProject);
     }
 }

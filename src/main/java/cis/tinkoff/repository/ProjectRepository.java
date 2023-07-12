@@ -1,6 +1,8 @@
 package cis.tinkoff.repository;
 
 import cis.tinkoff.model.Project;
+import cis.tinkoff.model.ProjectContact;
+import cis.tinkoff.model.ProjectStatusDictionary;
 import cis.tinkoff.model.User;
 import io.micronaut.data.annotation.Id;
 import io.micronaut.data.annotation.Join;
@@ -53,4 +55,6 @@ public interface ProjectRepository extends CrudRepository<Project, Long> {
     Project softDeleteProject(Long id);
 
     void updateLeaderByLeaderId(@Id Long id, User leader);
+
+//    void updateTitleAndThemeAndDescriptionAndStatusAndContacts(@Id Long id, String title, String theme, String description, ProjectStatusDictionary status, List<ProjectContact> contacts);
 }
