@@ -1,34 +1,33 @@
 package cis.tinkoff.service.impl;
 
-import cis.tinkoff.controller.model.request.PositionRequestDTO;
+import cis.tinkoff.controller.model.PositionRequestDTO;
 import cis.tinkoff.controller.model.request.ResumeRequestDTO;
 import cis.tinkoff.model.*;
 import cis.tinkoff.model.enumerated.RequestStatus;
-import cis.tinkoff.repository.*;
+import cis.tinkoff.repository.PositionRepository;
+import cis.tinkoff.repository.PositionRequestRepository;
+import cis.tinkoff.repository.ResumeRepository;
 import cis.tinkoff.repository.dictionary.RequestStatusRepository;
 import cis.tinkoff.service.PositionRequestService;
 import cis.tinkoff.support.exceptions.InaccessibleActionException;
 import cis.tinkoff.support.exceptions.RecordNotFoundException;
-import cis.tinkoff.support.mapper.PositionRequestMapper;
 import io.micronaut.context.annotation.Primary;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 
-import java.util.ArrayList;
 import java.util.List;
+
+import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.*;
 
 @Primary
 @Singleton
 @RequiredArgsConstructor
 public class PositionRequestServiceImpl implements PositionRequestService {
 
-    private final UserRepository userRepository;
     private final PositionRequestRepository positionRequestRepository;
     private final ResumeRepository resumeRepository;
     private final PositionRepository positionRepository;
     private final RequestStatusRepository requestStatusRepository;
-    private final ProjectRepository projectRepository;
-    private final PositionRequestMapper positionRequestMapper;
 
     @Override
     public List<PositionRequest> getAll() {
@@ -36,115 +35,107 @@ public class PositionRequestServiceImpl implements PositionRequestService {
     }
 
     @Override
-    public PositionRequest sendRequestToVacancy(Long vacancyId, Long resumeId, String coverLetter, String email) throws RecordNotFoundException, InaccessibleActionException {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RecordNotFoundException("User cannot be found"));
-        Resume resume = resumeRepository.findById(resumeId)
-                .orElseThrow(() -> new RecordNotFoundException("Resume cannot be found"));
-        User resumeOwner = resumeRepository.getUserById(resumeId);
+    public PositionRequest createPositionRequest(String authorEmail,
+                                                 Long positionId,
+                                                 Long resumeId,
+                                                 String coverLetter) throws RecordNotFoundException, InaccessibleActionException {
 
-        Position position = positionRepository.findById(vacancyId)
-                .orElseThrow(() -> new RecordNotFoundException("Position cannot be found"));
-        Project project = positionRepository.getProjectById(position.getId());
-        User projectLead = projectRepository.findLeaderById(project.getId());
+        Resume resume = resumeRepository.findByIdAndIsDeletedFalseAndIsActiveTrue(resumeId)
+                .orElseThrow(() -> new RecordNotFoundException(RESUME_NOT_FOUND));
+        Position position = positionRepository.findByIdAndIsDeletedFalseAndIsVisibleTrue(positionId)
+                .orElseThrow(() -> new RecordNotFoundException(POSITION_NOT_FOUND));
+        RequestStatusDictionary defaultStatus = requestStatusRepository.findById(RequestStatus.IN_CONSIDERATION)
+                .orElseThrow();
 
-        if (projectLead.getId().equals(user.getId())) {
-            throw new InaccessibleActionException("Lead cannot send request to his project");
-        }
-        if (user.getId().equals(resumeOwner.getId())) {
-            PositionRequest positionRequest = new PositionRequest();
+        validateUsersResumeOwnership(authorEmail, resumeId);
+        validateUsersProjectMembership(authorEmail, positionId);
+        validateUnansweredRequestDuplication(resume, positionId, defaultStatus);
 
-            RequestStatus status = RequestStatus.IN_CONSIDERATION;
-            RequestStatusDictionary requestStatusDictionary = requestStatusRepository.findById(status)
-                    .orElseThrow(() -> new RecordNotFoundException("RequestStatus cannot be found"));
-            positionRequest.setCoverLetter(coverLetter);
-            positionRequest.setResume(resume);
-            positionRequest.setIsInvite(false);
-            positionRequest.setPosition(position);
-            positionRequest.setStatus(requestStatusDictionary);
+        PositionRequest positionRequest = new PositionRequest()
+                .setPosition(position)
+                .setResume(resume)
+                .setCoverLetter(coverLetter)
+                .setIsInvite(false)
+                .setStatus(defaultStatus);
 
-            positionRequestRepository.save(positionRequest);
-            return positionRequest;
-        } else {
-            throw new InaccessibleActionException("User cannot send request with this resume");
-        }
+        return positionRequestRepository.save(positionRequest);
     }
 
     @Override
-    public PositionRequest sendRequestToResume(Long vacancyId, Long resumeId, String coverLetter, String email) throws RecordNotFoundException, InaccessibleActionException {
-        User projectLead = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RecordNotFoundException("User cannot be found"));
-        Position position = positionRepository.findById(vacancyId)
-                .orElseThrow(() -> new RecordNotFoundException("Position cannot be found"));
-        Project project = positionRepository.getProjectById(position.getId());
-        User realProjectLead = projectRepository.findLeaderById(project.getId());
-        Resume resume = resumeRepository.findById(resumeId)
-                .orElseThrow(() -> new RecordNotFoundException("Resume cannot be found"));
-        User resumeOwner = resumeRepository.getUserById(resumeId);
+    public PositionRequest createPositionInvite(String authorEmail,
+                                                Long positionId,
+                                                Long resumeId,
+                                                String coverLetter) throws RecordNotFoundException, InaccessibleActionException {
 
-        if (resumeOwner.getId().equals(projectLead.getId())) {
-            throw new InaccessibleActionException("Lead cannot send request to himself");
-        }
+        Resume resume = resumeRepository.findByIdAndIsDeletedFalseAndIsActiveTrue(resumeId)
+                .orElseThrow(() -> new RecordNotFoundException(RESUME_NOT_FOUND));
+        Position position = positionRepository.findByIdAndIsDeletedFalseAndIsVisibleTrue(positionId)
+                .orElseThrow(() -> new RecordNotFoundException(POSITION_NOT_FOUND));
+        RequestStatusDictionary defaultStatus = requestStatusRepository.findById(RequestStatus.IN_CONSIDERATION)
+                .orElseThrow();
 
-        if (projectLead.getId().equals(realProjectLead.getId())) {
-            PositionRequest positionRequest = new PositionRequest();
+        validateUsersResumeLeadership(authorEmail, positionId);
+        validateUnansweredRequestDuplication(resume, positionId, defaultStatus);
 
-            RequestStatus status = RequestStatus.IN_CONSIDERATION;
-            RequestStatusDictionary requestStatusDictionary = requestStatusRepository.findById(status)
-                    .orElseThrow(() -> new RecordNotFoundException("RequestStatus cannot be found"));
+        PositionRequest positionRequest = new PositionRequest()
+                .setPosition(position)
+                .setResume(resume)
+                .setCoverLetter(coverLetter)
+                .setIsInvite(true)
+                .setStatus(defaultStatus);
 
-            positionRequest.setCoverLetter(coverLetter);
-            positionRequest.setResume(resume);
-            positionRequest.setIsInvite(true);
-            positionRequest.setPosition(position);
-            positionRequest.setStatus(requestStatusDictionary);
-
-            positionRequestRepository.save(positionRequest);
-            return positionRequest;
-        } else {
-            throw new InaccessibleActionException("User cannot send requests from this project");
-        }
+        return positionRequestRepository.save(positionRequest);
     }
 
+    @Override
     public List<PositionRequestDTO> getVacancyRequestsByVacancyId(Long id, String email) throws RecordNotFoundException, InaccessibleActionException {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RecordNotFoundException("User cannot be found"));
-        Project project = positionRepository.getProjectById(id);
-        User projectLead = projectRepository.findLeaderById(project.getId());
-
-        if (user.getId().equals(projectLead.getId())) {
-            List<PositionRequest> requests = positionRequestRepository.findAllByPositionId(id);
-            System.out.println(requests);
-            return positionRequestMapper.toDtos(requests);
-        } else {
-            throw new InaccessibleActionException("User cannot check request to this vacancy");
-        }
+        return null;
     }
 
     @Override
     public List<ResumeRequestDTO> getResumeRequestsByResumeId(Long resumeId, String email) throws RecordNotFoundException, InaccessibleActionException {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RecordNotFoundException("User cannot be found"));
-        User resumeOwner = resumeRepository.getUserById(resumeId);
-        Resume resume = resumeRepository.findById(resumeId)
-                .orElseThrow(() -> new RecordNotFoundException("Resume cannot be found"));;
+        return null;
+    }
 
-        if (user.getId().equals(resumeOwner.getId())) {
-            List<ResumeRequestDTO> dtos = new ArrayList<>();
-//            List<PositionRequest> requests = resumeRepository.getRequestsById(resumeId);
-            List<PositionRequest> requests = positionRequestRepository.findAllByResumeIdAndIsInviteTrue(resumeId);
-            for (PositionRequest request : requests) {
-                ResumeRequestDTO dto = new ResumeRequestDTO()
-                        .setCoverLetter(request.getCoverLetter())
-                        .setVacancy(request.getPosition())
-                        .setIsInvite(request.getIsInvite())
-                        .setStatus(request.getStatus());
-                dtos.add(dto);
-            }
-            return dtos;
-        } else {
-            throw new InaccessibleActionException("User cannot see requests to this resume");
+    private void validateUsersResumeOwnership(String userEmail,
+                                              Long resumeId) {
+
+        User author = resumeRepository.getUserById(resumeId);
+        if (!userEmail.equals(author.getEmail())) {
+            throw new InaccessibleActionException(RESUME_WRONG_ACCESS);
         }
     }
 
+    private void validateUsersProjectMembership(String userEmail,
+                                                Long positionId) {
+
+        List<User> projectMembers = positionRepository.findProjectMembersByPositionId(positionId);
+        List<String> emails = projectMembers
+                .stream()
+                .map(User::getEmail)
+                .toList();
+        if (emails.contains(userEmail)) {
+            throw new InaccessibleActionException(USER_ALREADY_IN_PROJECT);
+        }
+    }
+
+    private void validateUnansweredRequestDuplication(Resume resume,
+                                                      Long positionId,
+                                                      RequestStatusDictionary defaultStatus) {
+
+        List<PositionRequest> unansweredResumesRequests =
+                positionRequestRepository.findByResumeAndIsDeletedFalseAndStatus(resume, defaultStatus);
+        List<Long> requestsPositionIds = unansweredResumesRequests
+                .stream()
+                .map(e -> positionRequestRepository.findPositionById(e.getId()).getId())
+                .toList();
+        if (requestsPositionIds.contains(positionId)) {
+            throw new InaccessibleActionException(SAME_REQUEST_ALREADY_EXISTS);
+        }
+    }
+
+    private void validateUsersResumeLeadership(String authorEmail,
+                                               Long positionId) {
+
+    }
 }

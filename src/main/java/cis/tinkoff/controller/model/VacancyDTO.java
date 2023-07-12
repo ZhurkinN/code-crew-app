@@ -1,6 +1,5 @@
 package cis.tinkoff.controller.model;
 
-import cis.tinkoff.controller.model.generic.GenericDTO;
 import cis.tinkoff.model.DirectionDictionary;
 import cis.tinkoff.model.Project;
 import lombok.AllArgsConstructor;

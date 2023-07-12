@@ -1,8 +1,10 @@
 package cis.tinkoff.repository;
 
 import cis.tinkoff.model.Position;
-import cis.tinkoff.model.Project;
+import cis.tinkoff.model.User;
+import io.micronaut.context.annotation.Parameter;
 import io.micronaut.core.annotation.Nullable;
+import io.micronaut.data.annotation.Id;
 import io.micronaut.data.annotation.Join;
 import io.micronaut.data.annotation.Query;
 import io.micronaut.data.jdbc.annotation.JdbcRepository;
@@ -14,6 +16,7 @@ import io.micronaut.data.repository.jpa.JpaSpecificationExecutor;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @JdbcRepository(dialect = Dialect.POSTGRES)
 public interface PositionRepository extends PageableRepository<Position, Long>, JpaSpecificationExecutor<Position> {
@@ -44,5 +47,19 @@ public interface PositionRepository extends PageableRepository<Position, Long>, 
     @Join(value = "direction", type = Join.Type.FETCH)
     Iterable<Position> findByIdInList(Collection<Long> id);
 
-    Project getProjectById(Long id);
+    Optional<Position> findByIdAndIsDeletedFalseAndIsVisibleTrue(@Id Long id);
+
+    @Query(
+            nativeQuery = true,
+            value = """
+                    SELECT DISTINCT u.*
+                    FROM position po 
+                    JOIN project p on po.project_id = p.id 
+                    JOIN project_members pm on p.id = pm.project_id 
+                    JOIN users u on u.id = pm.user_id 
+                    WHERE po.id = :id
+                    """
+    )
+    List<User> findProjectMembersByPositionId(@Parameter("id") Long id);
+
 }

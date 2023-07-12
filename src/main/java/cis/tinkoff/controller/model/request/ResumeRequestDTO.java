@@ -1,6 +1,5 @@
 package cis.tinkoff.controller.model.request;
 
-import cis.tinkoff.controller.model.VacancyDTO;
 import cis.tinkoff.model.Position;
 import cis.tinkoff.model.RequestStatusDictionary;
 import com.fasterxml.jackson.annotation.JsonInclude;

@@ -1,7 +1,9 @@
-package cis.tinkoff.controller.model.request;
+package cis.tinkoff.controller.model;
 
 import cis.tinkoff.controller.model.generic.GenericDTO;
+import cis.tinkoff.model.Position;
 import cis.tinkoff.model.RequestStatusDictionary;
+import cis.tinkoff.model.Resume;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,8 +12,8 @@ import lombok.experimental.Accessors;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @Accessors(chain = true)
+@NoArgsConstructor
 public class PositionRequestDTO extends GenericDTO {
 
     private String coverLetter;
@@ -21,6 +23,8 @@ public class PositionRequestDTO extends GenericDTO {
     private RequestStatusDictionary status;
 
     @JsonInclude
-    private ResumeDTO resume;
+    private Resume resume;
 
+    @JsonInclude
+    private Position position;
 }

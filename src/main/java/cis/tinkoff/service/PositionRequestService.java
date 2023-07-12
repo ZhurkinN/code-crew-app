@@ -1,6 +1,6 @@
 package cis.tinkoff.service;
 
-import cis.tinkoff.controller.model.request.PositionRequestDTO;
+import cis.tinkoff.controller.model.PositionRequestDTO;
 import cis.tinkoff.controller.model.request.ResumeRequestDTO;
 import cis.tinkoff.model.PositionRequest;
 import cis.tinkoff.support.exceptions.InaccessibleActionException;
@@ -12,15 +12,15 @@ public interface PositionRequestService {
 
     List<PositionRequest> getAll();
 
-    PositionRequest sendRequestToVacancy(Long vacancyId,
-                                Long resumeId,
-                                String coverLetter,
-                                String email) throws RecordNotFoundException, InaccessibleActionException;
+    PositionRequest createPositionRequest(String authorEmail,
+                                          Long positionId,
+                                          Long resumeId,
+                                          String coverLetter) throws RecordNotFoundException, InaccessibleActionException;
 
-    PositionRequest sendRequestToResume(Long vacancyId,
-                                        Long resumeId,
-                                        String coverLetter,
-                                        String email) throws RecordNotFoundException, InaccessibleActionException;
+    PositionRequest createPositionInvite(String authorEmail,
+                                         Long positionId,
+                                         Long resumeId,
+                                         String coverLetter) throws RecordNotFoundException, InaccessibleActionException;
 
     List<PositionRequestDTO> getVacancyRequestsByVacancyId(Long id,
                                                            String email) throws RecordNotFoundException, InaccessibleActionException;

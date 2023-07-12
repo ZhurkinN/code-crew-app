@@ -28,6 +28,7 @@ public class PositionRequest extends GenericModel {
             cascade = Relation.Cascade.NONE
     )
     @MappedProperty(value = "status")
+    @Nullable
     private RequestStatusDictionary status;
 
     @Relation(
@@ -35,6 +36,7 @@ public class PositionRequest extends GenericModel {
             cascade = Relation.Cascade.NONE
     )
     @MappedProperty(value = "resume_id")
+    @Nullable
     private Resume resume;
 
     @Relation(
@@ -42,6 +44,7 @@ public class PositionRequest extends GenericModel {
             cascade = Relation.Cascade.NONE
     )
     @MappedProperty(value = "position_id")
+    @Nullable
     private Position position;
 
     public PositionRequest(Long id,
@@ -49,9 +52,9 @@ public class PositionRequest extends GenericModel {
                            Boolean isDeleted,
                            @Nullable String coverLetter,
                            Boolean isInvite,
-                           RequestStatusDictionary status,
-                           Resume resume,
-                           Position position) {
+                           @Nullable RequestStatusDictionary status,
+                           @Nullable Resume resume,
+                           @Nullable Position position) {
         super(id, createdWhen, isDeleted);
         this.coverLetter = coverLetter;
         this.isInvite = isInvite;

@@ -22,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.*;
 
@@ -151,15 +152,15 @@ public class ResumeServiceImpl implements ResumeService {
         String resumeDirection = null;
         List<String> skillList = null;
 
-        if (direction != null) {
+        if (Objects.nonNull(direction)) {
             resumeDirection = Direction.valueOf(direction).toString();
         }
-        if (skills != null) {
+        if (Objects.nonNull(skills)) {
             skillList = Arrays.stream(skills.split(" ")).toList();
         }
 
         Sort.Order sortOrder = new Sort.Order("createdWhen");
-        if (dateSort != null) {
+        if (Objects.nonNull(dateSort)) {
             Sort.Order.Direction sortDirection = Sort.Order.Direction.valueOf(dateSort.name());
             sortOrder = new Sort.Order("createdWhen", sortDirection, false);
         }

@@ -37,6 +37,8 @@ public interface ResumeRepository extends CrudRepository<Resume, Long> {
 
     Optional<Resume> findByIdAndIsDeletedFalse(@Id Long id);
 
+    Optional<Resume> findByIdAndIsDeletedFalseAndIsActiveTrue(@Id Long id);
+
     @Query(value = """
             SELECT  resume_.* FROM resume resume_
                 JOIN dictionary_direction dd ON resume_.direction = dd.direction_name
@@ -59,4 +61,5 @@ public interface ResumeRepository extends CrudRepository<Resume, Long> {
     @Join(value = "direction", type = Join.Type.FETCH)
     @Join(value = "user", type = Join.Type.FETCH)
     List<Resume> findByIdInList(Collection<Long> id);
+
 }
