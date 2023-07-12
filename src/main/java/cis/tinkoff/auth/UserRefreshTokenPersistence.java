@@ -1,6 +1,7 @@
 package cis.tinkoff.auth;
 
-import cis.tinkoff.auth.model.RefreshToken;
+import cis.tinkoff.auth.model.RefreshTokenEntity;
+import cis.tinkoff.auth.repo.RefreshTokenRepository;
 import io.micronaut.runtime.event.annotation.EventListener;
 import io.micronaut.security.authentication.Authentication;
 import io.micronaut.security.errors.OauthErrorResponseException;
@@ -11,16 +12,18 @@ import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.FluxSink;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 
 import static io.micronaut.security.errors.IssuingAnAccessTokenErrorCode.INVALID_GRANT;
 
 @Singleton
 public class UserRefreshTokenPersistence implements RefreshTokenPersistence {
 
-    private static final Map<String, RefreshToken> IN_MEMORY_REFRESH_TOKEN_STORE = new HashMap<>();
+    private final RefreshTokenRepository refreshTokenRepository;
+
+    public UserRefreshTokenPersistence(RefreshTokenRepository refreshTokenRepository) {
+        this.refreshTokenRepository = refreshTokenRepository;
+    }
 
     @Override
     @EventListener
@@ -30,28 +33,23 @@ public class UserRefreshTokenPersistence implements RefreshTokenPersistence {
                 event.getAuthentication() != null &&
                 event.getAuthentication().getName() != null) {
             String payload = event.getRefreshToken();
+            RefreshTokenEntity token = new RefreshTokenEntity(event.getAuthentication().getName(),payload,false);
 
-            event.getAuthentication().getRoles();
-            IN_MEMORY_REFRESH_TOKEN_STORE.put(payload,
-                    new RefreshToken(event.getRefreshToken(),
-                            false,
-                            event.getAuthentication().getName(),
-                            List.copyOf(event.getAuthentication().getRoles())
-                    )
-            );
+            refreshTokenRepository.saveRefreshToken(token);
         }
     }
 
     @Override
     public Publisher<Authentication> getAuthentication(String refreshToken) {
         return Flux.create(emitter -> {
-            final RefreshToken existingRefreshToken = IN_MEMORY_REFRESH_TOKEN_STORE.get(refreshToken);
+            Optional<RefreshTokenEntity> tokenOpt = refreshTokenRepository.findByRefreshToken(refreshToken);
 
-            if (existingRefreshToken != null) {
-                if (existingRefreshToken.revoked()) {
+            if (tokenOpt.isPresent()) {
+                RefreshTokenEntity token = tokenOpt.get();
+                if (token.getRevoked()) {
                     emitter.error(new OauthErrorResponseException(INVALID_GRANT, "refresh token revoked", null));
                 } else {
-                    emitter.next(Authentication.build(existingRefreshToken.username(), existingRefreshToken.roles()));
+                    emitter.next(Authentication.build(token.getUsername()));
                     emitter.complete();
                 }
             } else {
