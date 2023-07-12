@@ -1,6 +1,8 @@
 package cis.tinkoff.repository;
 
 import cis.tinkoff.model.Project;
+import cis.tinkoff.model.User;
+import io.micronaut.data.annotation.Id;
 import io.micronaut.data.annotation.Join;
 import io.micronaut.data.annotation.Query;
 import io.micronaut.data.jdbc.annotation.JdbcRepository;
@@ -11,7 +13,7 @@ import java.util.List;
 
 @JdbcRepository(dialect = Dialect.POSTGRES)
 public interface ProjectRepository extends CrudRepository<Project, Long> {
-    @Join(value = "positions", type = Join.Type.FETCH)
+    @Join(value = "positions.direction", type = Join.Type.FETCH)
     @Join(value = "status", type = Join.Type.FETCH)
     @Join(value = "leader", type = Join.Type.FETCH)
     List<Project> findByIdInList(List<Long> id);
@@ -50,5 +52,5 @@ public interface ProjectRepository extends CrudRepository<Project, Long> {
             nativeQuery = true)
     Project softDeleteProject(Long id);
 
-//    void updateLeaderByLeaderId(Long leader_id);
+    void updateLeaderByLeaderId(@Id Long id, User leader);
 }

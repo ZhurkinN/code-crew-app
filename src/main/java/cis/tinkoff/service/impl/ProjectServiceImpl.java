@@ -127,12 +127,17 @@ public class ProjectServiceImpl implements ProjectService {
             throw new RecordNotFoundException(ErrorDisplayMessageKeeper.RECORD_NOT_FOUND);
         }
 
-        if (project.getLeader().getEmail().equals(login)) {
-//            projectRepository.updateLeaderByLeaderId(newLeaderId);
-        }
-
         positions.forEach(position -> position.setUser(null));
         positionRepository.updateAll(positions);
+
+        if (project.getLeader().getEmail().equals(login)) {
+            if (positionRepository.findByUserIdAndProjectId(newLeaderId, project.getId()).size() == 0) {
+                throw new RecordNotFoundException(ErrorDisplayMessageKeeper.RECORD_NOT_FOUND);
+            }
+            User newLeader = userRepository.findById(newLeaderId)
+                    .orElseThrow(() -> new RecordNotFoundException(ErrorDisplayMessageKeeper.RECORD_NOT_FOUND));
+            projectRepository.updateLeaderByLeaderId(project.getId(), newLeader);
+        }
     }
 
     @Transactional
