@@ -1,5 +1,7 @@
 package cis.tinkoff.auth;
 
+import cis.tinkoff.auth.model.RefreshTokenEntity;
+import cis.tinkoff.auth.repo.RefreshTokenRepository;
 import cis.tinkoff.model.User;
 import cis.tinkoff.repository.UserRepository;
 import cis.tinkoff.support.helper.CredentialsValidator;
@@ -21,18 +23,21 @@ import java.util.Optional;
 public class UserPasswordProvider implements AuthenticationProvider {
 
     private final static List<String> BASIC_ROLES = List.of("USER_ROLE");
+    private final static Integer MAX_COUNT_OF_ACTIVE_REFRESH_TOKENS = 5;
 
     private final UserRepository userRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     @Override
     public Publisher<AuthenticationResponse> authenticate(HttpRequest<?> httpRequest,
                                                           AuthenticationRequest<?, ?> authenticationRequest) {
-
         return Flux.create(emitter -> {
 
             String login = (String) authenticationRequest.getIdentity();
             String password = (String) authenticationRequest.getSecret();
             Optional<User> userOptional = userRepository.findByEmail(login);
+            Optional<RefreshTokenEntity> refreshTokenEntityOptional = refreshTokenRepository.findByUsername(login);
+
             boolean isValid = userOptional.isPresent()
                     && CredentialsValidator.validCredentials(password, userOptional.get())
                     && !userOptional.get().getIsDeleted();
@@ -40,6 +45,7 @@ public class UserPasswordProvider implements AuthenticationProvider {
             if (!isValid) {
                 emitter.error(AuthenticationResponse.exception("Auth error"));
             } else
+                refreshTokenRepository.checkAndUpdateActiveRefreshTokensByUsername(login, MAX_COUNT_OF_ACTIVE_REFRESH_TOKENS);
                 emitter.next(AuthenticationResponse.success(userOptional.get().getEmail(), BASIC_ROLES));
             emitter.complete();
         }, FluxSink.OverflowStrategy.ERROR);

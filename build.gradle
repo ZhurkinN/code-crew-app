@@ -23,6 +23,7 @@ dependencies {
     implementation("io.micronaut.sql:micronaut-jdbc-hikari")
     implementation("jakarta.annotation:jakarta.annotation-api")
     implementation("jakarta.persistence:jakarta.persistence-api:3.0.0")
+    compileOnly("com.h2database:h2")
 
     //Security
     annotationProcessor("io.micronaut:micronaut-http-validation")
