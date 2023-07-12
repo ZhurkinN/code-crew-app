@@ -22,6 +22,16 @@ public interface PositionRequestRepository extends CrudRepository<PositionReques
     @Join(value = "status", type = Join.Type.FETCH)
     List<PositionRequest> list();
 
+    @Join(value = "resume", type = Join.Type.FETCH)
+    @Join(value = "position", type = Join.Type.FETCH)
+    @Join(value = "status", type = Join.Type.FETCH)
+    List<PositionRequest> findAllByPositionId(Long id);
+
+    @Join(value = "resume", type = Join.Type.FETCH)
+    @Join(value = "position", type = Join.Type.FETCH)
+    @Join(value = "status", type = Join.Type.FETCH)
+    List<PositionRequest> findAllByResumeIdAndIsInviteTrue(Long id);
+
 //    @Join(value = "resume", type = Join.Type.FETCH)
 //    @Query(value = "select * from position_request ps join (resume rm join users us on rm.user_id = us.id) on ps.resume_id = rm.id")
 //    Page<PositionRequestController> findAllPositionRequestsWithUserResume(Pageable pageable);
