@@ -239,7 +239,7 @@ public class ProjectServiceImpl implements ProjectService {
 
         List<ProjectContact> contacts = projectForUpdate.getContacts();
         ProjectStatusDictionary status = projectStatusRepository.findById(projectForUpdate.getStatus().getStatusName())
-                        .orElseThrow(() -> new RecordNotFoundException("status " + projectForUpdate.getStatus().getStatusName() + " not found"));
+                .orElseThrow(() -> new RecordNotFoundException("status " + projectForUpdate.getStatus().getStatusName() + " not found"));
 
         updatedProject.setTitle(projectForUpdate.getTitle());
         updatedProject.setTheme(projectForUpdate.getTheme());

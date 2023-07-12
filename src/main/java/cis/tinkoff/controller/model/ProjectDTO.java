@@ -1,7 +1,6 @@
 package cis.tinkoff.controller.model;
 
 import cis.tinkoff.model.Project;
-import cis.tinkoff.model.ProjectContact;
 import cis.tinkoff.model.ProjectStatusDictionary;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
