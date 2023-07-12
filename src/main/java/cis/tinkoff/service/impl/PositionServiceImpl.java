@@ -48,14 +48,17 @@ public class PositionServiceImpl implements PositionService {
             skillList = Arrays.stream(skills.split(" ")).toList();
         }
 
+        Sort.Order sortOrder = new Sort.Order("createdWhen");
+        if (dateSort != null) {
+            Sort.Order.Direction sortDirection = Sort.Order.Direction.valueOf(dateSort.name());
+            sortOrder = new Sort.Order("createdWhen", sortDirection, false);
+        }
+
         Page<Position> positionPage = positionRepository.searchAllVacancies(
                 vacancyDirection,
                 projectStatus,
-                skillList, Pageable.from(page, sizeLimit));
-
-        if (dateSort != null) {
-            positionPage.getSort().order("createdWhen", Sort.Order.Direction.valueOf(dateSort.name()));
-        }
+                skillList, Pageable.from(page, sizeLimit).order(sortOrder)
+        );
 
         List<Position> positions = (List<Position>) positionRepository.findByIdInList(
                 positionPage.getContent().stream().map(position -> position.getId()).toList()

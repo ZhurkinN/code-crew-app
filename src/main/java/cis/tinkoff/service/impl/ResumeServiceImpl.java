@@ -158,15 +158,17 @@ public class ResumeServiceImpl implements ResumeService {
             skillList = Arrays.stream(skills.split(" ")).toList();
         }
 
+        Sort.Order sortOrder = new Sort.Order("createdWhen");
+        if (dateSort != null) {
+            Sort.Order.Direction sortDirection = Sort.Order.Direction.valueOf(dateSort.name());
+            sortOrder = new Sort.Order("createdWhen", sortDirection, false);
+        }
+
         Page<Resume> resumePage = resumeRepository.searchAllResumes(
                 resumeDirection,
                 skillList,
-                Pageable.from(page, sizeLimit)
+                Pageable.from(page, sizeLimit).order(sortOrder)
         );
-
-        if (dateSort != null) {
-            resumePage.getSort().order("createdWhen", Sort.Order.Direction.valueOf(dateSort.name()));
-        }
 
         List<Resume> resumes = resumeRepository.findByIdInList(
                 resumePage.getContent().stream().map(resume -> resume.getId()).toList());
