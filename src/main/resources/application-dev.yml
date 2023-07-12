@@ -5,3 +5,4 @@ micronaut:
         default:
           client-id: ${OAUTH_CLIENT_ID:XXX}
           client-secret: ${OAUTH_CLIENT_SECRET:YYY}
+      enabled: false

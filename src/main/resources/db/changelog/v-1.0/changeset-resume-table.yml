@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: changeset-resume-table
+      author: AlexeyTimofeevRzn
+      changes:
+        - sqlFile:
+            relativeToChangelogFile: true
+            stripComments: true
+            path: create/create-resume-table.sql
+      rollback:
+        - sqlFile:
+            relativeToChangelogFile: true
+            stripComments: true
+            path: drop/drop-resume-table.sql

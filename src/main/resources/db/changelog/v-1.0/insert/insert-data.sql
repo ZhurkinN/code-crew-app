@@ -47,8 +47,7 @@ values ('Hey, i want to work backend dev', 'BACKEND', 1,
        ('Hey, i want to work Machine Learning engineer', 'ML', 4, ARRAY ['Python']),
        ('Hey, i want to work Analyst', 'ANALYST', 5, ARRAY ['Python']),
        ('Hey, i want to work Data science', 'DATA_SCIENCE', 6, ARRAY ['Python', 'Pandas', 'Postgres']),
-       ('Hey, i want to work backend dev', 'BACKEND', 7,
-        ARRAY ['Java', 'Spring', 'Micronaut', 'Docker', 'Postgres', 'Gradle', 'Maven']),
+       ('Hey, i want to work backend dev', 'BACKEND', 7, ARRAY ['Java', 'Spring', 'Micronaut', 'Docker', 'Postgres', 'Gradle', 'Maven']),
        ('Hey, i want to work frontend dev', 'FRONTEND', 8, ARRAY ['JavaScript', 'Next', 'React', 'Node', 'Postgres']);
 
 insert into project(leader_id, title, theme, description, status)
@@ -90,6 +89,9 @@ VALUES (1, 1, 'IN_CONSIDERATION', 'Очень хочу работать в ва�
        (7, 8, 'IN_CONSIDERATION', 'Очень хочу работать в вашей команде', false),
        (3, 9, 'IN_CONSIDERATION', 'Очень хочу работать в вашей команде', false),
        (7, 10, 'IN_CONSIDERATION', 'Очень хочу работать в вашей команде', false);
+
+insert into project_members (user_id, project_id)
+values (1, 1);
 
 insert into project_members (user_id, project_id)
 values (1, 1);

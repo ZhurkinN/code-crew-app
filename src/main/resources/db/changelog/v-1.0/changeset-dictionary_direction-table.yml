@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - changeSet:
+      id: changeset-dictionary_direction-table
+      author: AlexeyTimofeevRzn
+      changes:
+        - sqlFile:
+            relativeToChangelogFile: true
+            path: create/create-dictionary_direction-table.sql
+      rollback:
+        - sqlFile:
+            relativeToChangelogFile: true
+            stripComments: true
+            path: drop/drop-dictionary_direction-table.sql
