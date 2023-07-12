@@ -1,11 +1,11 @@
 package cis.tinkoff.service.impl;
 
-import cis.tinkoff.controller.model.SearchResumeDTO;
 import cis.tinkoff.model.DirectionDictionary;
 import cis.tinkoff.model.Resume;
 import cis.tinkoff.model.User;
 import cis.tinkoff.model.enumerated.Direction;
 import cis.tinkoff.model.enumerated.SortDirection;
+import cis.tinkoff.model.generic.GenericModel;
 import cis.tinkoff.repository.ResumeRepository;
 import cis.tinkoff.repository.UserRepository;
 import cis.tinkoff.repository.dictionary.DirectionRepository;
@@ -143,11 +143,11 @@ public class ResumeServiceImpl implements ResumeService {
     }
 
     @Override
-    public List<SearchResumeDTO> searchResumes(Integer page,
-                                         Integer sizeLimit,
-                                         SortDirection dateSort,
-                                         String direction,
-                                         String skills) {
+    public List<Resume> searchResumes(Integer page,
+                                      Integer sizeLimit,
+                                      SortDirection dateSort,
+                                      String direction,
+                                      String skills) {
         String resumeDirection = null;
         List<String> skillList = null;
 
@@ -170,10 +170,13 @@ public class ResumeServiceImpl implements ResumeService {
                 Pageable.from(page, sizeLimit).order(sortOrder)
         );
 
-        List<Resume> resumes = resumeRepository.findByIdInList(
-                resumePage.getContent().stream().map(resume -> resume.getId()).toList());
-
-        return SearchResumeDTO.toDtoList(resumes);
+        return resumeRepository.findByIdInList(
+                resumePage
+                        .getContent()
+                        .stream()
+                        .map(GenericModel::getId)
+                        .toList()
+        );
     }
 
 }

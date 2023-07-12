@@ -2,7 +2,6 @@ package cis.tinkoff.auth;
 
 import cis.tinkoff.model.User;
 import cis.tinkoff.repository.UserRepository;
-import cis.tinkoff.support.helper.CredentialsValidator;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.security.authentication.AuthenticationProvider;
 import io.micronaut.security.authentication.AuthenticationRequest;
@@ -34,7 +33,7 @@ public class UserPasswordProvider implements AuthenticationProvider {
             String password = (String) authenticationRequest.getSecret();
             Optional<User> userOptional = userRepository.findByEmail(login);
             boolean isValid = userOptional.isPresent()
-                    && CredentialsValidator.validCredentials(password, userOptional.get())
+                    && userOptional.get().getPassword().equals(password)
                     && !userOptional.get().getIsDeleted();
 
             if (!isValid) {

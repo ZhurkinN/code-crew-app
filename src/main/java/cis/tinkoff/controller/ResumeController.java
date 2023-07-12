@@ -1,7 +1,6 @@
 package cis.tinkoff.controller;
 
 import cis.tinkoff.controller.model.ResumeDTO;
-import cis.tinkoff.controller.model.SearchResumeDTO;
 import cis.tinkoff.controller.model.custom.InteractResumeDTO;
 import cis.tinkoff.controller.model.custom.RequestsChoiceResumeDTO;
 import cis.tinkoff.model.Resume;
@@ -135,23 +134,24 @@ public class ResumeController {
         resumeService.softDelete(id, email);
     }
 
-    @Operation(method = "softDelete", description = "Sets 'deleted' flag true")
+    @Operation(method = "searchResumes", description = "Finds all resumes by searched parameters")
     @Get(value = "/search", produces = MediaType.APPLICATION_JSON)
-    public HttpResponse<?> searchResumes(
+    public HttpResponse<List<ResumeDTO>> searchResumes(
             @QueryValue(value = "page", defaultValue = "0") Integer page,
             @QueryValue(value = "size", defaultValue = "1") Integer sizeLimit,
             @Nullable @QueryValue(value = "dateSort", defaultValue = "null") SortDirection dateSort,
             @Nullable @QueryValue(value = "direction") String direction,
             @Nullable @QueryValue("skills") String skills
     ) {
-        List<SearchResumeDTO> searchResumeDTO = resumeService.searchResumes(
+        List<Resume> resumes = resumeService.searchResumes(
                 page,
                 sizeLimit,
                 dateSort,
                 direction,
                 skills
         );
+        List<ResumeDTO> responseDtos = resumeMapper.toDtos(resumes);
 
-        return HttpResponse.ok(searchResumeDTO);
+        return HttpResponse.ok(responseDtos);
     }
 }
