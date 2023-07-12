@@ -27,5 +27,5 @@ public interface RefreshTokenRepository extends CrudRepository<RefreshTokenEntit
     @Query("UPDATE refresh_token_entity SET revoked = TRUE WHERE(" +
             "SELECT COUNT(*) FROM refresh_token_entity rte WHERE" +
             " rte.revoked = FALSE and rte.username = :username) > :maxCountOfActiveRefreshTokens-1 AND revoked = FALSE")
-    void checkAndUpdateActiveRefreshTokensByUsername(@NonNull @NotNull String username,@NonNull @NotNull Integer maxCountOfActiveRefreshTokens);
+    void checkAndUpdateActiveRefreshTokensByUsername(@NonNull @NotNull String username, @NonNull @NotNull Integer maxCountOfActiveRefreshTokens);
 }

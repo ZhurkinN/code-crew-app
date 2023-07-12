@@ -33,7 +33,7 @@ public class UserRefreshTokenPersistence implements RefreshTokenPersistence {
                 event.getAuthentication() != null &&
                 event.getAuthentication().getName() != null) {
             String payload = event.getRefreshToken();
-            RefreshTokenEntity token = new RefreshTokenEntity(event.getAuthentication().getName(),payload,false);
+            RefreshTokenEntity token = new RefreshTokenEntity(event.getAuthentication().getName(), payload, false);
 
             refreshTokenRepository.saveRefreshToken(token);
         }

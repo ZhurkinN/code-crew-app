@@ -1,8 +1,8 @@
-create table refresh_token_entity
+create table REFRESH_TOKEN_ENTITY
 (
-    id bigint primary key not null,
-    refresh_token varchar(21844) not null,
-    username      varchar(255)        not null,
-    date_create   timestamp default now(),
-    revoked       boolean
+    ID            bigint primary key auto_increment,
+    REFRESH_TOKEN varchar(21844) not null,
+    USERNAME      varchar(255)   not null,
+    DATE_CREATE   timestamp default now(),
+    REVOKED       boolean
 )

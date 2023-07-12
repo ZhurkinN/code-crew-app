@@ -1,1 +1,1 @@
-drop table refresh_token_entity
+drop table REFRESH_TOKEN_ENTITY

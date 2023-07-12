@@ -45,7 +45,7 @@ public class UserPasswordProvider implements AuthenticationProvider {
                 emitter.error(AuthenticationResponse.exception("Auth error"));
             } else
                 refreshTokenRepository.checkAndUpdateActiveRefreshTokensByUsername(login, MAX_COUNT_OF_ACTIVE_REFRESH_TOKENS);
-                emitter.next(AuthenticationResponse.success(userOptional.get().getEmail(), BASIC_ROLES));
+            emitter.next(AuthenticationResponse.success(userOptional.get().getEmail(), BASIC_ROLES));
             emitter.complete();
         }, FluxSink.OverflowStrategy.ERROR);
     }
