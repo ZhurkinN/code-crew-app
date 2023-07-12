@@ -1,10 +1,14 @@
 package cis.tinkoff.controller;
 
-import cis.tinkoff.controller.model.UpdateUserDTO;
+import cis.tinkoff.controller.model.UserDTO;
+import cis.tinkoff.controller.model.custom.RegisterUserDTO;
+import cis.tinkoff.controller.model.custom.UpdateUserDTO;
 import cis.tinkoff.model.User;
 import cis.tinkoff.service.UserService;
 import cis.tinkoff.support.exceptions.DeletedRecordFoundException;
 import cis.tinkoff.support.exceptions.RecordNotFoundException;
+import cis.tinkoff.support.exceptions.UserAlreadyExistsException;
+import cis.tinkoff.support.mapper.UserMapper;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.MediaType;
 import io.micronaut.http.annotation.*;
@@ -15,6 +19,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
+
 @Tag(name = "Users", description = "All actions with users.")
 @Controller("/api/v1/users")
 @Secured(SecurityRule.IS_AUTHENTICATED)
@@ -22,41 +28,69 @@ import lombok.RequiredArgsConstructor;
 public class UserController {
 
     private final UserService userService;
+    private final UserMapper userMapper;
 
     @Operation(method = "findAll", description = "Finds all users")
     @Get(value = "/all", produces = MediaType.APPLICATION_JSON)
-    public HttpResponse<Iterable<User>> findAll() {
+    public HttpResponse<List<UserDTO>> findAll() {
 
-        return HttpResponse.ok(userService.getAll());
+        List<User> users = userService.getAll();
+        List<UserDTO> responseDtos = userMapper.toDtos(users);
+        return HttpResponse.ok(responseDtos);
     }
 
     @Operation(method = "findById", description = "Finds user by id")
     @Get(value = "/{id}", produces = MediaType.APPLICATION_JSON)
-    public HttpResponse<User> findById(@PathVariable Long id) throws RecordNotFoundException, DeletedRecordFoundException {
+    public HttpResponse<UserDTO> findById(@PathVariable Long id)
+            throws RecordNotFoundException, DeletedRecordFoundException {
 
-        return HttpResponse.ok(userService.getById(id));
+        User user = userService.getById(id);
+        UserDTO responseDto = userMapper.toDto(user);
+        return HttpResponse.ok(responseDto);
     }
 
     @Operation(method = "find", description = "Finds user")
     @Get(processes = MediaType.APPLICATION_JSON)
-    public HttpResponse<User> find(Authentication authentication) throws RecordNotFoundException, DeletedRecordFoundException {
+    public HttpResponse<UserDTO> find(Authentication authentication)
+            throws RecordNotFoundException, DeletedRecordFoundException {
 
         String email = authentication.getName();
-        return HttpResponse.ok(userService.getByEmail(email));
+        User user = userService.getByEmail(email);
+        UserDTO responseDto = userMapper.toDto(user);
+        return HttpResponse.ok(responseDto);
+    }
+
+    @Secured(SecurityRule.IS_ANONYMOUS)
+    @Operation(method = "register", description = "Registers new user")
+    @Post(uri = "/register", processes = MediaType.APPLICATION_JSON)
+    public HttpResponse<UserDTO> register(@Body RegisterUserDTO dto)
+            throws UserAlreadyExistsException {
+
+        User user = userService.register(
+                dto.email(),
+                dto.password(),
+                dto.name(),
+                dto.surname()
+        );
+        UserDTO responseDto = userMapper.toDto(user);
+        return HttpResponse.ok(responseDto);
     }
 
     @Operation(method = "update", description = "Updates information about user")
     @Patch(processes = MediaType.APPLICATION_JSON)
-    public HttpResponse<User> update(@Body UpdateUserDTO dto,
-                                     Authentication authentication) throws RecordNotFoundException {
+    public HttpResponse<UserDTO> update(@Body UpdateUserDTO requestDto,
+                                        Authentication authentication) throws RecordNotFoundException {
 
-        User user = userService.update(authentication.getName(),
-                dto.name(),
-                dto.surname(),
-                dto.contacts(),
-                dto.pictureLink(),
-                dto.mainInformation());
-        return HttpResponse.ok(user);
+        User user = userService.update(
+                authentication.getName(),
+                requestDto.name(),
+                requestDto.surname(),
+                requestDto.contacts(),
+                requestDto.pictureLink(),
+                requestDto.mainInformation()
+        );
+        UserDTO responseDto = userMapper.toDto(user);
+        return HttpResponse.ok(responseDto);
     }
 
     @Operation(method = "softDelete", description = "Sets 'deleted' flag true")
@@ -67,9 +101,9 @@ public class UserController {
         userService.softDelete(email);
     }
 
-    @Operation(method = "delete", description = "Deletes users by id")
-    @Delete("/hard-delete")
-    public void delete(@QueryValue Long id) {
+    @Operation(method = "delete", description = "Deletes users by id. For simplification working with DB.")
+    @Delete("/hard-delete/{id}")
+    public void delete(@PathVariable Long id) {
 
         userService.delete(id);
     }

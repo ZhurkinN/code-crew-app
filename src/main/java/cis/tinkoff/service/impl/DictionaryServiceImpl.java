@@ -15,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 
-import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.RECORD_NOT_FOUND;
+import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.USER_NOT_FOUND;
 
 @Primary
 @Singleton
@@ -48,8 +48,8 @@ public class DictionaryServiceImpl implements DictionaryService {
 
         List<DirectionDictionary> allDirections = (List<DirectionDictionary>) directionRepository.findAll();
         User resumeAuthor = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RecordNotFoundException(RECORD_NOT_FOUND));
-        List<Resume> userResumes = resumeRepository.findByUser(resumeAuthor);
+                .orElseThrow(() -> new RecordNotFoundException(USER_NOT_FOUND));
+        List<Resume> userResumes = resumeRepository.findByUserAndIsDeletedFalse(resumeAuthor);
         List<DirectionDictionary> usedDirections = new ArrayList<>();
 
         userResumes.forEach(e -> usedDirections.add(e.getDirection()));

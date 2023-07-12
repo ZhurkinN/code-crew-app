@@ -1,8 +1,8 @@
-package cis.tinkoff.controller.model;
+package cis.tinkoff.controller.model.custom;
 
 import java.util.List;
 
-public record CreateResumeDTO(
+public record InteractResumeDTO(
         String description,
         List<String> skills,
         String direction

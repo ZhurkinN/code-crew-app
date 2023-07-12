@@ -22,4 +22,5 @@ public abstract class GenericMapper<M extends GenericModel, D extends GenericDTO
         dto.setIsDeleted(model.getIsDeleted());
         dto.setCreatedWhen(model.getCreatedWhen().toEpochSecond(ZoneOffset.UTC));
     }
+
 }

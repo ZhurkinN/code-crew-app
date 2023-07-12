@@ -3,6 +3,7 @@ package cis.tinkoff.service.impl;
 import cis.tinkoff.model.Project;
 import cis.tinkoff.model.Resume;
 import cis.tinkoff.model.User;
+import cis.tinkoff.model.generic.GenericModel;
 import cis.tinkoff.repository.ResumeRepository;
 import cis.tinkoff.repository.UserRepository;
 import cis.tinkoff.service.UserService;
@@ -26,49 +27,35 @@ public class UserServiceImpl implements UserService {
     private final ResumeRepository resumeRepository;
 
     @Override
-    public Iterable<User> getAll() {
-        return userRepository.findAll();
+    public List<User> getAll() {
+
+        List<User> users = (List<User>) userRepository.findAll();
+        users.forEach(this::setOtherModelsData);
+        return users;
     }
 
     @Override
     public User getById(Long id) throws RecordNotFoundException, DeletedRecordFoundException {
 
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new RecordNotFoundException(RECORD_NOT_FOUND));
+                .orElseThrow(() -> new RecordNotFoundException(USER_NOT_FOUND));
         if (user.getIsDeleted()) {
             throw new DeletedRecordFoundException(DELETED_RECORD_FOUND);
         }
-        List<Resume> userResumes = resumeRepository.findByUser(user);
-        user.setResumes(userResumes);
 
-        return user;
+        return setOtherModelsData(user);
     }
 
     @Override
-    public void delete(Long id) {
-        userRepository.deleteById(id);
-    }
+    public User getByEmail(String email) throws RecordNotFoundException, DeletedRecordFoundException {
 
-    @Override
-    public User update(String email,
-                       String name,
-                       String surname,
-                       List<String> contacts,
-                       String pictureLink,
-                       String mainInformation) throws RecordNotFoundException {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RecordNotFoundException(USER_NOT_FOUND));
+        if (user.getIsDeleted()) {
+            throw new DeletedRecordFoundException(DELETED_RECORD_FOUND);
+        }
 
-        if (!userRepository.existsByEmail(email)) {
-            throw new RecordNotFoundException(RECORD_NOT_FOUND);
-        }
-        User user = userRepository.findByEmail(email).orElseThrow();
-        user.setName(name)
-                .setSurname(surname)
-                .setPictureLink(pictureLink)
-                .setMainInformation(mainInformation);
-        if (!contacts.isEmpty()) {
-            user.setContacts(contacts);
-        }
-        return userRepository.update(user);
+        return setOtherModelsData(user);
     }
 
     @Override
@@ -89,20 +76,43 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getByEmail(String email) throws RecordNotFoundException, DeletedRecordFoundException {
+    public User update(String email,
+                       String name,
+                       String surname,
+                       List<String> contacts,
+                       String pictureLink,
+                       String mainInformation) throws RecordNotFoundException {
 
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RecordNotFoundException(RECORD_NOT_FOUND));
-        if (user.getIsDeleted()) {
-            throw new DeletedRecordFoundException(DELETED_RECORD_FOUND);
-        }
-        List<Resume> userResumes = resumeRepository.findByUser(user);
-        user.setResumes(userResumes);
-        return user;
+                .orElseThrow(() -> new RecordNotFoundException(USER_NOT_FOUND));
+        user.setName(name)
+                .setSurname(surname)
+                .setPictureLink(pictureLink)
+                .setMainInformation(mainInformation)
+                .setContacts(contacts);
+
+        return userRepository.update(user);
     }
 
     @Override
     public void softDelete(String email) {
         userRepository.updateByEmail(email, true);
     }
+
+    @Override
+    public void delete(Long id) {
+        userRepository.deleteById(id);
+    }
+
+    private User setOtherModelsData(User user) {
+
+        List<Resume> userResumes = resumeRepository.findByUserAndIsDeletedFalse(user);
+        List<Project> userProjects = userRepository.findProjectsById(user.getId());
+        userProjects.removeIf(GenericModel::getIsDeleted);
+        user.setResumes(userResumes);
+        user.setProjects(userProjects);
+
+        return user;
+    }
+
 }
