@@ -1,6 +1,7 @@
 package cis.tinkoff.repository;
 
 import cis.tinkoff.model.Project;
+import cis.tinkoff.model.User;
 import io.micronaut.data.annotation.Join;
 import io.micronaut.data.jdbc.annotation.JdbcRepository;
 import io.micronaut.data.model.query.builder.sql.Dialect;
@@ -17,4 +18,5 @@ public interface ProjectRepository extends CrudRepository<Project, Long> {
     @Join(value = "status", type = Join.Type.FETCH)
     List<Project> list();
 
+    User findLeaderById(Long id);
 }

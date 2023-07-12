@@ -38,22 +38,22 @@ public interface ResumeRepository extends CrudRepository<Resume, Long> {
     Optional<Resume> findByIdAndIsDeletedFalse(@Id Long id);
 
     @Query(value = """
-SELECT  resume_.* FROM resume resume_
-    JOIN dictionary_direction dd ON resume_.direction = dd.direction_name
-WHERE resume_.is_active = true
-  AND resume_.is_deleted = false
-  AND resume_.direction ilike coalesce(:direction, '%')
-  AND resume_.skills @> coalesce(:skills, resume_.skills)
-""",
-    nativeQuery = true,
-    countQuery = """
-SELECT  count(resume_.*) FROM resume resume_
-    JOIN dictionary_direction dd ON resume_.direction = dd.direction_name
-WHERE resume_.is_active = true
-  AND resume_.is_deleted = false
-  AND resume_.direction ilike coalesce(:direction, '%')
-  AND resume_.skills @> coalesce(:skills, resume_.skills)
-""")
+            SELECT  resume_.* FROM resume resume_
+                JOIN dictionary_direction dd ON resume_.direction = dd.direction_name
+            WHERE resume_.is_active = true
+              AND resume_.is_deleted = false
+              AND resume_.direction ilike coalesce(:direction, '%')
+              AND resume_.skills @> coalesce(:skills, resume_.skills)
+            """,
+            nativeQuery = true,
+            countQuery = """
+                    SELECT  count(resume_.*) FROM resume resume_
+                        JOIN dictionary_direction dd ON resume_.direction = dd.direction_name
+                    WHERE resume_.is_active = true
+                      AND resume_.is_deleted = false
+                      AND resume_.direction ilike coalesce(:direction, '%')
+                      AND resume_.skills @> coalesce(:skills, resume_.skills)
+                    """)
     Page<Resume> searchAllResumes(@Nullable String direction, @Nullable List<String> skills, Pageable from);
 
     @Join(value = "direction", type = Join.Type.FETCH)
