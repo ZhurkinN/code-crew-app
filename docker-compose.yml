@@ -9,6 +9,9 @@ services:
       - postgres
     ports:
       - "8080:8080"
+    environment:
+      JWT_REFRESH_SECRET:
+      JWT_SIGNATURE_GENERATOR_SECRET:
 
   postgres:
     container_name: "postgres"
@@ -17,6 +20,6 @@ services:
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_DB: "postgres"
-      POSTGRES_USER: "postgres"
-      POSTGRES_PASSWORD: "g12nokona"
+      POSTGRES_URL:
+      POSTGRES_USER:
+      POSTGRES_PASSWORD:

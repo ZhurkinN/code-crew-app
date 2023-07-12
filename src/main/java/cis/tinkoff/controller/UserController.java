@@ -1,11 +1,13 @@
 package cis.tinkoff.controller;
 
 import cis.tinkoff.controller.model.UserDTO;
+import cis.tinkoff.controller.model.custom.RegisterUserDTO;
 import cis.tinkoff.controller.model.custom.UpdateUserDTO;
 import cis.tinkoff.model.User;
 import cis.tinkoff.service.UserService;
 import cis.tinkoff.support.exceptions.DeletedRecordFoundException;
 import cis.tinkoff.support.exceptions.RecordNotFoundException;
+import cis.tinkoff.support.exceptions.UserAlreadyExistsException;
 import cis.tinkoff.support.mapper.UserMapper;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.MediaType;
@@ -58,6 +60,22 @@ public class UserController {
         return HttpResponse.ok(responseDto);
     }
 
+    @Secured(SecurityRule.IS_ANONYMOUS)
+    @Operation(method = "register", description = "Registers new user")
+    @Post(uri = "/register", processes = MediaType.APPLICATION_JSON)
+    public HttpResponse<UserDTO> register(@Body RegisterUserDTO dto)
+            throws UserAlreadyExistsException {
+
+        User user = userService.register(
+                dto.email(),
+                dto.password(),
+                dto.name(),
+                dto.surname()
+        );
+        UserDTO responseDto = userMapper.toDto(user);
+        return HttpResponse.ok(responseDto);
+    }
+
     @Operation(method = "update", description = "Updates information about user")
     @Patch(processes = MediaType.APPLICATION_JSON)
     public HttpResponse<UserDTO> update(@Body UpdateUserDTO requestDto,
@@ -83,9 +101,9 @@ public class UserController {
         userService.softDelete(email);
     }
 
-    @Operation(method = "delete", description = "Deletes users by id")
-    @Delete("/hard-delete")
-    public void delete(@QueryValue Long id) {
+    @Operation(method = "delete", description = "Deletes users by id. For simplification working with DB.")
+    @Delete("/hard-delete/{id}")
+    public void delete(@PathVariable Long id) {
 
         userService.delete(id);
     }

@@ -14,6 +14,13 @@ micronaut:
       swagger-ui:
         paths: classpath:META-INF/swagger/views/swagger-ui
         mapping: /swagger-ui/**
+  metrics:
+    enabled: true
+    export:
+      prometheus:
+        enabled: true
+        step: PT1M
+        descriptions: true
 
   # Micronaut Security configuration
   security:
@@ -30,6 +37,14 @@ micronaut:
       logout:
         enabled: true
     intercept-url-map:
+      - pattern: /metrics/**
+        http-method: GET
+        access:
+          - isAnonymous()
+      - pattern: /prometheus/**
+        http-method: GET
+        access:
+          - isAnonymous()
       - pattern: /swagger/**
         http-method: GET
         access:
@@ -50,16 +65,16 @@ micronaut:
       jwt:
         generator:
           access-token:
-            expiration: 18000  # 30 minutes
+            expiration: 1800  # 30 minutes
           refresh-token:
             enabled: true
             jws-algorithm: HS512
-            secret: 'edShUTQIjFA/3+Ai0lUGcv0RmnN7Kh5ufgDd3ypXebN+B2+cuUZ446w99nUt0XBmvWaEbTsGStESonwFAVa4DsO2+yvbR1qYymbQsBFGwDHP70WjYs/tALe4fmiQy/c7h/uvkfndFLot136QOPo0jzibcreOV/1BxuQTyMgGTRRc7wHzPwGfvxujnd0myTyz2pI+FoPI4xhaOl1ZbR/GuOdeSeMDBiCtAqbDsA=='
+            secret: ${JWT_REFRESH_SECRET}
             base64: true
         signatures:
           secret:
             generator:
-              secret: 'UaaOlcsrG2w7+rl/FN7O5GMEsviHy3bOIYq3V/PhtlYci1c4U5ITzmIos84/Ypq3Gqkcqm46q04/YMDXgCjCkDCtCqbB/EYGcCAadxWWt7nD2SLkmghiKQ99L6iP/HM4xyZqV3lD0PpN5Xq4SRBR/DwLRcbgRV17imK3pxvF8yeZMgovAg39qCsKXSGwIDWTd+imk8zPQ8cge70iCCWIa4o9PGrZTri6/PaveA=='
+              secret: ${JWT_SIGNATURE_GENERATOR_SECRET}
               jws-algorithm: HS512
   server:
     cors:
@@ -72,9 +87,9 @@ micronaut:
 
 datasources:
   default:
-    url: jdbc:postgresql://localhost:5432/postgres
-    username: postgres
-    password: g12nokona
+    url: ${POSTGRES_URL}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
     driver-class-name: org.postgresql.Driver
     db-type: postgres
     dialect: POSTGRES
@@ -87,7 +102,25 @@ liquibase:
     default:
       change-log: classpath:db/changelog/liquibase-changelog.yml
 
+
 logger:
   levels:
     cis.tinkoff.micronaut.jwt: DEBUG
     io.micronaut.security: DEBUG
+endpoints:
+  all:
+    enabled: true
+    port: 8081
+    sensitive: false
+  health:
+    details-visible: anonymous
+  refresh:
+    sensitive: true
+  loggers:
+    sensitive: true
+  stop:
+    sensitive: true
+info:
+  welcome:
+    title: 'CodeCrew - WEB service for finding development teams'
+    description: 'The service allows you to create and find a dream team for you! For more information - visit - https://github.com/ZhurkinN/code-crew-app'
