@@ -77,7 +77,7 @@ public class ProjectController {
             Authentication authentication,
             @PathVariable(name = "id") Long id,
             @QueryValue(value = "userId") Long userId,
-            @QueryValue(value = "userId") Direction direction
+            @QueryValue(value = "direction") Direction direction
     ) throws RecordNotFoundException, InaccessibleActionException {
         ProjectDTO projectDTO = projectService.deleteUserFromProject(id, authentication.getName(), userId, direction);
 

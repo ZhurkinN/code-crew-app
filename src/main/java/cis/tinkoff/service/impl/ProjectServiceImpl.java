@@ -152,21 +152,21 @@ public class ProjectServiceImpl implements ProjectService {
                 .map(position -> position.getId())
                 .toList();
         List<Position> positions = (List<Position>) positionRepository.findByIdInList(positionIds);
-        positions = positions.stream().filter(position -> position.getUser().getId() != userId ||
-                !position.getDirection().getDirectionName().equals(direction)
-        ).toList();
+        positions.stream().filter(position -> position.getUser().getId() == userId &&
+                position.getDirection().getDirectionName().equals(direction)
+        ).forEach(position -> position.setIsDeleted(true));
 
         positionRepository.updateAll(positions);
 
         List<Long> userIds = positions.stream()
-                .filter(position -> position.getUser() != null)
+                .filter(position -> position.getUser() != null && !position.getIsDeleted())
                 .map(position -> position.getUser().getId())
                 .toList();
         List<User> users = userRepository.findByIdInList(userIds);
 
         ProjectDTO projectDTO = ProjectDTO.toProjectDTO(project);
-        projectDTO.setMembers(ProjectMemberDTO.toProjectMemberDTO(users, project.getPositions()));
-        projectDTO.setVacanciesCount((int) project.getPositions().stream()
+        projectDTO.setMembers(ProjectMemberDTO.toProjectMemberDTO(users, positions));
+        projectDTO.setVacanciesCount((int) positions.stream()
                 .filter(position -> position.getUser() == null).count()
         );
 
