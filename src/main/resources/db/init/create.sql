@@ -52,9 +52,7 @@ create table if not exists public.resume
             references public.users
             on delete cascade
             on update cascade,
-    skills       varchar[] default '{}'::varchar[],
-
-    unique (user_id, direction)
+    skills       varchar[] default '{}'::varchar[]
 );
 
 create table if not exists public.project

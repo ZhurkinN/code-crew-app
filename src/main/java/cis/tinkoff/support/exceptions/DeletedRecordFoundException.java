@@ -1,6 +1,6 @@
 package cis.tinkoff.support.exceptions;
 
-public class DeletedRecordFoundException extends Exception {
+public class DeletedRecordFoundException extends RuntimeException {
 
     public DeletedRecordFoundException() {
         super();

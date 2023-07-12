@@ -1,6 +1,7 @@
 package cis.tinkoff.repository;
 
 import cis.tinkoff.model.Position;
+import cis.tinkoff.model.Project;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.data.annotation.Join;
 import io.micronaut.data.annotation.Query;
@@ -42,4 +43,6 @@ public interface PositionRepository extends PageableRepository<Position, Long>, 
     @Join(value = "project.status", type = Join.Type.FETCH)
     @Join(value = "direction", type = Join.Type.FETCH)
     Iterable<Position> findByIdInList(Collection<Long> id);
+
+    Project getProjectById(Long id);
 }

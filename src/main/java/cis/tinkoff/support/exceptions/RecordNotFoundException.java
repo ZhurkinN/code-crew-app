@@ -1,6 +1,6 @@
 package cis.tinkoff.support.exceptions;
 
-public class RecordNotFoundException extends Exception {
+public class RecordNotFoundException extends RuntimeException {
 
     public RecordNotFoundException() {
         super();
