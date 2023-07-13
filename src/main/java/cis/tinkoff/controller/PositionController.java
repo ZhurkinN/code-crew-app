@@ -1,5 +1,6 @@
 package cis.tinkoff.controller;
 
+import cis.tinkoff.controller.model.SearchDTO;
 import cis.tinkoff.controller.model.VacancyDTO;
 import cis.tinkoff.model.Position;
 import cis.tinkoff.model.enumerated.SortDirection;
@@ -33,8 +34,8 @@ public class PositionController {
         return HttpResponse.ok(positionService.getAll());
     }
 
-    @Operation(method = "findAll", description = "Finds all vacancies by searched parameters")
-    @Get(uri = "/vacancies", produces = MediaType.APPLICATION_JSON)
+    @Operation(method = "searchVacancies", description = "Finds all vacancies by searched parameters")
+    @Get(uri = "/search", produces = MediaType.APPLICATION_JSON)
     public HttpResponse<?> searchVacancies(
             @QueryValue(value = "page", defaultValue = "0") Integer page,
             @QueryValue(value = "size", defaultValue = "1") Integer sizeLimit,
@@ -43,7 +44,7 @@ public class PositionController {
             @Nullable @QueryValue(value = "direction") String direction,
             @Nullable @QueryValue("skills") String skills
     ) {
-        List<VacancyDTO> vacancies = positionService.searchVacancyList(
+        SearchDTO searchDTO = positionService.searchVacancyList(
                 page,
                 sizeLimit,
                 dateSort,
@@ -52,6 +53,6 @@ public class PositionController {
                 skills
         );
 
-        return HttpResponse.ok(vacancies);
+        return HttpResponse.ok(searchDTO);
     }
 }

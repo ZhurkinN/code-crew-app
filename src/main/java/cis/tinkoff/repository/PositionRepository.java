@@ -10,6 +10,7 @@ import io.micronaut.data.annotation.Query;
 import io.micronaut.data.jdbc.annotation.JdbcRepository;
 import io.micronaut.data.model.Page;
 import io.micronaut.data.model.Pageable;
+import io.micronaut.data.model.Sort;
 import io.micronaut.data.model.query.builder.sql.Dialect;
 import io.micronaut.data.repository.PageableRepository;
 import io.micronaut.data.repository.jpa.JpaSpecificationExecutor;
@@ -47,6 +48,11 @@ public interface PositionRepository extends PageableRepository<Position, Long>, 
     @Join(value = "direction", type = Join.Type.FETCH)
     @Join(value = "user", type = Join.Type.FETCH)
     Iterable<Position> findByIdInList(Collection<Long> id);
+
+    @Join(value = "project", type = Join.Type.FETCH)
+    @Join(value = "project.status", type = Join.Type.FETCH)
+    @Join(value = "direction", type = Join.Type.FETCH)
+    List<Position> findByIdInList(List<Long> ids, Sort sort);
 
     @Join(value = "project", type = Join.Type.FETCH)
     @Join(value = "project.status", type = Join.Type.FETCH)

@@ -1,10 +1,12 @@
 package cis.tinkoff.service.impl;
 
+import cis.tinkoff.controller.model.SearchDTO;
 import cis.tinkoff.controller.model.VacancyDTO;
 import cis.tinkoff.model.Position;
 import cis.tinkoff.model.enumerated.Direction;
 import cis.tinkoff.model.enumerated.ProjectStatus;
 import cis.tinkoff.model.enumerated.SortDirection;
+import cis.tinkoff.model.generic.GenericModel;
 import cis.tinkoff.repository.PositionRepository;
 import cis.tinkoff.service.PositionService;
 import cis.tinkoff.support.mapper.PositionMapper;
@@ -28,12 +30,12 @@ public class PositionServiceImpl implements PositionService {
     private PositionMapper positionMapper;
 
     @Override
-    public List<VacancyDTO> searchVacancyList(Integer page,
-                                              Integer sizeLimit,
-                                              SortDirection dateSort,
-                                              String status,
-                                              String direction,
-                                              String skills) {
+    public SearchDTO searchVacancyList(Integer page,
+                                       Integer sizeLimit,
+                                       SortDirection dateSort,
+                                       String status,
+                                       String direction,
+                                       String skills) {
         String projectStatus = null;
         String vacancyDirection = null;
         List<String> skillList = null;
@@ -54,17 +56,30 @@ public class PositionServiceImpl implements PositionService {
             sortOrder = new Sort.Order("createdWhen", sortDirection, false);
         }
 
+        Pageable pageable = Pageable.from(page, sizeLimit, Sort.of(sortOrder));
+
         Page<Position> positionPage = positionRepository.searchAllVacancies(
                 vacancyDirection,
                 projectStatus,
-                skillList, Pageable.from(page, sizeLimit).order(sortOrder)
+                skillList,
+                pageable
         );
 
-        List<Position> positions = (List<Position>) positionRepository.findByIdInList(
-                positionPage.getContent().stream().map(position -> position.getId()).toList()
+        List<Long> positionIds = positionPage
+                .getContent()
+                .stream()
+                .map(GenericModel::getId)
+                .toList();
+
+        List<Position> positions = positionRepository.findByIdInList(
+                positionIds,
+                Sort.of(sortOrder)
         );
 
-        return VacancyDTO.toVacancyDTO(positions);
+        return SearchDTO.toDto(
+                VacancyDTO.toVacancyDTO(positions),
+                positionPage.getTotalPages()
+        );
     }
 
     @Override

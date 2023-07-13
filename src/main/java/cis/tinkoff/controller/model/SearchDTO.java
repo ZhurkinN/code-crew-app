@@ -1,5 +1,6 @@
 package cis.tinkoff.controller.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,6 +14,7 @@ import java.util.List;
 @Data
 @Builder
 @Accessors(chain = true)
+@JsonInclude
 public class SearchDTO {
     private List<?> content;
     private Integer pageCount;
