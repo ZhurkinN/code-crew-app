@@ -1,7 +1,7 @@
 package cis.tinkoff.service.impl;
 
-import cis.tinkoff.controller.model.SearchDTO;
 import cis.tinkoff.controller.model.VacancyDTO;
+import cis.tinkoff.controller.model.custom.SearchDTO;
 import cis.tinkoff.model.DirectionDictionary;
 import cis.tinkoff.model.Position;
 import cis.tinkoff.model.Project;

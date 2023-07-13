@@ -1,7 +1,7 @@
 package cis.tinkoff.controller;
 
-import cis.tinkoff.controller.model.SearchDTO;
 import cis.tinkoff.controller.model.VacancyDTO;
+import cis.tinkoff.controller.model.custom.SearchDTO;
 import cis.tinkoff.model.Position;
 import cis.tinkoff.model.enumerated.SortDirection;
 import cis.tinkoff.service.PositionService;
