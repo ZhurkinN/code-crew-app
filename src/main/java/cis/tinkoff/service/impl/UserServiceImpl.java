@@ -1,5 +1,6 @@
 package cis.tinkoff.service.impl;
 
+import cis.tinkoff.model.Project;
 import cis.tinkoff.model.Resume;
 import cis.tinkoff.model.User;
 import cis.tinkoff.model.generic.GenericModel;

@@ -1,5 +1,6 @@
 package cis.tinkoff.service.impl;
 
+import cis.tinkoff.controller.model.SearchDTO;
 import cis.tinkoff.model.DirectionDictionary;
 import cis.tinkoff.model.Resume;
 import cis.tinkoff.model.User;
@@ -13,6 +14,7 @@ import cis.tinkoff.service.ResumeService;
 import cis.tinkoff.support.exceptions.DeletedRecordFoundException;
 import cis.tinkoff.support.exceptions.InaccessibleActionException;
 import cis.tinkoff.support.exceptions.RecordNotFoundException;
+import cis.tinkoff.support.mapper.ResumeMapper;
 import io.micronaut.context.annotation.Primary;
 import io.micronaut.data.model.Page;
 import io.micronaut.data.model.Pageable;
@@ -34,6 +36,7 @@ public class ResumeServiceImpl implements ResumeService {
     private final UserRepository userRepository;
     private final ResumeRepository resumeRepository;
     private final DirectionRepository directionRepository;
+    private final ResumeMapper resumeMapper;
 
     @Override
     public List<Resume> getAll() {
@@ -144,11 +147,11 @@ public class ResumeServiceImpl implements ResumeService {
     }
 
     @Override
-    public List<Resume> searchResumes(Integer page,
-                                      Integer sizeLimit,
-                                      SortDirection dateSort,
-                                      String direction,
-                                      String skills) {
+    public SearchDTO searchResumes(Integer page,
+                                   Integer sizeLimit,
+                                   SortDirection dateSort,
+                                   String direction,
+                                   String skills) {
         String resumeDirection = null;
         List<String> skillList = null;
 
@@ -165,18 +168,26 @@ public class ResumeServiceImpl implements ResumeService {
             sortOrder = new Sort.Order("createdWhen", sortDirection, false);
         }
 
+        Pageable pageable = Pageable.from(page, sizeLimit, Sort.of(sortOrder));
+
         Page<Resume> resumePage = resumeRepository.searchAllResumes(
                 resumeDirection,
                 skillList,
-                Pageable.from(page, sizeLimit).order(sortOrder)
+                pageable
         );
 
-        return resumeRepository.findByIdInList(
+        List<Resume> resumes = resumeRepository.findByIdInList(
                 resumePage
                         .getContent()
                         .stream()
                         .map(GenericModel::getId)
-                        .toList()
+                        .toList(),
+                Sort.of(sortOrder)
+        );
+
+        return SearchDTO.toDto(
+                resumeMapper.toDtos(resumes),
+                resumePage.getTotalPages()
         );
     }
 
