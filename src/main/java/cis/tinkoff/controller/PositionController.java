@@ -8,11 +8,9 @@ import cis.tinkoff.service.PositionService;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.MediaType;
-import io.micronaut.http.annotation.Controller;
-import io.micronaut.http.annotation.Get;
-import io.micronaut.http.annotation.PathVariable;
-import io.micronaut.http.annotation.QueryValue;
+import io.micronaut.http.annotation.*;
 import io.micronaut.security.annotation.Secured;
+import io.micronaut.security.authentication.Authentication;
 import io.micronaut.security.rules.SecurityRule;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -76,5 +74,29 @@ public class PositionController {
         List<VacancyDTO> vacancyDTOList = positionService.getProjectVacancies(projectId, isVisible);
 
         return HttpResponse.ok(vacancyDTOList);
+    }
+
+    @Operation(method = "createVacancy", description = "Create vacancy")
+    @Post(produces = MediaType.APPLICATION_JSON)
+    public HttpResponse<?> createVacancy(
+            Authentication authentication,
+            @QueryValue(value = "projectId") Long projectId,
+            @Body VacancyDTO vacancyCreateDTO
+    ) {
+        VacancyDTO vacancyDTO = positionService.createVacancy(authentication.getName(), projectId, vacancyCreateDTO);
+
+        return HttpResponse.ok(vacancyDTO);
+    }
+
+    @Operation(method = "updateVacancy", description = "Update vacancy")
+    @Patch(uri = "/{id}", produces = MediaType.APPLICATION_JSON)
+    public HttpResponse<?> updateVacancy(
+            Authentication authentication,
+            @PathVariable(name = "id") Long id,
+            @Body VacancyDTO updateVacancyDTO
+    ) {
+        VacancyDTO vacancyDTO = positionService.updateVacancy(id, authentication.getName(), updateVacancyDTO);
+
+        return HttpResponse.ok(vacancyDTO);
     }
 }

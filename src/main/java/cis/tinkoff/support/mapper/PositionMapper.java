@@ -22,7 +22,7 @@ public class PositionMapper {
                 .description(position.getDescription())
                 .skills(position.getSkills())
                 .createdWhen(position.getCreatedWhen().toEpochSecond(ZoneOffset.UTC))
-                .project(position.getProject()) //TODO use method from ProjectMapper class
+//                .project(position.getProject()) //TODO use method from ProjectMapper class
                 .build();
 
         return vacancyDTO;
