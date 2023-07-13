@@ -88,16 +88,16 @@ micronaut:
     enabled: false
 datasources:
   default:
-    url: ${POSTGRES_URL}
-    username: ${POSTGRES_USER}
-    password: ${POSTGRES_PASSWORD}
+    url: jdbc:postgresql://postgres:5432/postgres
+    username: postgres
+    password: g12nokona
     driver-class-name: org.postgresql.Driver
     db-type: postgres
   warehouse:
     url: jdbc:h2:mem:test
     username: root
     password: root
-    driverClassName: org.h2.Driver
+    driver-class-name: org.h2.Driver
     dialect: h2
 
 netty:
@@ -120,7 +120,6 @@ logger:
 endpoints:
   all:
     enabled: true
-    port: 8081
     sensitive: false
   health:
     details-visible: anonymous

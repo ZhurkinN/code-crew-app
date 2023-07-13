@@ -34,7 +34,7 @@ public class Application {
     }
 
     public static void main(String[] args) throws SQLException {
-        Server.createWebServer().start();
         Micronaut.run(Application.class, args);
+        Server.createWebServer().start();
     }
 }
