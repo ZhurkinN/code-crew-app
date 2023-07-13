@@ -99,4 +99,26 @@ public class PositionController {
 
         return HttpResponse.ok(vacancyDTO);
     }
+
+    @Operation(method = "changeVisibility", description = "Change vacancy visibility")
+    @Post(uri = "/visible/{id}", produces = MediaType.APPLICATION_JSON)
+    public HttpResponse<?> changeVisibility(
+            Authentication authentication,
+            @PathVariable(value = "id") Long id
+    ) {
+        VacancyDTO vacancyDTO = positionService.changeVisibility(id, authentication.getName());
+
+        return HttpResponse.ok(vacancyDTO);
+    }
+
+    @Operation(method = "deleteVacancy", description = "Soft delete vacancy")
+    @Delete(uri = "/{id}", produces = MediaType.APPLICATION_JSON)
+    public HttpResponse<?> deleteVacancy(
+            Authentication authentication,
+            @PathVariable(name = "id") Long id
+    ) {
+        positionService.deleteVacancy(id, authentication.getName());
+
+        return HttpResponse.ok();
+    }
 }

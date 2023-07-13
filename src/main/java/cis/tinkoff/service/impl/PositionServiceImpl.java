@@ -191,4 +191,40 @@ public class PositionServiceImpl implements PositionService {
 
         return VacancyDTO.toVacancyDTO(updatedPosition);
     }
+
+    @Override
+    public VacancyDTO changeVisibility(Long id, String login) {
+        List<Position> positions = positionRepository.findByIdInList(List.of(id), Sort.UNSORTED);
+
+        if (positions.size() == 0) {
+            throw new RecordNotFoundException("Position with id=" + id + " not found");
+        }
+
+        Position updatedPosition = positions.get(0);
+
+        List<Project> projects = projectRepository.findByIdInList(List.of(updatedPosition.getProject().getId()));
+
+        if (projects.size() == 0) {
+            throw new RecordNotFoundException("Project with id=" +
+                    updatedPosition.getProject().getId()
+                    + " not found");
+        }
+
+        if (!projects.get(0).getLeader().getEmail().equals(login)) {
+            throw new InaccessibleActionException("Actions whit project witch id=" +
+                    projects.get(0).getId()
+                    + " is inaccessible");
+        }
+
+        updatedPosition.setIsVisible(!updatedPosition.getIsVisible());
+
+        updatedPosition = positionRepository.update(updatedPosition);
+
+        return VacancyDTO.toVacancyDTO(updatedPosition);
+    }
+
+    @Override
+    public void deleteVacancy(Long id, String login) {
+
+    }
 }
