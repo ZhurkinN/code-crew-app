@@ -24,6 +24,7 @@ public class VacancyDTO {
     private String description;
     private List<String> skills;
     private Long createdWhen;
+    private Boolean isVisible;
     private Project project;
 
     public static VacancyDTO toVacancyDTO(Position position) {
@@ -37,6 +38,7 @@ public class VacancyDTO {
                 .description(position.getDescription())
                 .skills(position.getSkills())
                 .createdWhen(position.getCreatedWhen().toEpochSecond(ZoneOffset.UTC))
+                .isVisible(position.getIsVisible())
                 .project(position.getProject()) //TODO use method from ProjectMapper class
                 .build();
 

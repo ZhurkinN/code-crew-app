@@ -57,7 +57,7 @@ public class PositionController {
         return HttpResponse.ok(searchDTO);
     }
 
-    @Operation(method = "searchVacancies", description = "Get vacancies by id")
+    @Operation(method = "getVacancyById", description = "Get vacancy by id")
     @Get(uri = "/{id}", produces = MediaType.APPLICATION_JSON)
     public HttpResponse<?> getVacancyById(
             @PathVariable(name = "id") Long id
@@ -65,5 +65,15 @@ public class PositionController {
         VacancyDTO vacancyDTO = positionService.getVacancyById(id);
 
         return HttpResponse.ok(vacancyDTO);
+    }
+
+    @Operation(method = "getProjectVacancies", description = "Get vacancies of the project by project id")
+    @Get(uri = "/projects", produces = MediaType.APPLICATION_JSON)
+    public HttpResponse<?> getProjectVacancies(
+            @QueryValue(value = "projectId") Long projectId
+    ) {
+        List<VacancyDTO> vacancyDTOList = positionService.getProjectVacancies(projectId);
+
+        return HttpResponse.ok(vacancyDTOList);
     }
 }

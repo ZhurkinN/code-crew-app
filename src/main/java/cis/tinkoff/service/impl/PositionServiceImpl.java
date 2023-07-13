@@ -105,4 +105,11 @@ public class PositionServiceImpl implements PositionService {
 
         return VacancyDTO.toVacancyDTO(position);
     }
+
+    @Override
+    public List<VacancyDTO> getProjectVacancies(Long projectId) {
+        List<Position> positions = positionRepository.findByProjectId(projectId);
+
+        return VacancyDTO.toVacancyDTO(positions);
+    }
 }

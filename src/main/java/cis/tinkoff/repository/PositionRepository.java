@@ -7,6 +7,7 @@ import io.micronaut.core.annotation.Nullable;
 import io.micronaut.data.annotation.Id;
 import io.micronaut.data.annotation.Join;
 import io.micronaut.data.annotation.Query;
+import io.micronaut.data.annotation.Where;
 import io.micronaut.data.jdbc.annotation.JdbcRepository;
 import io.micronaut.data.model.Page;
 import io.micronaut.data.model.Pageable;
@@ -59,6 +60,10 @@ public interface PositionRepository extends PageableRepository<Position, Long>, 
     @Join(value = "direction", type = Join.Type.FETCH)
     @Join(value = "user", type = Join.Type.FETCH)
     List<Position> findByUserIdAndProjectId(Long user_id, Long project_id);
+
+    @Where("@.user_id is null")
+    @Join(value = "direction", type = Join.Type.FETCH)
+    List<Position> findByProjectId(Long project_id);
 
     Optional<Position> findByIdAndIsDeletedFalseAndIsVisibleTrue(@Id Long id);
 

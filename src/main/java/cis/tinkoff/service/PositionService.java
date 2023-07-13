@@ -19,4 +19,6 @@ public interface PositionService {
     List<Position> getAll();
 
     VacancyDTO getVacancyById(Long id);
+
+    List<VacancyDTO> getProjectVacancies(Long projectId);
 }
