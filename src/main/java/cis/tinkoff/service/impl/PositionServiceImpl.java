@@ -9,6 +9,8 @@ import cis.tinkoff.model.enumerated.SortDirection;
 import cis.tinkoff.model.generic.GenericModel;
 import cis.tinkoff.repository.PositionRepository;
 import cis.tinkoff.service.PositionService;
+import cis.tinkoff.support.exceptions.InaccessibleActionException;
+import cis.tinkoff.support.exceptions.RecordNotFoundException;
 import cis.tinkoff.support.mapper.PositionMapper;
 import io.micronaut.context.annotation.Primary;
 import io.micronaut.data.model.Page;
@@ -85,5 +87,22 @@ public class PositionServiceImpl implements PositionService {
     @Override
     public List<Position> getAll() {
         return (List<Position>) positionRepository.findAll();
+    }
+
+    @Override
+    public VacancyDTO getVacancyById(Long id) {
+        List<Position> positions = positionRepository.findByIdInList(List.of(id), Sort.UNSORTED);
+
+        if (positions.size() == 0) {
+            throw new RecordNotFoundException("Vacancy with id=" + id + " not found");
+        }
+
+        Position position = positions.get(0);
+
+        if (!position.getIsVisible() || position.getUser() != null) {
+            throw new InaccessibleActionException("Vacancy with id=" + id + " is inaccessible");
+        }
+
+        return VacancyDTO.toVacancyDTO(position);
     }
 }

@@ -10,6 +10,7 @@ import io.micronaut.http.HttpResponse;
 import io.micronaut.http.MediaType;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Get;
+import io.micronaut.http.annotation.PathVariable;
 import io.micronaut.http.annotation.QueryValue;
 import io.micronaut.security.annotation.Secured;
 import io.micronaut.security.rules.SecurityRule;
@@ -54,5 +55,15 @@ public class PositionController {
         );
 
         return HttpResponse.ok(searchDTO);
+    }
+
+    @Operation(method = "searchVacancies", description = "Get vacancies by id")
+    @Get(uri = "/{id}", produces = MediaType.APPLICATION_JSON)
+    public HttpResponse<?> getVacancyById(
+            @PathVariable(name = "id") Long id
+    ) {
+        VacancyDTO vacancyDTO = positionService.getVacancyById(id);
+
+        return HttpResponse.ok(vacancyDTO);
     }
 }

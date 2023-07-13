@@ -17,4 +17,6 @@ public interface PositionService {
                                 String skills);
 
     List<Position> getAll();
+
+    VacancyDTO getVacancyById(Long id);
 }
