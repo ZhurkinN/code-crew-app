@@ -1,8 +1,8 @@
 package cis.tinkoff.service.impl;
 
-import cis.tinkoff.controller.model.ProjectCreateDTO;
+import cis.tinkoff.controller.model.custom.ProjectCreateDTO;
 import cis.tinkoff.controller.model.ProjectDTO;
-import cis.tinkoff.controller.model.ProjectMemberDTO;
+import cis.tinkoff.controller.model.custom.ProjectMemberDTO;
 import cis.tinkoff.model.*;
 import cis.tinkoff.model.enumerated.Direction;
 import cis.tinkoff.repository.PositionRepository;

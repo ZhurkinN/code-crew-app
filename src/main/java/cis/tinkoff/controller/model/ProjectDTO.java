@@ -1,5 +1,7 @@
 package cis.tinkoff.controller.model;
 
+import cis.tinkoff.controller.model.custom.ContactDTO;
+import cis.tinkoff.controller.model.custom.ProjectMemberDTO;
 import cis.tinkoff.model.Project;
 import cis.tinkoff.model.ProjectStatusDictionary;
 import com.fasterxml.jackson.annotation.JsonInclude;

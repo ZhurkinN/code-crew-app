@@ -1,7 +1,7 @@
 package cis.tinkoff.controller;
 
 import cis.tinkoff.controller.model.ResumeDTO;
-import cis.tinkoff.controller.model.SearchDTO;
+import cis.tinkoff.controller.model.custom.SearchDTO;
 import cis.tinkoff.controller.model.custom.InteractResumeDTO;
 import cis.tinkoff.controller.model.custom.RequestsChoiceResumeDTO;
 import cis.tinkoff.model.Resume;

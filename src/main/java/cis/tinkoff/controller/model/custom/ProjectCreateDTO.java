@@ -1,4 +1,4 @@
-package cis.tinkoff.controller.model;
+package cis.tinkoff.controller.model.custom;
 
 import cis.tinkoff.model.enumerated.Direction;
 import cis.tinkoff.model.enumerated.ProjectStatus;

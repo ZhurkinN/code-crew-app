@@ -1,5 +1,6 @@
 package cis.tinkoff.repository;
 
+import cis.tinkoff.model.DirectionDictionary;
 import cis.tinkoff.model.Resume;
 import cis.tinkoff.model.User;
 import io.micronaut.core.annotation.Nullable;
@@ -64,4 +65,5 @@ public interface ResumeRepository extends CrudRepository<Resume, Long> {
     @Join(value = "user", type = Join.Type.FETCH)
     List<Resume> findByIdInList(List<Long> id, Sort sort);
 
+    DirectionDictionary getDirectionById(@Id Long id);
 }

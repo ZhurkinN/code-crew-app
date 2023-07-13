@@ -1,4 +1,4 @@
-package cis.tinkoff.controller.model;
+package cis.tinkoff.controller.model.custom;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

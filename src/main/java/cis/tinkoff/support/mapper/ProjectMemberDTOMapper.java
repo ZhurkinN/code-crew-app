@@ -1,6 +1,6 @@
 package cis.tinkoff.support.mapper;
 
-import cis.tinkoff.controller.model.ProjectMemberDTO;
+import cis.tinkoff.controller.model.custom.ProjectMemberDTO;
 import cis.tinkoff.model.Position;
 import cis.tinkoff.model.User;
 import jakarta.inject.Singleton;

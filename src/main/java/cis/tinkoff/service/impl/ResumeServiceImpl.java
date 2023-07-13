@@ -1,6 +1,6 @@
 package cis.tinkoff.service.impl;
 
-import cis.tinkoff.controller.model.SearchDTO;
+import cis.tinkoff.controller.model.custom.SearchDTO;
 import cis.tinkoff.model.DirectionDictionary;
 import cis.tinkoff.model.Resume;
 import cis.tinkoff.model.User;
@@ -52,7 +52,9 @@ public class ResumeServiceImpl implements ResumeService {
             throw new DeletedRecordFoundException(DELETED_OR_HIDDEN_RESUME_FOUND);
         }
         User author = resumeRepository.getUserById(id);
+        DirectionDictionary direction = resumeRepository.getDirectionById(id);
         resume.setUser(author);
+        resume.setDirection(direction);
 
         return resume;
     }
@@ -64,6 +66,10 @@ public class ResumeServiceImpl implements ResumeService {
                 .orElseThrow(() -> new RecordNotFoundException(USER_NOT_FOUND));
         List<Resume> resumes = resumeRepository.findByUserAndIsDeletedFalse(author);
         resumes.forEach(e -> e.setUser(author));
+        resumes.forEach(e -> {
+            DirectionDictionary direction = resumeRepository.getDirectionById(e.getId());
+            e.setDirection(direction);
+        });
         return resumes;
     }
 
