@@ -62,8 +62,9 @@ public interface PositionRepository extends PageableRepository<Position, Long>, 
     List<Position> findByUserIdAndProjectId(Long user_id, Long project_id);
 
     @Where("@.user_id is null")
+    @Where("@.is_visible = :isVisible")
     @Join(value = "direction", type = Join.Type.FETCH)
-    List<Position> findByProjectId(Long project_id);
+    List<Position> findByProjectId(Long project_id, Boolean isVisible);
 
     Optional<Position> findByIdAndIsDeletedFalseAndIsVisibleTrue(@Id Long id);
 

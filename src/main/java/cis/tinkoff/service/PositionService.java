@@ -20,5 +20,5 @@ public interface PositionService {
 
     VacancyDTO getVacancyById(Long id);
 
-    List<VacancyDTO> getProjectVacancies(Long projectId);
+    List<VacancyDTO> getProjectVacancies(Long projectId, Boolean isVisible);
 }
