@@ -16,4 +16,5 @@ public interface ErrorDisplayMessageKeeper {
     String DELETED_OR_HIDDEN_RESUME_FOUND = "This resume has been deleted or hidden.";
     String USER_ALREADY_IN_PROJECT = "A user with this email is already in this project.";
     String SAME_REQUEST_ALREADY_EXISTS = "User already created same request. It's still in consideration.";
+    String PROJECT_WRONG_ACCESS = "Action with this project is not available.";
 }
