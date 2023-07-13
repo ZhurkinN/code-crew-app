@@ -65,7 +65,7 @@ micronaut:
       jwt:
         generator:
           access-token:
-            expiration: 5000  # 30 minutes
+            expiration: 1800  # 30 minutes
           refresh-token:
             enabled: true
             jws-algorithm: HS512
@@ -93,12 +93,6 @@ datasources:
     password: g12nokona
     driver-class-name: org.postgresql.Driver
     db-type: postgres
-  warehouse:
-    url: jdbc:h2:mem:test
-    username: root
-    password: root
-    driver-class-name: org.h2.Driver
-    dialect: h2
 
 netty:
   default:
@@ -109,9 +103,6 @@ liquibase:
   datasources:
     default:
       change-log: classpath:db/changelog/changelog.yaml
-    warehouse:
-      change-log: classpath:db/changelog/changelog-h2.yaml
-
 
 logger:
   levels:

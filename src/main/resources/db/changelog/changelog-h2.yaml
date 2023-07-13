@@ -1,4 +1,0 @@
-databaseChangeLog:
-  - include:
-      relativeToChangelogFile: true
-      file: v-1.0/h2/db.changelog-v1.0.yml

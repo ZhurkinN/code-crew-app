@@ -15,16 +15,17 @@ import io.micronaut.security.rules.SecurityRule;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.inject.Inject;
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
 @Tag(name = "Positions/Vacancies", description = "All actions with positions of project including vacancies.")
 @Controller("/api/v1/positions")
 @Secured(SecurityRule.IS_AUTHENTICATED)
+@RequiredArgsConstructor
 public class PositionController {
 
-    @Inject
-    private PositionService positionService;
+    private final PositionService positionService;
 
     @Operation(method = "findAll", description = "Finds all positions")
     @Get(produces = MediaType.APPLICATION_JSON)

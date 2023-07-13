@@ -1,1 +1,0 @@
-drop table REFRESH_TOKEN_ENTITY

@@ -1,7 +1,6 @@
 package cis.tinkoff.auth;
 
-import cis.tinkoff.auth.model.RefreshTokenEntity;
-import cis.tinkoff.auth.repo.RefreshTokenRepository;
+import cis.tinkoff.auth.repository.RefreshTokenRepository;
 import cis.tinkoff.model.User;
 import cis.tinkoff.repository.UserRepository;
 import io.micronaut.http.HttpRequest;
@@ -35,7 +34,6 @@ public class UserPasswordProvider implements AuthenticationProvider {
             String login = (String) authenticationRequest.getIdentity();
             String password = (String) authenticationRequest.getSecret();
             Optional<User> userOptional = userRepository.findByEmail(login);
-            Optional<RefreshTokenEntity> refreshTokenEntityOptional = refreshTokenRepository.findByUsername(login);
 
             boolean isValid = userOptional.isPresent()
                     && userOptional.get().getPassword().equals(password)
