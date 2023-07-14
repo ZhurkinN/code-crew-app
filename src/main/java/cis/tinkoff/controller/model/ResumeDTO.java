@@ -20,6 +20,8 @@ public class ResumeDTO extends GenericDTO {
 
     private String description;
     private Boolean isActive;
+
+    @JsonInclude
     private DirectionDictionary direction;
 
     @JsonInclude

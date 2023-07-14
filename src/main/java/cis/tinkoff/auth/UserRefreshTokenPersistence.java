@@ -1,7 +1,7 @@
 package cis.tinkoff.auth;
 
-import cis.tinkoff.auth.model.RefreshTokenEntity;
-import cis.tinkoff.auth.repo.RefreshTokenRepository;
+import cis.tinkoff.auth.model.RefreshToken;
+import cis.tinkoff.auth.repository.RefreshTokenRepository;
 import io.micronaut.runtime.event.annotation.EventListener;
 import io.micronaut.security.authentication.Authentication;
 import io.micronaut.security.errors.OauthErrorResponseException;
@@ -33,19 +33,21 @@ public class UserRefreshTokenPersistence implements RefreshTokenPersistence {
                 event.getAuthentication() != null &&
                 event.getAuthentication().getName() != null) {
             String payload = event.getRefreshToken();
-            RefreshTokenEntity token = new RefreshTokenEntity(event.getAuthentication().getName(), payload, false);
+            RefreshToken token = new RefreshToken()
+                    .setUsername(event.getAuthentication().getName())
+                    .setRefreshToken(payload);
 
-            refreshTokenRepository.saveRefreshToken(token);
+            refreshTokenRepository.save(token);
         }
     }
 
     @Override
     public Publisher<Authentication> getAuthentication(String refreshToken) {
         return Flux.create(emitter -> {
-            Optional<RefreshTokenEntity> tokenOpt = refreshTokenRepository.findByRefreshToken(refreshToken);
+            Optional<RefreshToken> tokenOpt = refreshTokenRepository.findByRefreshToken(refreshToken);
 
             if (tokenOpt.isPresent()) {
-                RefreshTokenEntity token = tokenOpt.get();
+                RefreshToken token = tokenOpt.get();
                 if (token.getRevoked()) {
                     emitter.error(new OauthErrorResponseException(INVALID_GRANT, "refresh token revoked", null));
                 } else {

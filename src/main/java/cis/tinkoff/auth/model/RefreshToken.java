@@ -1,0 +1,31 @@
+package cis.tinkoff.auth.model;
+
+import io.micronaut.data.annotation.DateCreated;
+import io.micronaut.data.annotation.GeneratedValue;
+import io.micronaut.data.annotation.Id;
+import io.micronaut.data.annotation.MappedEntity;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.Accessors;
+
+import java.time.Instant;
+
+@Getter
+@Setter
+@MappedEntity
+@Accessors(chain = true)
+@NoArgsConstructor
+public class RefreshToken {
+
+    @Id
+    @GeneratedValue
+    private Long id;
+    private String username;
+    private String refreshToken;
+    private Boolean revoked = false;
+
+    @DateCreated
+    private Instant dateCreated;
+
+}
