@@ -11,6 +11,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import java.util.Objects;
+
 @Getter
 @Setter
 @Accessors(chain = true)
@@ -23,4 +25,16 @@ public class ProjectStatusDictionary {
     @Enumerated(value = EnumType.STRING)
     private ProjectStatus statusName;
     private String description;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ProjectStatusDictionary that)) return false;
+        return getStatusName() == that.getStatusName() && getDescription().equals(that.getDescription());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getStatusName(), getDescription());
+    }
 }
