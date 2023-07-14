@@ -1,0 +1,130 @@
+micronaut:
+  application:
+    name: codeCrew
+  router:
+    static-resources:
+      default:
+        enabled: true
+        mapping: /static/**
+        paths:
+          - classpath: public
+      swagger:
+        paths: classpath:META-INF/swagger
+        mapping: /swagger/**
+      swagger-ui:
+        paths: classpath:META-INF/swagger/views/swagger-ui
+        mapping: /swagger-ui/**
+  metrics:
+    enabled: true
+    export:
+      prometheus:
+        enabled: true
+        step: PT1M
+        descriptions: true
+
+  # Micronaut Security configuration
+  security:
+    enabled: true
+    authentication: bearer
+    endpoints:
+      login:
+        enabled: true
+        path: '/auth/login'
+      oauth:
+        enabled: true
+        path: '/auth/access_token'
+        get-allowed: false
+      logout:
+        enabled: true
+    intercept-url-map:
+      - pattern: /metrics/**
+        http-method: GET
+        access:
+          - isAnonymous()
+      - pattern: /prometheus/**
+        http-method: GET
+        access:
+          - isAnonymous()
+      - pattern: /swagger/**
+        http-method: GET
+        access:
+          - isAnonymous()
+      - pattern: /swagger-ui/**
+        http-method: GET
+        access:
+          - isAnonymous()
+      - pattern: /static/**
+        http-method: GET
+        access:
+          - isAnonymous()
+      - pattern: /locales/**
+        http-method: GET
+        access:
+          - isAnonymous()
+    token:
+      jwt:
+        generator:
+          access-token:
+            expiration: 1800  # 30 minutes
+          refresh-token:
+            enabled: true
+            jws-algorithm: HS512
+            secret: ${JWT_REFRESH_SECRET}
+            base64: true
+        signatures:
+          secret:
+            generator:
+              secret: ${JWT_SIGNATURE_GENERATOR_SECRET}
+              jws-algorithm: HS512
+  server:
+    port: 8080
+    cors:
+      enabled: true
+      configurations:
+        ui:
+          allowed-origins:
+            - http://localhost:3000
+            - http://localhost:8080
+    authentication: cookie
+    enabled: false
+
+datasources:
+  default:
+    url: jdbc:tc:postgresql:14:///code-crew-app
+#    username: ${POSTGRES_USER}
+#    password: ${POSTGRES_PASSWORD}
+    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
+    db-type: postgres
+
+netty:
+  default:
+    allocator:
+      max-order: 3
+liquibase:
+  enabled: true
+  datasources:
+    default:
+      change-log: classpath:db/changelog/changelog.yaml
+
+
+logger:
+  levels:
+    cis.tinkoff.micronaut.jwt: DEBUG
+    io.micronaut.security: DEBUG
+endpoints:
+  all:
+    enabled: true
+    port: 8081
+    sensitive: false
+  health:
+    details-visible: anonymous
+  refresh:
+    sensitive: true
+  loggers:
+    sensitive: true
+  stop:
+    sensitive: true
+info:
+  welcome:
+    title: 'CodeCrew - WEB service for finding development teams'
+    description: 'The service allows you to create and find a dream team for you! For more information - visit - https://github.com/ZhurkinN/code-crew-app'
