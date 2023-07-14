@@ -40,16 +40,16 @@ VALUES ('alex@mail.ru', 'Gordon', 'Alonso', '123', 'I am Gordon',
 
 insert into resume(description, direction, user_id, skills)
 values ('Hey, i want to work backend dev', 'BACKEND', 1,
-        ARRAY ['Java', 'Spring', 'Micronaut', 'Docker', 'Postgres', 'REST']),
+        ARRAY ['java', 'spring', 'micronaut', 'docker', 'postgres', 'rest']),
        ('Hey, i want to work frontend dev', 'FRONTEND', 2,
-        ARRAY ['JavaScript', 'Next', 'React', 'Node', 'Postgres', 'REST']),
-       ('Hey, i want to work QA', 'QA', 3, ARRAY ['Java', 'Mockito', 'REST', 'JUnit', 'Postgres']),
-       ('Hey, i want to work Machine Learning engineer', 'ML', 4, ARRAY ['Python']),
-       ('Hey, i want to work Analyst', 'ANALYST', 5, ARRAY ['Python']),
-       ('Hey, i want to work Data science', 'DATA_SCIENCE', 6, ARRAY ['Python', 'Pandas', 'Postgres']),
+        ARRAY ['javaScript', 'next', 'react', 'node', 'postgres', 'rest']),
+       ('Hey, i want to work QA', 'QA', 3, ARRAY ['java', 'mockito', 'rest', 'junit', 'postgres']),
+       ('Hey, i want to work Machine Learning engineer', 'ML', 4, ARRAY ['python']),
+       ('Hey, i want to work Analyst', 'ANALYST', 5, ARRAY ['python']),
+       ('Hey, i want to work Data science', 'DATA_SCIENCE', 6, ARRAY ['python', 'pandas', 'postgres']),
        ('Hey, i want to work backend dev', 'BACKEND', 7,
-        ARRAY ['Java', 'Spring', 'Micronaut', 'Docker', 'Postgres', 'Gradle', 'Maven']),
-       ('Hey, i want to work frontend dev', 'FRONTEND', 8, ARRAY ['JavaScript', 'Next', 'React', 'Node', 'Postgres']);
+        ARRAY ['java', 'spring', 'micronaut', 'docker', 'postgres', 'gradle', 'maven']),
+       ('Hey, i want to work frontend dev', 'FRONTEND', 8, ARRAY ['javascript', 'next', 'react', 'node', 'postgres']);
 
 insert into project(leader_id, title, theme, description, status)
 VALUES (2, 'Новый сайт РЖД', 'Сайт РЖД', 'Проект разработки нового сайта РЖД', 'PREPARING'),
@@ -59,25 +59,25 @@ VALUES (2, 'Новый сайт РЖД', 'Сайт РЖД', 'Проект раз
        (3, 'Новый сайт Тинькофф', 'Сайт Тинькофф', 'Проект разработки нового сайта Тинькофф', 'IN_PROGRESS');
 
 insert into position(project_id, direction, description, skills)
-VALUES (1, 'BACKEND', 'Позиция Backend-developer', ARRAY ['Java', 'Postgres', 'Spring', 'Maven']),
-       (1, 'FRONTEND', 'Позиция Frontend-developer', ARRAY ['JavaScript', 'TypeScript', 'React', 'Next']),
-       (1, 'QA', 'Позиция QA-engineer', ARRAY ['Java', 'Mockito', 'JUnit']),
+VALUES (1, 'BACKEND', 'Позиция Backend-developer', ARRAY ['java', 'postgres', 'spring', 'maven']),
+       (1, 'FRONTEND', 'Позиция Frontend-developer', ARRAY ['javascript', 'typescript', 'react', 'next']),
+       (1, 'QA', 'Позиция QA-engineer', ARRAY ['java', 'mockito', 'junit']),
 
-       (2, 'BACKEND', 'Позиция Backend-developer', ARRAY ['Python', 'Postgres', 'Django', 'Maven']),
-       (2, 'FRONTEND', 'Позиция Frontend-developer', ARRAY ['JavaScript', 'TypeScript', 'React']),
-       (2, 'QA', 'Позиция тестировщика', ARRAY ['Java', 'Mockito', 'JUnit', 'Selenium']),
-       (2, 'ANALYST', 'Позиция аналитика', ARRAY ['Java']),
+       (2, 'BACKEND', 'Позиция Backend-developer', ARRAY ['python', 'postgres', 'django', 'maven']),
+       (2, 'FRONTEND', 'Позиция Frontend-developer', ARRAY ['javascript', 'typescript', 'react']),
+       (2, 'QA', 'Позиция тестировщика', ARRAY ['java', 'mockito', 'junit', 'selenium']),
+       (2, 'ANALYST', 'Позиция аналитика', ARRAY ['java']),
 
-       (3, 'BACKEND', 'Позиция Backend-developer', ARRAY ['Java', 'Postgres', 'Spring', 'Maven']),
-       (3, 'QA', 'Позиция тестировщика', ARRAY ['Java', 'Mockito', 'JUnit', 'Selenium']),
+       (3, 'BACKEND', 'Позиция Backend-developer', ARRAY ['java', 'postgres', 'spring', 'maven']),
+       (3, 'QA', 'Позиция тестировщика', ARRAY ['java', 'mockito', 'jUnit', 'selenium']),
 
-       (4, 'BACKEND', 'Позиция Backend-developer', ARRAY ['Java', 'Postgres', 'Spring', 'Maven']),
-       (4, 'FRONTEND', 'Позиция Frontend-developer', ARRAY ['JavaScript', 'TypeScript', 'React', 'Next']),
+       (4, 'BACKEND', 'Позиция Backend-developer', ARRAY ['java', 'postgres', 'spring', 'maven']),
+       (4, 'FRONTEND', 'Позиция Frontend-developer', ARRAY ['javascript', 'typescript', 'react', 'next']),
 
-       (5, 'BACKEND', 'Позиция Backend-developer', ARRAY ['Java', 'Postgres', 'Spring', 'Maven']),
-       (5, 'QA', 'Позиция тестировщика', ARRAY ['Java', 'Mockito', 'JUnit', 'Selenium']),
-       (5, 'DATA_SCIENCE', 'Позиция Data science engineer', ARRAY ['Python', 'Pandas', 'Postgres']),
-       (5, 'ANALYST', 'Позиция аналитика', ARRAY ['Postgres', 'Python']);
+       (5, 'BACKEND', 'Позиция Backend-developer', ARRAY ['java', 'postgres', 'spring', 'maven']),
+       (5, 'QA', 'Позиция тестировщика', ARRAY ['java', 'mockito', 'junit', 'selenium']),
+       (5, 'DATA_SCIENCE', 'Позиция Data science engineer', ARRAY ['python', 'pandas', 'postgres']),
+       (5, 'ANALYST', 'Позиция аналитика', ARRAY ['postgres', 'python']);
 
 insert into position_request(resume_id, position_id, status, cover_letter, is_invite)
 VALUES (1, 1, 'IN_CONSIDERATION', 'Очень хочу работать в вашей команде', false),
