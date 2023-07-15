@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +27,7 @@ public class ProjectMemberDTO {
     private Long joinDate;
     private Boolean isLead;
 
-    public static ProjectMemberDTO toProjectMemberDTO(User user, Position position) {
+    public static ProjectMemberDTO toProjectMemberDTO(User user, Position position, Long leaderId) {
         if (user == null || position == null) {
             return null;
         }
@@ -37,13 +38,14 @@ public class ProjectMemberDTO {
                 .surname(user.getSurname())
                 .pictureLink(null) //TODO insert picture link
                 .direction(position.getDirection())
-                .joinDate(null)//TODO insert join date
+                .joinDate(position.getJoinDate())
+                .isLead(user.getId() == leaderId)
                 .build();
 
         return projectMemberDTO;
     }
 
-    public static List<ProjectMemberDTO> toProjectMemberDTO(List<User> users, List<Position> positions) {
+    public static List<ProjectMemberDTO> toProjectMemberDTO(List<User> users, List<Position> positions, Long leaderId) {
         if (users == null || positions == null) {
             return null;
         }
@@ -53,7 +55,7 @@ public class ProjectMemberDTO {
                 .map(position -> {
                     User member = users.stream().filter(user -> user.getId() == position.getUser().getId())
                             .findFirst().orElse(null);
-                    ProjectMemberDTO projectMemberDTO = toProjectMemberDTO(member, position);
+                    ProjectMemberDTO projectMemberDTO = toProjectMemberDTO(member, position, leaderId);
 
                     return projectMemberDTO;
                 })

@@ -1,6 +1,7 @@
 package cis.tinkoff.model;
 
 import cis.tinkoff.model.generic.GenericModel;
+import cis.tinkoff.support.helper.TimestampAttributeConverter;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.data.annotation.MappedEntity;
@@ -32,9 +33,8 @@ public class Position extends GenericModel {
     private Boolean isVisible;
 
     @Nullable
-    @TypeDef(type = DataType.TIMESTAMP)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime joinDate;
+    @TypeDef(type = DataType.TIMESTAMP, converter = TimestampAttributeConverter.class)
+    private Long joinDate;
 
     @Relation(
             value = Relation.Kind.MANY_TO_ONE,
