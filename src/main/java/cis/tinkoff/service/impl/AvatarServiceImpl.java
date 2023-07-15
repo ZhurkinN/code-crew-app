@@ -41,7 +41,7 @@ public class AvatarServiceImpl implements AvatarService {
     public StreamedFile getAvatar(String userEmail){
         FileInputStream fileInputStream;
         try {
-            fileInputStream = new FileInputStream(STORAGE_PATH + userEmail);
+            fileInputStream = new FileInputStream(STORAGE_PATH + buildFilenameWithExtension(userEmail, BASE_EXTENSION));
         } catch (FileNotFoundException e) {
             throw new BadAvatarPathException("Not found");
         }
