@@ -2,6 +2,7 @@ package cis.tinkoff.controller.model;
 
 import cis.tinkoff.controller.model.custom.ContactDTO;
 import cis.tinkoff.controller.model.custom.ProjectMemberDTO;
+import cis.tinkoff.model.Position;
 import cis.tinkoff.model.Project;
 import cis.tinkoff.model.ProjectStatusDictionary;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -43,6 +44,15 @@ public class ProjectDTO {
                 .status(project.getStatus())
                 .contacts(ContactDTO.toContactDto(project.getContacts()))
                 .build();
+
+        List<Position> positions = project.getPositions();
+
+        if (positions != null) {
+            Integer vacanciesCount = Math.toIntExact(positions.stream().filter(position -> position.getUser() == null).count());
+            Integer membersCount = positions.size() - vacanciesCount;
+            projectDTO.setVacanciesCount(vacanciesCount);
+            projectDTO.setMembersCount(membersCount);
+        }
 
         return projectDTO;
     }
