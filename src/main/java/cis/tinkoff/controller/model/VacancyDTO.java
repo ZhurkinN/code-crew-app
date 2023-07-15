@@ -8,7 +8,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
-import java.time.ZoneOffset;
 import java.util.Collection;
 import java.util.List;
 
@@ -36,7 +35,7 @@ public class VacancyDTO {
                 .direction(position.getDirection())
                 .description(position.getDescription())
                 .skills(position.getSkills())
-                .createdWhen(position.getCreatedWhen().toEpochSecond(ZoneOffset.UTC))
+                .createdWhen(position.getCreatedWhen())
                 .isVisible(position.getIsVisible())
                 .project(ProjectDTO.toProjectDTO(position.getProject())) //TODO use method from ProjectMapper class
                 .build();

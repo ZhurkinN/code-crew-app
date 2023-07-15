@@ -3,7 +3,6 @@ package cis.tinkoff.support.mapper.generic;
 import cis.tinkoff.controller.model.generic.GenericDTO;
 import cis.tinkoff.model.generic.GenericModel;
 
-import java.time.ZoneOffset;
 import java.util.List;
 
 public abstract class GenericMapper<M extends GenericModel, D extends GenericDTO> {
@@ -20,7 +19,7 @@ public abstract class GenericMapper<M extends GenericModel, D extends GenericDTO
                                     D dto) {
         dto.setId(model.getId());
         dto.setIsDeleted(model.getIsDeleted());
-        dto.setCreatedWhen(model.getCreatedWhen().toEpochSecond(ZoneOffset.UTC));
+        dto.setCreatedWhen(model.getCreatedWhen());
     }
 
 }

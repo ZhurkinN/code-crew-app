@@ -10,8 +10,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-import java.time.LocalDateTime;
-
 @Getter
 @Setter
 @Accessors(chain = true)
@@ -48,7 +46,7 @@ public class PositionRequest extends GenericModel {
     private Position position;
 
     public PositionRequest(Long id,
-                           LocalDateTime createdWhen,
+                           Long createdWhen,
                            Boolean isDeleted,
                            @Nullable String coverLetter,
                            Boolean isInvite,

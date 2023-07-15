@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,7 +67,7 @@ public class Project extends GenericModel {
     private List<User> members = new ArrayList<>();
 
     public Project(Long id,
-                   LocalDateTime createdWhen,
+                   Long createdWhen,
                    Boolean isDeleted,
                    @Nullable User leader,
                    @Nullable ProjectStatusDictionary status,

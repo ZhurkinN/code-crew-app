@@ -23,7 +23,6 @@ import io.micronaut.data.model.Sort;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -145,7 +144,7 @@ public class PositionServiceImpl implements PositionService {
         Position newPosition = new Position();
 
         VacancyDTO.updateEntityByDTO(newPosition, vacancyCreateDTO);
-        newPosition.setCreatedWhen(LocalDateTime.now());
+        newPosition.setCreatedWhen(System.currentTimeMillis());
         newPosition.setIsDeleted(false);
         newPosition.setIsVisible(true);
         newPosition.setProject(project);

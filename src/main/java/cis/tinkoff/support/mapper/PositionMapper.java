@@ -5,7 +5,6 @@ import cis.tinkoff.controller.model.VacancyDTO;
 import cis.tinkoff.model.Position;
 import jakarta.inject.Singleton;
 
-import java.time.ZoneOffset;
 import java.util.Collection;
 import java.util.List;
 
@@ -21,7 +20,7 @@ public class PositionMapper {
                 .direction(position.getDirection())
                 .description(position.getDescription())
                 .skills(position.getSkills())
-                .createdWhen(position.getCreatedWhen().toEpochSecond(ZoneOffset.UTC))
+                .createdWhen(position.getCreatedWhen())
 //                .project(position.getProject()) //TODO use method from ProjectMapper class
                 .build();
 
