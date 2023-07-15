@@ -85,7 +85,7 @@ public class ProjectController {
         return HttpResponse.ok(projectDTO);
     }
 
-    @Operation(method = "createProject", description = "Delete user from project")
+    @Operation(method = "createProject", description = "Create project")
     @Post(produces = MediaType.APPLICATION_JSON)
     public HttpResponse<?> createProject(
             Authentication authentication,

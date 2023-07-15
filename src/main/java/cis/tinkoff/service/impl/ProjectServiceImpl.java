@@ -73,7 +73,7 @@ public class ProjectServiceImpl implements ProjectService {
         List<User> users = userRepository.findByIdInList(userIds);
 
         ProjectDTO projectDTO = ProjectDTO.toProjectDTO(project);
-        projectDTO.setMembers(ProjectMemberDTO.toProjectMemberDTO(users, project.getPositions()));
+        projectDTO.setMembers(ProjectMemberDTO.toProjectMemberDTO(users, positions));
         projectDTO.setVacanciesCount((int) project.getPositions().stream()
                 .filter(position -> position.getUser() == null).count()
         );

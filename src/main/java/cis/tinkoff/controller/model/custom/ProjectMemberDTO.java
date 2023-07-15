@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
@@ -48,6 +49,7 @@ public class ProjectMemberDTO {
         }
 
         List<ProjectMemberDTO> projectMemberDTOList = positions.stream()
+                .filter(position -> position.getUser() != null)
                 .map(position -> {
                     User member = users.stream().filter(user -> user.getId() == position.getUser().getId())
                             .findFirst().orElse(null);
