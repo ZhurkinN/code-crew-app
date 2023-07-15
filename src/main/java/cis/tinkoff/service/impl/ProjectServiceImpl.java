@@ -225,7 +225,22 @@ public class ProjectServiceImpl implements ProjectService {
 
         projectRepository.update(newProject);
 
-        return ProjectDTO.toProjectDTO(newProject);
+        //-------Extract method------------
+        newProject = projectRepository.findByIdInList(List.of(newProject.getId())).get(0);
+        List<Long> userIds = newProject.getPositions().stream()
+                .filter(position -> position.getUser() != null)
+                .map(position -> position.getUser().getId())
+                .toList();
+        List<User> users = userRepository.findByIdInList(userIds);
+
+        ProjectDTO projectDTO = ProjectDTO.toProjectDTO(newProject);
+        projectDTO.setMembers(ProjectMemberDTO.toProjectMemberDTO(
+                users,
+                newProject.getPositions(),
+                newProject.getLeader().getId()
+        ));
+        //----------------------------------
+        return projectDTO;
     }
 
     @Override
@@ -257,7 +272,25 @@ public class ProjectServiceImpl implements ProjectService {
         projectContactRepository.deleteByProjectId(updatedProject.getId());
         projectRepository.update(updatedProject);
 
-        return ProjectDTO.toProjectDTO(updatedProject);
+        updatedProject = projectRepository.findByIdInList(List.of(id)).get(0);
+
+        //-------Extract method------------
+        updatedProject = projectRepository.findByIdInList(List.of(updatedProject.getId())).get(0);
+        List<Long> userIds = updatedProject.getPositions().stream()
+                .filter(position -> position.getUser() != null)
+                .map(position -> position.getUser().getId())
+                .toList();
+        List<User> users = userRepository.findByIdInList(userIds);
+
+        ProjectDTO projectDTO = ProjectDTO.toProjectDTO(updatedProject);
+        projectDTO.setMembers(ProjectMemberDTO.toProjectMemberDTO(
+                users,
+                updatedProject.getPositions(),
+                updatedProject.getLeader().getId()
+        ));
+        //----------------------------------
+
+        return projectDTO;
     }
 
     private ProjectContact mapToProjectContactEntity(ContactDTO contactDTO) {
