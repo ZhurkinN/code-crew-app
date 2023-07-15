@@ -1,11 +1,13 @@
 package cis.tinkoff.model;
 
 import io.micronaut.data.annotation.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+@AllArgsConstructor
 @Getter
 @Setter
 @Accessors(chain = true)

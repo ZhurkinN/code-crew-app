@@ -5,6 +5,7 @@ import cis.tinkoff.controller.model.custom.ProjectMemberDTO;
 import cis.tinkoff.model.Position;
 import cis.tinkoff.model.Project;
 import cis.tinkoff.model.ProjectStatusDictionary;
+import cis.tinkoff.model.enumerated.ProjectStatus;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,7 +27,7 @@ public class ProjectDTO {
     private String theme;
     private String description;
     private Integer membersCount;
-    private ProjectStatusDictionary status;
+    private ProjectStatus status;
     private List<ContactDTO> contacts;
     private Integer vacanciesCount;
     private List<ProjectMemberDTO> members;
@@ -42,7 +43,7 @@ public class ProjectDTO {
                 .title(project.getTitle())
                 .theme(project.getTheme())
                 .description(project.getDescription())
-                .status(project.getStatus())
+                .status(project.getStatus().getStatusName())
                 .contacts(ContactDTO.toContactDto(project.getContacts()))
                 .createdWhen(project.getCreatedWhen())
                 .build();

@@ -101,7 +101,7 @@ public class ProjectController {
     public HttpResponse<ProjectDTO> updateProject(
             Authentication authentication,
             @PathVariable(name = "id") Long id,
-            @Body Project projectForUpdate
+            @Body ProjectDTO projectForUpdate
     ) throws RecordNotFoundException, InaccessibleActionException {
         ProjectDTO project = projectService.updateProject(id, authentication.getName(), projectForUpdate);
 

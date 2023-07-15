@@ -1,6 +1,7 @@
 package cis.tinkoff.service.impl;
 
 import cis.tinkoff.controller.model.ProjectDTO;
+import cis.tinkoff.controller.model.custom.ContactDTO;
 import cis.tinkoff.controller.model.custom.ProjectCreateDTO;
 import cis.tinkoff.controller.model.custom.ProjectMemberDTO;
 import cis.tinkoff.model.*;
@@ -228,7 +229,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public ProjectDTO updateProject(Long id, String login, Project projectForUpdate) throws RecordNotFoundException, InaccessibleActionException {
+    public ProjectDTO updateProject(Long id, String login, ProjectDTO projectForUpdate) throws RecordNotFoundException, InaccessibleActionException {
         List<Project> projects = projectRepository.findByIdInList(List.of(id));
 
         if (projects.size() == 0) {
@@ -241,9 +242,11 @@ public class ProjectServiceImpl implements ProjectService {
             throw new InaccessibleActionException(ErrorDisplayMessageKeeper.PROJECT_WRONG_ACCESS);
         }
 
-        List<ProjectContact> contacts = projectForUpdate.getContacts();
-        ProjectStatusDictionary status = projectStatusRepository.findById(projectForUpdate.getStatus().getStatusName())
-                .orElseThrow(() -> new RecordNotFoundException("status " + projectForUpdate.getStatus().getStatusName() + " not found"));
+        List<ProjectContact> contacts = projectForUpdate.getContacts().stream()
+                .map(this::mapToProjectContactEntity)
+                .toList();
+        ProjectStatusDictionary status = projectStatusRepository.findById(projectForUpdate.getStatus())
+                .orElseThrow(() -> new RecordNotFoundException("status " + projectForUpdate.getStatus() + " not found"));
 
         updatedProject.setTitle(projectForUpdate.getTitle());
         updatedProject.setTheme(projectForUpdate.getTheme());
@@ -255,5 +258,9 @@ public class ProjectServiceImpl implements ProjectService {
         projectRepository.update(updatedProject);
 
         return ProjectDTO.toProjectDTO(updatedProject);
+    }
+
+    private ProjectContact mapToProjectContactEntity(ContactDTO contactDTO) {
+        return new ProjectContact(null, contactDTO.getLink(), contactDTO.getDescription(), null);
     }
 }
