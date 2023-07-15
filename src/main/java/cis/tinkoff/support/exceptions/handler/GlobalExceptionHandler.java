@@ -1,8 +1,6 @@
 package cis.tinkoff.support.exceptions.handler;
 
-import cis.tinkoff.support.exceptions.DeletedRecordFoundException;
-import cis.tinkoff.support.exceptions.InaccessibleActionException;
-import cis.tinkoff.support.exceptions.RecordNotFoundException;
+import cis.tinkoff.support.exceptions.*;
 import cis.tinkoff.support.exceptions.model.ErrorDTO;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.http.HttpRequest;
@@ -37,11 +35,15 @@ public class GlobalExceptionHandler implements ExceptionHandler<RuntimeException
 
         int statusCode;
         if (exception instanceof DeletedRecordFoundException
-                || exception instanceof RecordNotFoundException) {
+                || exception instanceof RecordNotFoundException
+                || exception instanceof BadAvatarPathException) {
             statusCode = HttpStatus.NOT_FOUND.getCode();
         } else if (exception instanceof InaccessibleActionException) {
             statusCode = HttpStatus.NOT_ACCEPTABLE.getCode();
-        } else {
+        } else if (exception instanceof RequestEntityTooLargeException) {
+            statusCode = HttpStatus.REQUEST_ENTITY_TOO_LARGE.getCode();
+        }
+        else {
             statusCode = HttpStatus.CONFLICT.getCode();
         }
 
