@@ -6,6 +6,7 @@ import cis.tinkoff.controller.model.custom.ProjectMemberDTO;
 import cis.tinkoff.model.*;
 import cis.tinkoff.model.enumerated.Direction;
 import cis.tinkoff.repository.PositionRepository;
+import cis.tinkoff.repository.ProjectContactRepository;
 import cis.tinkoff.repository.ProjectRepository;
 import cis.tinkoff.repository.UserRepository;
 import cis.tinkoff.repository.dictionary.DirectionRepository;
@@ -35,6 +36,8 @@ public class ProjectServiceImpl implements ProjectService {
     private final PositionRepository positionRepository;
     @Inject
     private final ProjectStatusRepository projectStatusRepository;
+    @Inject
+    private final ProjectContactRepository projectContactRepository;
     @Inject
     private final DirectionRepository directionRepository;
 
@@ -247,6 +250,7 @@ public class ProjectServiceImpl implements ProjectService {
         updatedProject.setContacts(contacts);
         updatedProject.setStatus(status);
 
+        projectContactRepository.deleteByProjectId(updatedProject.getId());
         projectRepository.update(updatedProject);
 
         return ProjectDTO.toProjectDTO(updatedProject);
