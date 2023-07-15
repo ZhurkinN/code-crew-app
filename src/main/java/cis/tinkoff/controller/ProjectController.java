@@ -30,7 +30,7 @@ public class ProjectController {
 
     @Operation(method = "getAllUserProjects", description = "Finds all user projects")
     @Get(produces = MediaType.APPLICATION_JSON)
-    public HttpResponse<?> getAllUserProjects(
+    public HttpResponse<List<ProjectDTO>> getAllUserProjects(
             Authentication authentication,
             @Nullable @QueryValue(value = "lead") Boolean isLead
     ) {
@@ -43,7 +43,7 @@ public class ProjectController {
 
     @Operation(method = "getProjectById", description = "Find project by id")
     @Get(value = "/{id}", produces = MediaType.APPLICATION_JSON)
-    public HttpResponse<?> getProjectById(
+    public HttpResponse<ProjectDTO> getProjectById(
             Authentication authentication,
             @PathVariable(value = "id") Long id) {
         ProjectDTO projectDTO = projectService.getProjectById(id, authentication.getName());
@@ -74,7 +74,7 @@ public class ProjectController {
 
     @Operation(method = "deleteUserFromProject", description = "Delete user from project")
     @Post(value = "/{id}/delete-user", produces = MediaType.APPLICATION_JSON)
-    public HttpResponse<?> deleteUserFromProject(
+    public HttpResponse<ProjectDTO> deleteUserFromProject(
             Authentication authentication,
             @PathVariable(name = "id") Long id,
             @QueryValue(value = "userId") Long userId,
@@ -98,7 +98,7 @@ public class ProjectController {
 
     @Operation(method = "updateProject", description = "Update project information")
     @Patch(value = "/{id}", produces = MediaType.APPLICATION_JSON)
-    public HttpResponse<?> updateProject(
+    public HttpResponse<ProjectDTO> updateProject(
             Authentication authentication,
             @PathVariable(name = "id") Long id,
             @Body Project projectForUpdate
