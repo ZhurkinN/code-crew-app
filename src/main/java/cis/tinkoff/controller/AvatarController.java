@@ -6,21 +6,21 @@ import cis.tinkoff.service.AvatarService;
 import cis.tinkoff.support.exceptions.BadAvatarPathException;
 import cis.tinkoff.support.exceptions.RequestEntityTooLargeException;
 import io.micronaut.http.HttpResponse;
-import io.micronaut.http.MediaType;
 import io.micronaut.http.annotation.*;
 import io.micronaut.http.multipart.CompletedFileUpload;
 import io.micronaut.http.server.types.files.StreamedFile;
 import io.micronaut.security.annotation.Secured;
 import io.micronaut.security.rules.SecurityRule;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
 import java.io.*;
 
 import static io.micronaut.http.MediaType.*;
 
-
-@Secured(SecurityRule.IS_ANONYMOUS)
-@Controller("/image")
+@Tag(name = "Avatars", description = "Actions with user avatars")
+@Secured(SecurityRule.IS_AUTHENTICATED)
+@Controller("/avatar")
 @RequiredArgsConstructor
 public class AvatarController {
 
@@ -37,6 +37,4 @@ public class AvatarController {
 
         return avatarService.getAvatar(user);
     }
-
-
 }
