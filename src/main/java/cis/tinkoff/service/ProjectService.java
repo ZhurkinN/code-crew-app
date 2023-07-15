@@ -23,7 +23,7 @@ public interface ProjectService {
 
     ProjectDTO deleteUserFromProject(Long id, String login, Long userId, Direction direction) throws RecordNotFoundException, InaccessibleActionException;
 
-    Long createProject(String login, ProjectCreateDTO projectCreateDTO) throws RecordNotFoundException;
+    ProjectDTO createProject(String login, ProjectCreateDTO projectCreateDTO) throws RecordNotFoundException;
 
     ProjectDTO updateProject(Long id, String login, Project projectForUpdate) throws RecordNotFoundException, InaccessibleActionException;
 }

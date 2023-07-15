@@ -91,9 +91,9 @@ public class ProjectController {
             Authentication authentication,
             @Body ProjectCreateDTO projectCreateDTO
     ) throws RecordNotFoundException {
-        Long id = projectService.createProject(authentication.getName(), projectCreateDTO);
+        ProjectDTO projectDTO = projectService.createProject(authentication.getName(), projectCreateDTO);
 
-        return HttpResponse.ok();
+        return HttpResponse.ok(projectDTO);
     }
 
     @Operation(method = "updateProject", description = "Update project information")

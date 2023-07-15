@@ -176,7 +176,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Transactional
     @Override
-    public Long createProject(String login, ProjectCreateDTO projectCreateDTO) throws RecordNotFoundException {
+    public ProjectDTO createProject(String login, ProjectCreateDTO projectCreateDTO) throws RecordNotFoundException {
         User leader = userRepository.findByEmail(login)
                 .orElseThrow(() -> new RecordNotFoundException("user not found"));
         ProjectStatusDictionary status = projectStatusRepository.findById(projectCreateDTO.getStatus())
@@ -220,7 +220,7 @@ public class ProjectServiceImpl implements ProjectService {
 
         projectRepository.update(newProject);
 
-        return newProject.getId();
+        return ProjectDTO.toProjectDTO(newProject);
     }
 
     @Override
