@@ -36,6 +36,7 @@ dependencies {
     //TEST
     testImplementation("org.mockito:mockito-core")
     testImplementation("org.testcontainers:junit-jupiter")
+    testImplementation("io.micronaut.test:micronaut-test-rest-assured")
     testImplementation("org.testcontainers:postgresql")
     testImplementation("org.testcontainers:testcontainers")
 

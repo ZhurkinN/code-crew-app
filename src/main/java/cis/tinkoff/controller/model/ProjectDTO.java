@@ -11,7 +11,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.ZoneOffset;
 import java.util.Collection;
 import java.util.List;
 
@@ -45,7 +44,7 @@ public class ProjectDTO {
                 .description(project.getDescription())
                 .status(project.getStatus())
                 .contacts(ContactDTO.toContactDto(project.getContacts()))
-                .createdWhen(project.getCreatedWhen().toEpochSecond(ZoneOffset.UTC))
+                .createdWhen(project.getCreatedWhen())
                 .build();
 
         List<Position> positions = project.getPositions();

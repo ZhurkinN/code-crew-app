@@ -10,7 +10,8 @@ public abstract class GenericMapper<M extends GenericModel, D extends GenericDTO
     public abstract D toDto(M model);
 
     public List<D> toDtos(List<M> models) {
-        return models.stream()
+        return models
+                .stream()
                 .map(this::toDto)
                 .toList();
     }

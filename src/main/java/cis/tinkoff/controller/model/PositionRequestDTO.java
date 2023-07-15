@@ -16,15 +16,12 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 public class PositionRequestDTO extends GenericDTO {
 
+    @JsonInclude
     private String coverLetter;
     private Boolean isInvite;
 
     @JsonInclude
     private RequestStatusDictionary status;
-
-    @JsonInclude
     private Resume resume;
-
-    @JsonInclude
     private Position position;
 }

@@ -1,12 +1,14 @@
 package cis.tinkoff.controller;
 
 import cis.tinkoff.controller.model.PositionRequestDTO;
+import cis.tinkoff.controller.model.ResumeInviteDTO;
 import cis.tinkoff.controller.model.custom.CreateRequestDTO;
 import cis.tinkoff.model.PositionRequest;
 import cis.tinkoff.service.PositionRequestService;
 import cis.tinkoff.support.exceptions.InaccessibleActionException;
 import cis.tinkoff.support.exceptions.RecordNotFoundException;
 import cis.tinkoff.support.mapper.PositionRequestMapper;
+import cis.tinkoff.support.mapper.ResumeInviteMapper;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.MediaType;
 import io.micronaut.http.annotation.*;
@@ -27,6 +29,7 @@ public class PositionRequestController {
 
     private final PositionRequestService positionRequestService;
     private final PositionRequestMapper positionRequestMapper;
+    private final ResumeInviteMapper resumeInviteMapper;
 
     @Operation(method = "findAll", description = "Finds all position' requests")
     @Get(value = "/all", produces = MediaType.APPLICATION_JSON)
@@ -85,13 +88,13 @@ public class PositionRequestController {
 
     @Operation(method = "getResumeInvites", description = "Get position invites by resume id (for interested users)")
     @Get(value = "/resumes/{id}", produces = MediaType.APPLICATION_JSON)
-    public HttpResponse<List<PositionRequestDTO>> getResumeInvites(@PathVariable Long id,
-                                                                   Authentication authentication)
+    public HttpResponse<List<ResumeInviteDTO>> getResumeInvites(@PathVariable Long id,
+                                                                Authentication authentication)
             throws RecordNotFoundException, InaccessibleActionException {
 
         String resumeOwnerEmail = authentication.getName();
         List<PositionRequest> resumeInvites = positionRequestService.getResumesPositionRequests(id, resumeOwnerEmail);
-        List<PositionRequestDTO> responseDtos = positionRequestMapper.toDtos(resumeInvites);
+        List<ResumeInviteDTO> responseDtos = resumeInviteMapper.toDtos(resumeInvites);
 
         return HttpResponse.ok(responseDtos);
     }
