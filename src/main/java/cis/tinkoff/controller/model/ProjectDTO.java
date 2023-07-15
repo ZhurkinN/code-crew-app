@@ -27,7 +27,7 @@ public class ProjectDTO {
     private String theme;
     private String description;
     private Integer membersCount;
-    private ProjectStatus status;
+    private ProjectStatusDictionary status;
     private List<ContactDTO> contacts;
     private Integer vacanciesCount;
     private List<ProjectMemberDTO> members;
@@ -43,7 +43,7 @@ public class ProjectDTO {
                 .title(project.getTitle())
                 .theme(project.getTheme())
                 .description(project.getDescription())
-                .status(project.getStatus().getStatusName())
+                .status(project.getStatus())
                 .contacts(ContactDTO.toContactDto(project.getContacts()))
                 .createdWhen(project.getCreatedWhen())
                 .build();

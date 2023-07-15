@@ -25,5 +25,5 @@ public interface ProjectService {
 
     ProjectDTO createProject(String login, ProjectCreateDTO projectCreateDTO) throws RecordNotFoundException;
 
-    ProjectDTO updateProject(Long id, String login, ProjectDTO projectForUpdate) throws RecordNotFoundException, InaccessibleActionException;
+    ProjectDTO updateProject(Long id, String login, ProjectCreateDTO projectForUpdate) throws RecordNotFoundException, InaccessibleActionException;
 }

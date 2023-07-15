@@ -244,7 +244,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public ProjectDTO updateProject(Long id, String login, ProjectDTO projectForUpdate) throws RecordNotFoundException, InaccessibleActionException {
+    public ProjectDTO updateProject(Long id, String login, ProjectCreateDTO projectForUpdate) throws RecordNotFoundException, InaccessibleActionException {
         List<Project> projects = projectRepository.findByIdInList(List.of(id));
 
         if (projects.size() == 0) {
