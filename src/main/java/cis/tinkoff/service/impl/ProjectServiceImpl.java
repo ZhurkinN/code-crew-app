@@ -203,6 +203,7 @@ public class ProjectServiceImpl implements ProjectService {
         newPosition.setProject(newProject);
         newPosition.setDirection(direction);
         newPosition.setDescription("leader of the project");
+        newPosition.setJoinDate(System.currentTimeMillis());
         newPosition.setIsVisible(false);
 
         newPosition = positionRepository.save(newPosition);
