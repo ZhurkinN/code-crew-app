@@ -15,12 +15,12 @@ values ('PREPARING', 'Project is in preparation stage'),
        ('FROZEN', 'Project is frozen');
 
 insert into dictionary_request_status(status_name, description)
-VALUES ('ACCEPTED', 'Request is accepted'),
+values ('ACCEPTED', 'Request is accepted'),
        ('DECLINED', 'Request is declined'),
        ('IN_CONSIDERATION', 'Request is under consideration');
 
 insert into users(email, name, surname, password, main_information, contacts)
-VALUES ('alex@mail.ru', 'Gordon', 'Alonso', '123', 'I am Gordon',
+values ('alex@mail.ru', 'Gordon', 'Alonso', '123', 'I am Gordon',
         ARRAY ['https://github.com/Alonso', 'https://inst/Alonso']),
        ('weiber@mail.ru', 'Loren', 'Wisen', '123', 'I am Loren',
         ARRAY ['https://github.com/Wisen', 'https://inst/Wisen']),
@@ -52,14 +52,14 @@ values ('Hey, i want to work backend dev', 'BACKEND', 1,
        ('Hey, i want to work frontend dev', 'FRONTEND', 8, ARRAY ['javascript', 'next', 'react', 'node', 'postgres']);
 
 insert into project(leader_id, title, theme, description, status)
-VALUES (2, 'Новый сайт РЖД', 'Сайт РЖД', 'Проект разработки нового сайта РЖД', 'PREPARING'),
+values (2, 'Новый сайт РЖД', 'Сайт РЖД', 'Проект разработки нового сайта РЖД', 'PREPARING'),
        (1, 'Новый Тиндер', 'Приложение Тиндер', 'Проект разработки Тиндера', 'CLOSED'),
        (4, 'Новое приложение Спотифай', 'Спотифай', 'Проект разработки Спотифая', 'FROZEN'),
        (6, 'Новый сайт Авиасейлс', 'Сайт АвиаСейлс', 'Проект разработки ТуТу', 'PREPARING'),
        (3, 'Новый сайт Тинькофф', 'Сайт Тинькофф', 'Проект разработки нового сайта Тинькофф', 'IN_PROGRESS');
 
 insert into position(project_id, direction, description, skills)
-VALUES (1, 'BACKEND', 'Позиция Backend-developer', ARRAY ['java', 'postgres', 'spring', 'maven']),
+values (1, 'BACKEND', 'Позиция Backend-developer', ARRAY ['java', 'postgres', 'spring', 'maven']),
        (1, 'FRONTEND', 'Позиция Frontend-developer', ARRAY ['javascript', 'typescript', 'react', 'next']),
        (1, 'QA', 'Позиция QA-engineer', ARRAY ['java', 'mockito', 'junit']),
 
@@ -80,7 +80,7 @@ VALUES (1, 'BACKEND', 'Позиция Backend-developer', ARRAY ['java', 'postgr
        (5, 'ANALYST', 'Позиция аналитика', ARRAY ['postgres', 'python']);
 
 insert into position_request(resume_id, position_id, status, cover_letter, is_invite)
-VALUES (1, 1, 'IN_CONSIDERATION', 'Очень хочу работать в вашей команде', false),
+values (1, 1, 'IN_CONSIDERATION', 'Очень хочу работать в вашей команде', false),
        (8, 2, 'IN_CONSIDERATION', 'Очень хочу работать в вашей команде', false),
        (3, 3, 'IN_CONSIDERATION', 'Очень хочу работать в вашей команде', false),
        (7, 4, 'IN_CONSIDERATION', 'Очень хочу работать в вашей команде', false),
@@ -92,4 +92,8 @@ VALUES (1, 1, 'IN_CONSIDERATION', 'Очень хочу работать в ва�
        (7, 10, 'IN_CONSIDERATION', 'Очень хочу работать в вашей команде', false);
 
 insert into project_members (user_id, project_id)
-values (1, 1);
+values (2, 1),
+       (1, 2),
+       (4, 3),
+       (6, 4),
+       (3, 5);

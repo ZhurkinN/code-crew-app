@@ -1,6 +1,7 @@
 package cis.tinkoff.repository;
 
 import cis.tinkoff.model.Position;
+import cis.tinkoff.model.Project;
 import cis.tinkoff.model.User;
 import io.micronaut.context.annotation.Parameter;
 import io.micronaut.core.annotation.Nullable;
@@ -72,13 +73,29 @@ public interface PositionRepository extends PageableRepository<Position, Long>, 
             nativeQuery = true,
             value = """
                     SELECT DISTINCT u.*
-                    FROM position po 
-                    JOIN project p on po.project_id = p.id 
-                    JOIN project_members pm on p.id = pm.project_id 
-                    JOIN users u on u.id = pm.user_id 
+                    FROM position po
+                        JOIN project p on po.project_id = p.id
+                        JOIN project_members pm on p.id = pm.project_id
+                        JOIN users u on u.id = pm.user_id
                     WHERE po.id = :id
                     """
     )
     List<User> findProjectMembersByPositionId(@Parameter("id") Long id);
+
+    @Query(
+            nativeQuery = true,
+            value = """
+                    select u.email
+                    from position po
+                        join project p on po.project_id = p.id
+                        join users u on u.id = p.leader_id
+                    where po.id = :id;
+                    """
+    )
+    String getProjectsLeadersEmailById(@Id Long id);
+
+    @Join(value = "project.status", type = Join.Type.FETCH)
+    @Join(value = "project.members", type = Join.Type.FETCH)
+    Project findProjectById(@Id Long id);
 
 }

@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,7 +55,7 @@ public class Resume extends GenericModel {
     private List<PositionRequest> requests = new ArrayList<>();
 
     public Resume(Long id,
-                  LocalDateTime createdWhen,
+                  Long createdWhen,
                   Boolean isDeleted,
                   @Nullable User user,
                   @Nullable DirectionDictionary direction,

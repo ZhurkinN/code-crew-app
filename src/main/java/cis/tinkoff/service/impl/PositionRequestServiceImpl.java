@@ -1,7 +1,5 @@
 package cis.tinkoff.service.impl;
 
-import cis.tinkoff.controller.model.PositionRequestDTO;
-import cis.tinkoff.controller.model.request.ResumeRequestDTO;
 import cis.tinkoff.model.*;
 import cis.tinkoff.model.enumerated.RequestStatus;
 import cis.tinkoff.repository.PositionRepository;
@@ -16,6 +14,7 @@ import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
+import java.util.Objects;
 
 import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.*;
 
@@ -74,7 +73,8 @@ public class PositionRequestServiceImpl implements PositionRequestService {
         RequestStatusDictionary defaultStatus = requestStatusRepository.findById(RequestStatus.IN_CONSIDERATION)
                 .orElseThrow();
 
-        validateUsersResumeLeadership(authorEmail, positionId);
+        validateUsersProjectLeadership(authorEmail, positionId);
+        validateInvitedUsersProjectMembership(resumeId, positionId);
         validateUnansweredRequestDuplication(resume, positionId, defaultStatus);
 
         PositionRequest positionRequest = new PositionRequest()
@@ -88,14 +88,51 @@ public class PositionRequestServiceImpl implements PositionRequestService {
     }
 
     @Override
-    public List<PositionRequestDTO> getVacancyRequestsByVacancyId(Long id, String email) throws RecordNotFoundException, InaccessibleActionException {
-        return null;
+    public List<PositionRequest> getPositionsRequests(Long positionId,
+                                                      String leaderEmail) throws RecordNotFoundException, InaccessibleActionException {
+
+        Position position = positionRepository.findByIdAndIsDeletedFalseAndIsVisibleTrue(positionId)
+                .orElseThrow(() -> new RecordNotFoundException(POSITION_NOT_FOUND));
+        validateUsersProjectLeadership(leaderEmail, positionId);
+
+        List<PositionRequest> positionRequests =
+                positionRequestRepository.findAllByPositionAndIsDeletedFalseAndIsInviteFalse(position);
+        positionRequests.forEach(e -> {
+            User user = resumeRepository.getUserById(e.getResume().getId());
+            User detailedUser = new User()
+                    .setName(user.getName())
+                    .setSurname(user.getSurname());
+            detailedUser.setCreatedWhen(null);
+            detailedUser.setIsDeleted(null);
+            e.getResume().setUser(detailedUser);
+        });
+
+        return positionRequests;
     }
 
     @Override
-    public List<ResumeRequestDTO> getResumeRequestsByResumeId(Long resumeId, String email) throws RecordNotFoundException, InaccessibleActionException {
-        return null;
+    public List<PositionRequest> getResumesPositionRequests(Long resumeId,
+                                                            String resumeOwnerEmail) throws RecordNotFoundException, InaccessibleActionException {
+
+        Resume resume = resumeRepository.findByIdAndIsDeletedFalseAndIsActiveTrue(resumeId)
+                .orElseThrow(() -> new RecordNotFoundException(RESUME_NOT_FOUND));
+        validateUsersResumeOwnership(resumeOwnerEmail, resumeId);
+
+        List<PositionRequest> resumesPositionRequests =
+                positionRequestRepository.findAllByResumeAndIsDeletedFalseAndIsInviteTrue(resume);
+        resumesPositionRequests.forEach(e -> {
+            Project project = positionRepository.findProjectById(Objects.requireNonNull(e.getPosition()).getId());
+            Project detailedProject = new Project()
+                    .setStatus(project.getStatus())
+                    .setMembers(project.getMembers());
+            detailedProject.setCreatedWhen(null);
+            detailedProject.setIsDeleted(null);
+            e.getPosition().setProject(detailedProject);
+        });
+
+        return resumesPositionRequests;
     }
+
 
     private void validateUsersResumeOwnership(String userEmail,
                                               Long resumeId) {
@@ -134,8 +171,17 @@ public class PositionRequestServiceImpl implements PositionRequestService {
         }
     }
 
-    private void validateUsersResumeLeadership(String authorEmail,
-                                               Long positionId) {
+    private void validateUsersProjectLeadership(String authorEmail,
+                                                Long positionId) {
+        String leaderEmail = positionRepository.getProjectsLeadersEmailById(positionId);
+        if (!leaderEmail.equals(authorEmail)) {
+            throw new InaccessibleActionException(PROJECT_WRONG_ACCESS);
+        }
+    }
 
+    private void validateInvitedUsersProjectMembership(Long resumeId,
+                                                       Long positionId) {
+        User invitedUser = resumeRepository.getUserById(resumeId);
+        validateUsersProjectMembership(invitedUser.getEmail(), positionId);
     }
 }

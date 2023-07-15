@@ -69,7 +69,7 @@ public class Position extends GenericModel {
     private List<PositionRequest> requests = new ArrayList<>();
 
     public Position(Long id,
-                    LocalDateTime createdWhen,
+                    Long createdWhen,
                     Boolean isDeleted,
                     @Nullable String description,
                     @Nullable List<String> skills,
