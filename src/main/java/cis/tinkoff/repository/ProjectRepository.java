@@ -5,6 +5,7 @@ import cis.tinkoff.model.User;
 import io.micronaut.data.annotation.Id;
 import io.micronaut.data.annotation.Join;
 import io.micronaut.data.annotation.Query;
+import io.micronaut.data.annotation.Where;
 import io.micronaut.data.jdbc.annotation.JdbcRepository;
 import io.micronaut.data.model.query.builder.sql.Dialect;
 import io.micronaut.data.repository.CrudRepository;
@@ -47,6 +48,16 @@ public interface ProjectRepository extends CrudRepository<Project, Long> {
     @Join(value = "positions", type = Join.Type.FETCH)
     @Join(value = "status", type = Join.Type.FETCH)
     List<Project> findAllProjectsByLeadEmail(String login);
+
+    @Where("@.is_deleted = false")
+    @Join(value = "positions.user", type = Join.Type.LEFT_FETCH)
+    @Join(value = "status", type = Join.Type.FETCH)
+    List<Project> findByPositionsUserEmail(String positions_user_email);
+
+    @Where("@.is_deleted = false")
+    @Join(value = "positions.user", type = Join.Type.LEFT_FETCH)
+    @Join(value = "status", type = Join.Type.FETCH)
+    List<Project> findByLeaderEmail(String leader_email);
 
     @Query(value = """
             UPDATE project SET is_deleted = true WHERE id = :id
