@@ -172,7 +172,6 @@ public class ProjectServiceImpl implements ProjectService {
         ));
 
         projectDTO = getProjectDTO(project);
-
         projectDTO.setIsLeader(isUserProjectLeader(login, project.getId()));
 
         return projectDTO;
@@ -226,6 +225,7 @@ public class ProjectServiceImpl implements ProjectService {
         projectRepository.update(newProject);
 
         ProjectDTO projectDTO = getProjectDTO(newProject);
+        projectDTO.setIsLeader(true);
 
         return projectDTO;
     }
@@ -256,6 +256,7 @@ public class ProjectServiceImpl implements ProjectService {
         updatedProject = projectRepository.findByIdInList(List.of(id)).get(0);
 
         ProjectDTO projectDTO = getProjectDTO(updatedProject);
+        projectDTO.setIsLeader(true);
 
         return projectDTO;
     }
