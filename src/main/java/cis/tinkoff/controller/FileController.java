@@ -41,6 +41,7 @@ public class FileController {
     }
 
     @Get(value = "/{id}", produces = IMAGE_PNG)
+    @Secured(SecurityRule.IS_ANONYMOUS)
     public StreamedFile download(@PathVariable("id") Long userId) throws BadAvatarPathException {
 
         return fileService.getProfilePicture(userId);
