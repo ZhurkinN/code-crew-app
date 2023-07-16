@@ -42,8 +42,7 @@ public class GlobalExceptionHandler implements ExceptionHandler<RuntimeException
             statusCode = HttpStatus.NOT_ACCEPTABLE.getCode();
         } else if (exception instanceof RequestEntityTooLargeException) {
             statusCode = HttpStatus.REQUEST_ENTITY_TOO_LARGE.getCode();
-        }
-        else {
+        } else {
             statusCode = HttpStatus.CONFLICT.getCode();
         }
 
