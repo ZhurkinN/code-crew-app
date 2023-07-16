@@ -14,7 +14,7 @@ import java.util.Optional;
 @JdbcRepository(dialect = Dialect.POSTGRES)
 public interface UserRepository extends CrudRepository<User, Long> {
 
-    Optional<User> findByEmail(String email);
+    Optional<User> findByEmailAndIsDeletedFalse(String email);
 
     boolean existsByEmail(String email);
 
@@ -32,4 +32,6 @@ public interface UserRepository extends CrudRepository<User, Long> {
                 Boolean isDeleted);
 
     List<User> findByIdInList(Collection<Long> id);
+
+    Optional<User> findByIdAndIsDeletedFalse(@Id Long id);
 }

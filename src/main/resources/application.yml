@@ -65,7 +65,7 @@ micronaut:
       jwt:
         generator:
           access-token:
-            expiration: 180000  # 30 minutes
+            expiration: 1_800  # 30 minutes
           refresh-token:
             enabled: true
             jws-algorithm: HS512
@@ -86,9 +86,13 @@ micronaut:
             - http://localhost:8080
     authentication: cookie
     enabled: false
+    multipart:
+      enabled: true
+      max-file-size: 5_242_880 # 5 MB
+
 datasources:
   default:
-    url: jdbc:postgresql://localhost:5432/postgres
+    url: jdbc:postgresql://postgres:5432/postgres
     username: postgres
     password: g12nokona
     driver-class-name: org.postgresql.Driver

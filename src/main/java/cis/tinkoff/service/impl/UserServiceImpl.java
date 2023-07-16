@@ -37,11 +37,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getById(Long id) throws RecordNotFoundException, DeletedRecordFoundException {
 
-        User user = userRepository.findById(id)
+        User user = userRepository.findByIdAndIsDeletedFalse(id)
                 .orElseThrow(() -> new RecordNotFoundException(USER_NOT_FOUND));
-        if (user.getIsDeleted()) {
-            throw new DeletedRecordFoundException(DELETED_RECORD_FOUND);
-        }
 
         return setOtherModelsData(user);
     }
@@ -49,11 +46,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getByEmail(String email) throws RecordNotFoundException, DeletedRecordFoundException {
 
-        User user = userRepository.findByEmail(email)
+        User user = userRepository.findByEmailAndIsDeletedFalse(email)
                 .orElseThrow(() -> new RecordNotFoundException(USER_NOT_FOUND));
-        if (user.getIsDeleted()) {
-            throw new DeletedRecordFoundException(DELETED_RECORD_FOUND);
-        }
 
         return setOtherModelsData(user);
     }
@@ -72,6 +66,7 @@ public class UserServiceImpl implements UserService {
                 .setPassword(password)
                 .setName(name)
                 .setSurname(surname);
+
         return userRepository.save(user);
     }
 
@@ -83,7 +78,7 @@ public class UserServiceImpl implements UserService {
                        String pictureLink,
                        String mainInformation) throws RecordNotFoundException {
 
-        User user = userRepository.findByEmail(email)
+        User user = userRepository.findByEmailAndIsDeletedFalse(email)
                 .orElseThrow(() -> new RecordNotFoundException(USER_NOT_FOUND));
         user.setName(name)
                 .setSurname(surname)
