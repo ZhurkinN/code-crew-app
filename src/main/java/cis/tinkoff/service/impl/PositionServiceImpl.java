@@ -3,6 +3,7 @@ package cis.tinkoff.service.impl;
 import cis.tinkoff.controller.model.VacancyDTO;
 import cis.tinkoff.controller.model.custom.ProjectMemberDTO;
 import cis.tinkoff.controller.model.custom.SearchDTO;
+import cis.tinkoff.controller.model.custom.VacancyCreateDTO;
 import cis.tinkoff.model.DirectionDictionary;
 import cis.tinkoff.model.Position;
 import cis.tinkoff.model.Project;
@@ -125,11 +126,11 @@ public class PositionServiceImpl implements PositionService {
     }
 
     @Override
-    public VacancyDTO createVacancy(String login, Long projectId, VacancyDTO vacancyCreateDTO) {
+    public VacancyDTO createVacancy(String login, Long projectId, VacancyCreateDTO vacancyCreateDTO) {
         DirectionDictionary directionDictionary = directionRepository
-                .findById(vacancyCreateDTO.getDirection().getDirectionName())
+                .findById(vacancyCreateDTO.getDirection())
                 .orElseThrow(() -> new RecordNotFoundException("Direction with id=" +
-                        vacancyCreateDTO.getDirection().getDirectionName()
+                        vacancyCreateDTO.getDirection()
                         + " not found"));
 
         List<Project> projects = projectRepository.findByIdInList(List.of(projectId));
@@ -146,7 +147,10 @@ public class PositionServiceImpl implements PositionService {
 
         Position newPosition = new Position();
 
-        VacancyDTO.updateEntityByDTO(newPosition, vacancyCreateDTO);
+        newPosition.setDirection(directionDictionary);
+        newPosition.setDescription(vacancyCreateDTO.getDescription());
+        newPosition.setSkills(vacancyCreateDTO.getSkills());
+        newPosition.setUser(null);
         newPosition.setCreatedWhen(System.currentTimeMillis());
         newPosition.setIsDeleted(false);
         newPosition.setIsVisible(true);
@@ -158,11 +162,11 @@ public class PositionServiceImpl implements PositionService {
     }
 
     @Override
-    public VacancyDTO updateVacancy(Long id, String login, VacancyDTO updateVacancyDTO) {
+    public VacancyDTO updateVacancy(Long id, String login, VacancyCreateDTO updateVacancyDTO) {
         DirectionDictionary directionDictionary = directionRepository
-                .findById(updateVacancyDTO.getDirection().getDirectionName())
+                .findById(updateVacancyDTO.getDirection())
                 .orElseThrow(() -> new RecordNotFoundException("Direction with id=" +
-                        updateVacancyDTO.getDirection().getDirectionName()
+                        updateVacancyDTO.getDirection()
                         + " not found"));
 
         List<Position> positions = positionRepository.findByIdInList(List.of(id), Sort.UNSORTED);
@@ -187,7 +191,9 @@ public class PositionServiceImpl implements PositionService {
                     + " is inaccessible");
         }
 
-        VacancyDTO.updateEntityByDTO(updatedPosition, updateVacancyDTO);
+        updatedPosition.setDirection(directionDictionary);
+        updatedPosition.setDescription(updateVacancyDTO.getDescription());
+        updatedPosition.setSkills(updateVacancyDTO.getSkills());
 
         updatedPosition = positionRepository.update(updatedPosition);
 

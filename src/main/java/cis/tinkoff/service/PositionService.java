@@ -3,6 +3,7 @@ package cis.tinkoff.service;
 import cis.tinkoff.controller.model.VacancyDTO;
 import cis.tinkoff.controller.model.custom.ProjectMemberDTO;
 import cis.tinkoff.controller.model.custom.SearchDTO;
+import cis.tinkoff.controller.model.custom.VacancyCreateDTO;
 import cis.tinkoff.model.Position;
 import cis.tinkoff.model.enumerated.SortDirection;
 
@@ -23,9 +24,9 @@ public interface PositionService {
 
     List<VacancyDTO> getProjectVacancies(Long projectId, Boolean isVisible);
 
-    VacancyDTO createVacancy(String login, Long projectId, VacancyDTO vacancyCreateDTO);
+    VacancyDTO createVacancy(String login, Long projectId, VacancyCreateDTO vacancyCreateDTO);
 
-    VacancyDTO updateVacancy(Long id, String login, VacancyDTO updateVacancyDTO);
+    VacancyDTO updateVacancy(Long id, String login, VacancyCreateDTO updateVacancyDTO);
 
     VacancyDTO changeVisibility(Long id, String login);
 
