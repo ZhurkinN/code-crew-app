@@ -87,7 +87,7 @@ public class ProjectController {
 
     @Operation(method = "createProject", description = "Create project")
     @Post(produces = MediaType.APPLICATION_JSON)
-    public HttpResponse<?> createProject(
+    public HttpResponse<ProjectDTO> createProject(
             Authentication authentication,
             @Body ProjectCreateDTO projectCreateDTO
     ) throws RecordNotFoundException {
