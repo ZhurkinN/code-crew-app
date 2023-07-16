@@ -1,7 +1,9 @@
 package cis.tinkoff.controller;
 
 import cis.tinkoff.controller.model.VacancyDTO;
+import cis.tinkoff.controller.model.custom.ProjectMemberDTO;
 import cis.tinkoff.controller.model.custom.SearchDTO;
+import cis.tinkoff.controller.model.custom.VacancyCreateDTO;
 import cis.tinkoff.model.Position;
 import cis.tinkoff.model.enumerated.SortDirection;
 import cis.tinkoff.service.PositionService;
@@ -34,7 +36,7 @@ public class PositionController {
 
     @Operation(method = "searchVacancies", description = "Finds all vacancies by searched parameters")
     @Get(uri = "/search", produces = MediaType.APPLICATION_JSON)
-    public HttpResponse<?> searchVacancies(
+    public HttpResponse<SearchDTO> searchVacancies(
             @QueryValue(value = "page", defaultValue = "0") Integer page,
             @QueryValue(value = "size", defaultValue = "1") Integer sizeLimit,
             @Nullable @QueryValue(value = "dateSort", defaultValue = "null") SortDirection dateSort,
@@ -56,7 +58,7 @@ public class PositionController {
 
     @Operation(method = "getVacancyById", description = "Get vacancy by id")
     @Get(uri = "/{id}", produces = MediaType.APPLICATION_JSON)
-    public HttpResponse<?> getVacancyById(
+    public HttpResponse<VacancyDTO> getVacancyById(
             @PathVariable(name = "id") Long id
     ) {
         VacancyDTO vacancyDTO = positionService.getVacancyById(id);
@@ -66,7 +68,7 @@ public class PositionController {
 
     @Operation(method = "getProjectVacancies", description = "Get vacancies of the project by project id")
     @Get(uri = "/projects", produces = MediaType.APPLICATION_JSON)
-    public HttpResponse<?> getProjectVacancies(
+    public HttpResponse<List<VacancyDTO>> getProjectVacancies(
             @QueryValue(value = "projectId") Long projectId,
             @QueryValue(value = "isVisible") Boolean isVisible
     ) {
@@ -75,12 +77,23 @@ public class PositionController {
         return HttpResponse.ok(vacancyDTOList);
     }
 
+    @Operation(method = "getProjectMembers", description = "Get members of the project by project id")
+    @Get(uri = "/projects/members", produces = MediaType.APPLICATION_JSON)
+    public HttpResponse<List<ProjectMemberDTO>> getProjectMembers(
+            Authentication authentication,
+            @QueryValue(value = "projectId") Long projectId
+    ) {
+        List<ProjectMemberDTO> projectMembers = positionService.getProjectMembers(authentication.getName(), projectId);
+
+        return HttpResponse.ok(projectMembers);
+    }
+
     @Operation(method = "createVacancy", description = "Create vacancy")
     @Post(produces = MediaType.APPLICATION_JSON)
-    public HttpResponse<?> createVacancy(
+    public HttpResponse<VacancyDTO> createVacancy(
             Authentication authentication,
             @QueryValue(value = "projectId") Long projectId,
-            @Body VacancyDTO vacancyCreateDTO
+            @Body VacancyCreateDTO vacancyCreateDTO
     ) {
         VacancyDTO vacancyDTO = positionService.createVacancy(authentication.getName(), projectId, vacancyCreateDTO);
 
@@ -89,10 +102,10 @@ public class PositionController {
 
     @Operation(method = "updateVacancy", description = "Update vacancy")
     @Patch(uri = "/{id}", produces = MediaType.APPLICATION_JSON)
-    public HttpResponse<?> updateVacancy(
+    public HttpResponse<VacancyDTO> updateVacancy(
             Authentication authentication,
             @PathVariable(name = "id") Long id,
-            @Body VacancyDTO updateVacancyDTO
+            @Body VacancyCreateDTO updateVacancyDTO
     ) {
         VacancyDTO vacancyDTO = positionService.updateVacancy(id, authentication.getName(), updateVacancyDTO);
 
@@ -101,7 +114,7 @@ public class PositionController {
 
     @Operation(method = "changeVisibility", description = "Change vacancy visibility")
     @Post(uri = "/visible/{id}", produces = MediaType.APPLICATION_JSON)
-    public HttpResponse<?> changeVisibility(
+    public HttpResponse<VacancyDTO> changeVisibility(
             Authentication authentication,
             @PathVariable(value = "id") Long id
     ) {

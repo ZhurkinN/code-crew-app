@@ -119,7 +119,7 @@ public class ProjectServiceImpl implements ProjectService {
             throw new RecordNotFoundException(ErrorDisplayMessageKeeper.RECORD_NOT_FOUND);
         }
 
-        User oldUser = userRepository.findByEmail(login).orElseThrow(() -> new RecordNotFoundException(ErrorDisplayMessageKeeper.RECORD_NOT_FOUND));
+        User oldUser = userRepository.findByEmailAndIsDeletedFalse(login).orElseThrow(() -> new RecordNotFoundException(ErrorDisplayMessageKeeper.RECORD_NOT_FOUND));
         List<Position> positions = positionRepository.findByUserIdAndProjectId(oldUser.getId(), project.getId());
 
         if (positions.size() == 0) {
@@ -172,7 +172,6 @@ public class ProjectServiceImpl implements ProjectService {
         ));
 
         projectDTO = getProjectDTO(project);
-
         projectDTO.setIsLeader(isUserProjectLeader(login, project.getId()));
 
         return projectDTO;
@@ -181,7 +180,7 @@ public class ProjectServiceImpl implements ProjectService {
     @Transactional
     @Override
     public ProjectDTO createProject(String login, ProjectCreateDTO projectCreateDTO) throws RecordNotFoundException {
-        User leader = userRepository.findByEmail(login)
+        User leader = userRepository.findByEmailAndIsDeletedFalse(login)
                 .orElseThrow(() -> new RecordNotFoundException("user not found"));
         ProjectStatusDictionary status = projectStatusRepository.findById(projectCreateDTO.getStatus())
                 .orElseThrow(() -> new RecordNotFoundException("status not found"));
@@ -226,6 +225,7 @@ public class ProjectServiceImpl implements ProjectService {
         projectRepository.update(newProject);
 
         ProjectDTO projectDTO = getProjectDTO(newProject);
+        projectDTO.setIsLeader(true);
 
         return projectDTO;
     }
@@ -256,6 +256,7 @@ public class ProjectServiceImpl implements ProjectService {
         updatedProject = projectRepository.findByIdInList(List.of(id)).get(0);
 
         ProjectDTO projectDTO = getProjectDTO(updatedProject);
+        projectDTO.setIsLeader(true);
 
         return projectDTO;
     }

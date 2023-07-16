@@ -1,10 +1,13 @@
 package cis.tinkoff.service.impl;
 
 import cis.tinkoff.controller.model.VacancyDTO;
+import cis.tinkoff.controller.model.custom.ProjectMemberDTO;
 import cis.tinkoff.controller.model.custom.SearchDTO;
+import cis.tinkoff.controller.model.custom.VacancyCreateDTO;
 import cis.tinkoff.model.DirectionDictionary;
 import cis.tinkoff.model.Position;
 import cis.tinkoff.model.Project;
+import cis.tinkoff.model.User;
 import cis.tinkoff.model.enumerated.Direction;
 import cis.tinkoff.model.enumerated.ProjectStatus;
 import cis.tinkoff.model.enumerated.SortDirection;
@@ -25,6 +28,7 @@ import jakarta.inject.Singleton;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 @Primary
 @Singleton
@@ -122,11 +126,11 @@ public class PositionServiceImpl implements PositionService {
     }
 
     @Override
-    public VacancyDTO createVacancy(String login, Long projectId, VacancyDTO vacancyCreateDTO) {
+    public VacancyDTO createVacancy(String login, Long projectId, VacancyCreateDTO vacancyCreateDTO) {
         DirectionDictionary directionDictionary = directionRepository
-                .findById(vacancyCreateDTO.getDirection().getDirectionName())
+                .findById(vacancyCreateDTO.getDirection())
                 .orElseThrow(() -> new RecordNotFoundException("Direction with id=" +
-                        vacancyCreateDTO.getDirection().getDirectionName()
+                        vacancyCreateDTO.getDirection()
                         + " not found"));
 
         List<Project> projects = projectRepository.findByIdInList(List.of(projectId));
@@ -143,7 +147,10 @@ public class PositionServiceImpl implements PositionService {
 
         Position newPosition = new Position();
 
-        VacancyDTO.updateEntityByDTO(newPosition, vacancyCreateDTO);
+        newPosition.setDirection(directionDictionary);
+        newPosition.setDescription(vacancyCreateDTO.getDescription());
+        newPosition.setSkills(vacancyCreateDTO.getSkills());
+        newPosition.setUser(null);
         newPosition.setCreatedWhen(System.currentTimeMillis());
         newPosition.setIsDeleted(false);
         newPosition.setIsVisible(true);
@@ -155,11 +162,11 @@ public class PositionServiceImpl implements PositionService {
     }
 
     @Override
-    public VacancyDTO updateVacancy(Long id, String login, VacancyDTO updateVacancyDTO) {
+    public VacancyDTO updateVacancy(Long id, String login, VacancyCreateDTO updateVacancyDTO) {
         DirectionDictionary directionDictionary = directionRepository
-                .findById(updateVacancyDTO.getDirection().getDirectionName())
+                .findById(updateVacancyDTO.getDirection())
                 .orElseThrow(() -> new RecordNotFoundException("Direction with id=" +
-                        updateVacancyDTO.getDirection().getDirectionName()
+                        updateVacancyDTO.getDirection()
                         + " not found"));
 
         List<Position> positions = positionRepository.findByIdInList(List.of(id), Sort.UNSORTED);
@@ -184,7 +191,9 @@ public class PositionServiceImpl implements PositionService {
                     + " is inaccessible");
         }
 
-        VacancyDTO.updateEntityByDTO(updatedPosition, updateVacancyDTO);
+        updatedPosition.setDirection(directionDictionary);
+        updatedPosition.setDescription(updateVacancyDTO.getDescription());
+        updatedPosition.setSkills(updateVacancyDTO.getSkills());
 
         updatedPosition = positionRepository.update(updatedPosition);
 
@@ -248,5 +257,33 @@ public class PositionServiceImpl implements PositionService {
 
         updatedPosition.setIsDeleted(true);
         positionRepository.update(updatedPosition);
+    }
+
+    @Override
+    public List<ProjectMemberDTO> getProjectMembers(String login, Long projectId) {
+        if (!isUserProjectMember(login, projectId)) {
+            throw new InaccessibleActionException("Actions whit project witch id=" +
+                    projectId + " is inaccessible");
+        }
+
+        List<Position> positions = positionRepository.retrieveByProjectId(projectId);
+        List<User> members = positions.stream()
+                .map(Position::getUser)
+                .filter(Objects::nonNull)
+                .toList();
+        User leader = positions.get(0).getProject().getLeader();
+
+        return ProjectMemberDTO.toProjectMemberDTO(members, positions, leader.getId());
+    }
+
+    public boolean isUserProjectMember(String login, Long projectId) {
+        List<Position> members = positionRepository.findByProjectIdAndUserEmail(projectId, login);
+
+        if (members.size() == 0) {
+            throw new RecordNotFoundException("There is no user with login = " + login +
+                    " in project with id=" + projectId);
+        }
+
+        return true;
     }
 }

@@ -2,7 +2,6 @@ package cis.tinkoff.model;
 
 import cis.tinkoff.model.generic.GenericModel;
 import cis.tinkoff.support.helper.TimestampAttributeConverter;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.data.annotation.MappedEntity;
 import io.micronaut.data.annotation.MappedProperty;
@@ -14,7 +13,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 

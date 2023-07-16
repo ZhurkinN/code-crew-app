@@ -2,7 +2,6 @@ package cis.tinkoff.controller;
 
 import cis.tinkoff.controller.model.ProjectDTO;
 import cis.tinkoff.controller.model.custom.ProjectCreateDTO;
-import cis.tinkoff.model.Project;
 import cis.tinkoff.model.enumerated.Direction;
 import cis.tinkoff.service.ProjectService;
 import cis.tinkoff.support.exceptions.InaccessibleActionException;
@@ -87,7 +86,7 @@ public class ProjectController {
 
     @Operation(method = "createProject", description = "Create project")
     @Post(produces = MediaType.APPLICATION_JSON)
-    public HttpResponse<?> createProject(
+    public HttpResponse<ProjectDTO> createProject(
             Authentication authentication,
             @Body ProjectCreateDTO projectCreateDTO
     ) throws RecordNotFoundException {

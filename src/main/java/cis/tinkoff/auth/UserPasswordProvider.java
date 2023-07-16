@@ -33,7 +33,7 @@ public class UserPasswordProvider implements AuthenticationProvider {
 
             String login = (String) authenticationRequest.getIdentity();
             String password = (String) authenticationRequest.getSecret();
-            Optional<User> userOptional = userRepository.findByEmail(login);
+            Optional<User> userOptional = userRepository.findByEmailAndIsDeletedFalse(login);
 
             boolean isValid = userOptional.isPresent()
                     && userOptional.get().getPassword().equals(password)

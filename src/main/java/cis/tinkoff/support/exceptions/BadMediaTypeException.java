@@ -1,6 +1,6 @@
 package cis.tinkoff.support.exceptions;
 
-public class BadMediaTypeException extends RuntimeException{
+public class BadMediaTypeException extends RuntimeException {
     public BadMediaTypeException() {
         super();
     }

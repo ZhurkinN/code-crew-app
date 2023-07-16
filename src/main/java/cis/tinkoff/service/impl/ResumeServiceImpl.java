@@ -62,7 +62,7 @@ public class ResumeServiceImpl implements ResumeService {
     @Override
     public List<Resume> getALlByUser(String authorEmail) throws RecordNotFoundException {
 
-        User author = userRepository.findByEmail(authorEmail)
+        User author = userRepository.findByEmailAndIsDeletedFalse(authorEmail)
                 .orElseThrow(() -> new RecordNotFoundException(USER_NOT_FOUND));
         List<Resume> resumes = resumeRepository.findByUserAndIsDeletedFalse(author);
         resumes.forEach(e -> e.setUser(author));
@@ -76,7 +76,7 @@ public class ResumeServiceImpl implements ResumeService {
     @Override
     public List<Resume> getALlActiveByUser(String authorEmail) throws RecordNotFoundException {
 
-        User author = userRepository.findByEmail(authorEmail)
+        User author = userRepository.findByEmailAndIsDeletedFalse(authorEmail)
                 .orElseThrow(() -> new RecordNotFoundException(USER_NOT_FOUND));
         return resumeRepository.findByUserAndIsDeletedFalseAndIsActiveTrue(author);
     }
@@ -87,7 +87,7 @@ public class ResumeServiceImpl implements ResumeService {
                          List<String> skills,
                          String directionName) throws RecordNotFoundException {
 
-        User author = userRepository.findByEmail(authorEmail)
+        User author = userRepository.findByEmailAndIsDeletedFalse(authorEmail)
                 .orElseThrow(() -> new RecordNotFoundException(USER_NOT_FOUND));
         Direction directionId = Direction.valueOf(directionName);
         DirectionDictionary direction = directionRepository.findById(directionId)
