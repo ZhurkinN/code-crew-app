@@ -15,6 +15,7 @@ import java.util.List;
 @JdbcRepository(dialect = Dialect.POSTGRES)
 public interface ProjectRepository extends CrudRepository<Project, Long> {
     @Join(value = "positions.direction", type = Join.Type.FETCH)
+    @Join(value = "positions.user", type = Join.Type.LEFT_FETCH)
     @Join(value = "status", type = Join.Type.FETCH)
     @Join(value = "leader", type = Join.Type.FETCH)
     @Join(value = "contacts", type = Join.Type.LEFT_FETCH)

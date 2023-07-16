@@ -58,26 +58,27 @@ values (2, 'Новый сайт РЖД', 'Сайт РЖД', 'Проект раз
        (6, 'Новый сайт Авиасейлс', 'Сайт АвиаСейлс', 'Проект разработки ТуТу', 'PREPARING'),
        (3, 'Новый сайт Тинькофф', 'Сайт Тинькофф', 'Проект разработки нового сайта Тинькофф', 'IN_PROGRESS');
 
-insert into position(project_id, direction, description, skills)
-values (1, 'BACKEND', 'Позиция Backend-developer', ARRAY ['java', 'postgres', 'spring', 'maven']),
-       (1, 'FRONTEND', 'Позиция Frontend-developer', ARRAY ['javascript', 'typescript', 'react', 'next']),
-       (1, 'QA', 'Позиция QA-engineer', ARRAY ['java', 'mockito', 'junit']),
+insert into position(project_id, direction, description, skills, user_id)
+values (1, 'BACKEND', 'Позиция Backend-developer', ARRAY ['java', 'postgres', 'spring', 'maven'], null),
+       (1, 'FRONTEND', 'Позиция Frontend-developer', ARRAY ['javascript', 'typescript', 'react', 'next'], 2),
+       (1, 'QA', 'Позиция QA-engineer', ARRAY ['java', 'mockito', 'junit'], null),
 
-       (2, 'BACKEND', 'Позиция Backend-developer', ARRAY ['python', 'postgres', 'django', 'maven']),
-       (2, 'FRONTEND', 'Позиция Frontend-developer', ARRAY ['javascript', 'typescript', 'react']),
-       (2, 'QA', 'Позиция тестировщика', ARRAY ['java', 'mockito', 'junit', 'selenium']),
-       (2, 'ANALYST', 'Позиция аналитика', ARRAY ['java']),
+       (2, 'BACKEND', 'Позиция Backend-developer', ARRAY ['python', 'postgres', 'django', 'maven'], 1),
+       (2, 'FRONTEND', 'Позиция Frontend-developer', ARRAY ['javascript', 'typescript', 'react'], null),
+       (2, 'QA', 'Позиция тестировщика', ARRAY ['java', 'mockito', 'junit', 'selenium'], null),
+       (2, 'ANALYST', 'Позиция аналитика', ARRAY ['java'], null),
 
-       (3, 'BACKEND', 'Позиция Backend-developer', ARRAY ['java', 'postgres', 'spring', 'maven']),
-       (3, 'QA', 'Позиция тестировщика', ARRAY ['java', 'mockito', 'jUnit', 'selenium']),
+       (3, 'BACKEND', 'Позиция Backend-developer', ARRAY ['java', 'postgres', 'spring', 'maven'], null),
+       (3, 'QA', 'Позиция тестировщика', ARRAY ['java', 'mockito', 'jUnit', 'selenium'], 3),
 
-       (4, 'BACKEND', 'Позиция Backend-developer', ARRAY ['java', 'postgres', 'spring', 'maven']),
-       (4, 'FRONTEND', 'Позиция Frontend-developer', ARRAY ['javascript', 'typescript', 'react', 'next']),
+       (4, 'BACKEND', 'Позиция Backend-developer', ARRAY ['java', 'postgres', 'spring', 'maven'], null),
+       (4, 'FRONTEND', 'Позиция Frontend-developer', ARRAY ['javascript', 'typescript', 'react', 'next'], null),
+       (4, 'DATA_SCIENCE', 'Позиция Data Science Engineer', ARRAY ['Python'], 6),
 
-       (5, 'BACKEND', 'Позиция Backend-developer', ARRAY ['java', 'postgres', 'spring', 'maven']),
-       (5, 'QA', 'Позиция тестировщика', ARRAY ['java', 'mockito', 'junit', 'selenium']),
-       (5, 'DATA_SCIENCE', 'Позиция Data science engineer', ARRAY ['python', 'pandas', 'postgres']),
-       (5, 'ANALYST', 'Позиция аналитика', ARRAY ['postgres', 'python']);
+       (5, 'BACKEND', 'Позиция Backend-developer', ARRAY ['java', 'postgres', 'spring', 'maven'], null),
+       (5, 'QA', 'Позиция тестировщика', ARRAY ['java', 'mockito', 'junit', 'selenium'], 3),
+       (5, 'DATA_SCIENCE', 'Позиция Data science engineer', ARRAY ['python', 'pandas', 'postgres'], null),
+       (5, 'ANALYST', 'Позиция аналитика', ARRAY ['postgres', 'python'], null);
 
 insert into position_request(resume_id, position_id, status, cover_letter, is_invite)
 values (1, 1, 'IN_CONSIDERATION', 'Очень хочу работать в вашей команде', false),
@@ -97,3 +98,12 @@ values (2, 1),
        (4, 3),
        (6, 4),
        (3, 5);
+
+insert into project_information(project_id, link, description)
+values (1, 'https://github.com/rzd', 'Github link'),
+       (1, 'https://rzd.ru', 'Official website'),
+       (2, 'https://github.com/tinder', 'Github link'),
+       (2, 'https://tinder.ru', 'Official website'),
+       (3, 'https://github.com/spotify', 'Github link'),
+       (4, 'https://github.com/aviasales', 'Github link'),
+       (5, 'https://github.com/tinkoff', 'Github link')
