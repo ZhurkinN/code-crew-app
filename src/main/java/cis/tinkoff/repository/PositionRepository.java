@@ -3,6 +3,7 @@ package cis.tinkoff.repository;
 import cis.tinkoff.model.Position;
 import cis.tinkoff.model.Project;
 import cis.tinkoff.model.User;
+import cis.tinkoff.model.enumerated.Direction;
 import io.micronaut.context.annotation.Parameter;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.data.annotation.Id;
@@ -61,6 +62,12 @@ public interface PositionRepository extends PageableRepository<Position, Long>, 
     @Join(value = "direction", type = Join.Type.FETCH)
     @Join(value = "user", type = Join.Type.FETCH)
     List<Position> findByUserIdAndProjectId(Long user_id, Long project_id);
+
+    @Join(value = "project", type = Join.Type.FETCH)
+    @Join(value = "project.status", type = Join.Type.FETCH)
+    @Join(value = "direction", type = Join.Type.FETCH)
+    @Join(value = "user", type = Join.Type.FETCH)
+    List<Position> findByUserIdAndProjectIdAndDirectionDirectionName(Long user_id, Long project_id, Direction directionName);
 
     @Where("@.user_id is null")
     @Where("@.is_visible = :isVisible")

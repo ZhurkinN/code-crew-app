@@ -23,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Objects;
 
 @Primary
 @Singleton
@@ -57,13 +58,16 @@ public class ProjectServiceImpl implements ProjectService {
         }
 
         List<ProjectDTO> projectDTOList = ProjectDTO.toProjectDTO(projects);
+        projectDTOList.stream().forEach(projectDTO -> projectDTO.setIsLeader(
+                isUserProjectLeader(login, projectDTO.getId())
+        ));
 
         return projectDTOList;
     }
 
     @Override
     public ProjectDTO getProjectById(Long id, String login) {
-        Project project = projectRepository.findByIdInList(List.of(id)).get(0);
+        Project project = getAllProjectsByIdsOrElseThrow(List.of(id)).get(0);
 
         List<Long> positionIds = project.getPositions().stream()
                 .map(position -> position.getId())
@@ -82,7 +86,7 @@ public class ProjectServiceImpl implements ProjectService {
                 .filter(position -> position.getUser() == null).count()
         );
 
-        projectDTO.setIsLeader(project.getLeader().getEmail().equals(login));
+        projectDTO.setIsLeader(isUserProjectLeader(login, project.getId()));
         projectDTO.setMembersCount((int) projectDTO.getMembers().stream()
                 .filter(projectMemberDTO -> projectMemberDTO != null)
                 .count());
@@ -92,13 +96,13 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public void deleteProjectById(Long id, String login) throws RecordNotFoundException, InaccessibleActionException {
-        Project project = projectRepository.findByIdInList(List.of(id)).get(0);
+        Project project = getAllProjectsByIdsOrElseThrow(List.of(id)).get(0);
 
         if (project == null) {
             throw new RecordNotFoundException(ErrorDisplayMessageKeeper.RECORD_NOT_FOUND);
         }
 
-        if (!project.getLeader().getEmail().equals(login)) {
+        if (!isUserProjectLeader(login, project.getId())) {
             throw new InaccessibleActionException(ErrorDisplayMessageKeeper.PROJECT_WRONG_ACCESS);
         }
 
@@ -109,7 +113,7 @@ public class ProjectServiceImpl implements ProjectService {
     @Transactional
     @Override
     public void leaveUserFromProject(Long id, String login, Long newLeaderId) throws Exception {
-        Project project = projectRepository.findByIdInList(List.of(id)).get(0);
+        Project project = getAllProjectsByIdsOrElseThrow(List.of(id)).get(0);
 
         if (project == null) {
             throw new RecordNotFoundException(ErrorDisplayMessageKeeper.RECORD_NOT_FOUND);
@@ -122,10 +126,10 @@ public class ProjectServiceImpl implements ProjectService {
             throw new RecordNotFoundException(ErrorDisplayMessageKeeper.RECORD_NOT_FOUND);
         }
 
-        positions.forEach(position -> position.setUser(null));
+        positions.forEach(position -> position.setUser(null).setIsDeleted(true));
         positionRepository.updateAll(positions);
 
-        if (project.getLeader().getEmail().equals(login)) {
+        if (isUserProjectLeader(login, project.getId())) {
             if (positionRepository.findByUserIdAndProjectId(newLeaderId, project.getId()).size() == 0) {
                 throw new RecordNotFoundException(ErrorDisplayMessageKeeper.RECORD_NOT_FOUND);
             }
@@ -138,42 +142,38 @@ public class ProjectServiceImpl implements ProjectService {
     @Transactional
     @Override
     public ProjectDTO deleteUserFromProject(Long id, String login, Long userId, Direction direction) throws RecordNotFoundException, InaccessibleActionException {
-        Project project = projectRepository.findByIdInList(List.of(id)).get(0);
+        Project project = getAllProjectsByIdsOrElseThrow(List.of(id)).get(0);
 
         if (project == null) {
             throw new RecordNotFoundException(ErrorDisplayMessageKeeper.RECORD_NOT_FOUND);
         }
 
-        if (!project.getLeader().getEmail().equals(login)) {
+        if (!isUserProjectLeader(login, project.getId())) {
             throw new InaccessibleActionException(ErrorDisplayMessageKeeper.PROJECT_WRONG_ACCESS);
         }
 
-        List<Long> positionIds = project.getPositions().stream()
-                .map(position -> position.getId())
-                .toList();
-        List<Position> positions = (List<Position>) positionRepository.findByIdInList(positionIds);
-        positions.stream().filter(position -> position.getUser().getId() == userId &&
-                position.getDirection().getDirectionName().equals(direction)
-        ).forEach(position -> position.setIsDeleted(true));
+        List<Position> positions = positionRepository.findByUserIdAndProjectIdAndDirectionDirectionName(
+                userId,
+                id,
+                direction
+        );
+        positions.forEach(position -> position.setUser(null).setIsDeleted(true));
 
         positionRepository.updateAll(positions);
 
-        List<Long> userIds = positions.stream()
-                .filter(position -> position.getUser() != null && !position.getIsDeleted())
-                .map(position -> position.getUser().getId())
+        List<User> members = project.getPositions().stream()
+                .map(position -> position.getUser())
                 .toList();
-        List<User> users = userRepository.findByIdInList(userIds);
-
         ProjectDTO projectDTO = ProjectDTO.toProjectDTO(project);
-        projectDTO.setMembers(ProjectMemberDTO.toProjectMemberDTO(users, positions, project.getLeader().getId()));
-        projectDTO.setVacanciesCount((int) positions.stream()
-                .filter(position -> position.getUser() == null).count()
-        );
+        projectDTO.setMembers(ProjectMemberDTO.toProjectMemberDTO(
+                members,
+                project.getPositions(),
+                project.getLeader().getId()
+        ));
 
-        projectDTO.setIsLeader(project.getLeader().getEmail().equals(login));
-        projectDTO.setMembersCount((int) projectDTO.getMembers().stream()
-                .filter(projectMemberDTO -> projectMemberDTO != null)
-                .count());
+        projectDTO = getProjectDTO(project);
+
+        projectDTO.setIsLeader(isUserProjectLeader(login, project.getId()));
 
         return projectDTO;
     }
@@ -225,35 +225,16 @@ public class ProjectServiceImpl implements ProjectService {
 
         projectRepository.update(newProject);
 
-        //-------Extract method------------
-        newProject = projectRepository.findByIdInList(List.of(newProject.getId())).get(0);
-        List<Long> userIds = newProject.getPositions().stream()
-                .filter(position -> position.getUser() != null)
-                .map(position -> position.getUser().getId())
-                .toList();
-        List<User> users = userRepository.findByIdInList(userIds);
+        ProjectDTO projectDTO = getProjectDTO(newProject);
 
-        ProjectDTO projectDTO = ProjectDTO.toProjectDTO(newProject);
-        projectDTO.setMembers(ProjectMemberDTO.toProjectMemberDTO(
-                users,
-                newProject.getPositions(),
-                newProject.getLeader().getId()
-        ));
-        //----------------------------------
         return projectDTO;
     }
 
     @Override
     public ProjectDTO updateProject(Long id, String login, ProjectCreateDTO projectForUpdate) throws RecordNotFoundException, InaccessibleActionException {
-        List<Project> projects = projectRepository.findByIdInList(List.of(id));
+        Project updatedProject = getAllProjectsByIdsOrElseThrow(List.of(id)).get(0);
 
-        if (projects.size() == 0) {
-            throw new RecordNotFoundException("project whith " + id + " not found");
-        }
-
-        Project updatedProject = projects.get(0);
-
-        if (!updatedProject.getLeader().getEmail().equals(login)) {
+        if (!isUserProjectLeader(login, updatedProject.getId())) {
             throw new InaccessibleActionException(ErrorDisplayMessageKeeper.PROJECT_WRONG_ACCESS);
         }
 
@@ -274,23 +255,45 @@ public class ProjectServiceImpl implements ProjectService {
 
         updatedProject = projectRepository.findByIdInList(List.of(id)).get(0);
 
-        //-------Extract method------------
-        updatedProject = projectRepository.findByIdInList(List.of(updatedProject.getId())).get(0);
-        List<Long> userIds = updatedProject.getPositions().stream()
-                .filter(position -> position.getUser() != null)
-                .map(position -> position.getUser().getId())
-                .toList();
-        List<User> users = userRepository.findByIdInList(userIds);
-
-        ProjectDTO projectDTO = ProjectDTO.toProjectDTO(updatedProject);
-        projectDTO.setMembers(ProjectMemberDTO.toProjectMemberDTO(
-                users,
-                updatedProject.getPositions(),
-                updatedProject.getLeader().getId()
-        ));
-        //----------------------------------
+        ProjectDTO projectDTO = getProjectDTO(updatedProject);
 
         return projectDTO;
+    }
+
+    private ProjectDTO getProjectDTO(Project project) {
+        List<User> members = project.getPositions().stream()
+                .map(Position::getUser)
+                .filter(Objects::nonNull)
+                .toList();
+        ProjectDTO projectDTO = ProjectDTO.toProjectDTO(project);
+        projectDTO.setMembers(ProjectMemberDTO.toProjectMemberDTO(
+                members,
+                project.getPositions(),
+                project.getLeader().getId()
+        ));
+        return projectDTO;
+    }
+
+    public boolean isUserProjectLeader(String login, Long projectId) {
+        List<Project> projects = projectRepository.findByIdInList(List.of(projectId));
+
+        if (projects.size() == 0) {
+            throw new RecordNotFoundException("Project with id=" + projectId + " not found");
+        }
+
+        Project project = projects.get(0);
+
+        return project.getLeader().getEmail().equals(login);
+    }
+
+    private List<Project> getAllProjectsByIdsOrElseThrow(List<Long> ids) {
+        List<Project> projects = projectRepository.findByIdInList(ids);
+
+        if (projects.size() == 0) {
+            throw new RecordNotFoundException("Projects with ids=" + ids.toString() + " not found");
+        }
+
+        return projects;
     }
 
     private ProjectContact mapToProjectContactEntity(ContactDTO contactDTO) {
