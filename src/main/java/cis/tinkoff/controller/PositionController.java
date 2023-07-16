@@ -1,6 +1,7 @@
 package cis.tinkoff.controller;
 
 import cis.tinkoff.controller.model.VacancyDTO;
+import cis.tinkoff.controller.model.custom.ProjectMemberDTO;
 import cis.tinkoff.controller.model.custom.SearchDTO;
 import cis.tinkoff.model.Position;
 import cis.tinkoff.model.enumerated.SortDirection;
@@ -73,6 +74,17 @@ public class PositionController {
         List<VacancyDTO> vacancyDTOList = positionService.getProjectVacancies(projectId, isVisible);
 
         return HttpResponse.ok(vacancyDTOList);
+    }
+
+    @Operation(method = "getProjectMembers", description = "Get members of the project by project id")
+    @Get(uri = "/projects/members", produces = MediaType.APPLICATION_JSON)
+    public HttpResponse<?> getProjectMembers(
+            Authentication authentication,
+            @QueryValue(value = "projectId") Long projectId
+    ) {
+        List<ProjectMemberDTO> projectMembers = positionService.getProjectMembers(authentication.getName(), projectId);
+
+        return HttpResponse.ok(projectMembers);
     }
 
     @Operation(method = "createVacancy", description = "Create vacancy")

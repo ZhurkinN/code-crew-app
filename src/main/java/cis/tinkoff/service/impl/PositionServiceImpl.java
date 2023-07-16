@@ -1,10 +1,12 @@
 package cis.tinkoff.service.impl;
 
 import cis.tinkoff.controller.model.VacancyDTO;
+import cis.tinkoff.controller.model.custom.ProjectMemberDTO;
 import cis.tinkoff.controller.model.custom.SearchDTO;
 import cis.tinkoff.model.DirectionDictionary;
 import cis.tinkoff.model.Position;
 import cis.tinkoff.model.Project;
+import cis.tinkoff.model.User;
 import cis.tinkoff.model.enumerated.Direction;
 import cis.tinkoff.model.enumerated.ProjectStatus;
 import cis.tinkoff.model.enumerated.SortDirection;
@@ -25,6 +27,7 @@ import jakarta.inject.Singleton;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 @Primary
 @Singleton
@@ -248,5 +251,33 @@ public class PositionServiceImpl implements PositionService {
 
         updatedPosition.setIsDeleted(true);
         positionRepository.update(updatedPosition);
+    }
+
+    @Override
+    public List<ProjectMemberDTO> getProjectMembers(String login, Long projectId) {
+        if (!isUserProjectMember(login, projectId)) {
+            throw new InaccessibleActionException("Actions whit project witch id=" +
+                    projectId + " is inaccessible");
+        }
+
+        List<Position> positions = positionRepository.retrieveByProjectId(projectId);
+        List<User> members = positions.stream()
+                .map(Position::getUser)
+                .filter(Objects::nonNull)
+                .toList();
+        User leader = positions.get(0).getProject().getLeader();
+
+        return ProjectMemberDTO.toProjectMemberDTO(members, positions, leader.getId());
+    }
+
+    public boolean isUserProjectMember(String login, Long projectId) {
+        List<Position> members = positionRepository.findByProjectIdAndUserEmail(projectId, login);
+
+        if (members.size() == 0) {
+            throw new RecordNotFoundException("There is no user with login = " + login +
+                    " in project with id=" + projectId);
+        }
+
+        return true;
     }
 }

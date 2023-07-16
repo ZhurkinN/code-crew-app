@@ -1,6 +1,7 @@
 package cis.tinkoff.service;
 
 import cis.tinkoff.controller.model.VacancyDTO;
+import cis.tinkoff.controller.model.custom.ProjectMemberDTO;
 import cis.tinkoff.controller.model.custom.SearchDTO;
 import cis.tinkoff.model.Position;
 import cis.tinkoff.model.enumerated.SortDirection;
@@ -29,4 +30,6 @@ public interface PositionService {
     VacancyDTO changeVisibility(Long id, String login);
 
     void deleteVacancy(Long id, String login);
+
+    List<ProjectMemberDTO> getProjectMembers(String name, Long projectId);
 }
