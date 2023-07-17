@@ -6,6 +6,7 @@ public interface ErrorDisplayMessageKeeper {
     String RECORD_NOT_FOUND = "The record for this query was not found.";
     String USER_NOT_FOUND = "User was not found.";
     String RESUME_NOT_FOUND = "Resume was not found.";
+    String REQUEST_NOT_FOUND = "Position request was not found.";
     String POSITION_NOT_FOUND = "Position was not found.";
     String DIRECTION_NOT_FOUND = "Resume was not found.";
     String USER_ALREADY_EXISTS = "A user with this email is already registered.";

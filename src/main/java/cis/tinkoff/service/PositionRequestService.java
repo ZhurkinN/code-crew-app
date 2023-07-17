@@ -25,4 +25,8 @@ public interface PositionRequestService {
 
     List<PositionRequest> getResumesPositionRequests(Long resumeId,
                                                      String resumeOwnerEmail) throws RecordNotFoundException, InaccessibleActionException;
+
+    void processRequest(Long requestId,
+                        Boolean isAccepted,
+                        String respondentEmail) throws RecordNotFoundException, InaccessibleActionException;
 }

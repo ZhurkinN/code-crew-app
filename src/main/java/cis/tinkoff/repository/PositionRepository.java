@@ -117,4 +117,8 @@ public interface PositionRepository extends PageableRepository<Position, Long>, 
     @Join(value = "project.members", type = Join.Type.FETCH)
     Project findProjectById(@Id Long id);
 
+    void updateIsVisibleAndJoinDateAndUserById(@Id Long id,
+                                               Boolean isVisible,
+                                               Long joinDate,
+                                               User user);
 }

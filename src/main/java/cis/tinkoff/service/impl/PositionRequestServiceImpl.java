@@ -13,6 +13,7 @@ import io.micronaut.context.annotation.Primary;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Objects;
 
@@ -98,10 +99,11 @@ public class PositionRequestServiceImpl implements PositionRequestService {
         List<PositionRequest> positionRequests =
                 positionRequestRepository.findAllByPositionAndIsDeletedFalseAndIsInviteFalse(position);
         positionRequests.forEach(e -> {
-            User user = resumeRepository.getUserById(e.getResume().getId());
+            User user = resumeRepository.getUserById(Objects.requireNonNull(e.getResume()).getId());
             User detailedUser = new User()
                     .setName(user.getName())
                     .setSurname(user.getSurname());
+
             detailedUser.setCreatedWhen(null);
             detailedUser.setIsDeleted(null);
             e.getResume().setUser(detailedUser);
@@ -125,12 +127,50 @@ public class PositionRequestServiceImpl implements PositionRequestService {
             Project detailedProject = new Project()
                     .setStatus(project.getStatus())
                     .setMembers(project.getMembers());
+
             detailedProject.setCreatedWhen(null);
             detailedProject.setIsDeleted(null);
             e.getPosition().setProject(detailedProject);
         });
 
         return resumesPositionRequests;
+    }
+
+    @Override
+    @Transactional
+    public void processRequest(Long requestId,
+                               Boolean isAccepted,
+                               String respondentEmail) throws RecordNotFoundException, InaccessibleActionException {
+
+        PositionRequest request = positionRequestRepository.findByIdAndIsDeletedFalse(requestId)
+                .orElseThrow(() -> new RecordNotFoundException(RESUME_NOT_FOUND));
+        RequestStatusDictionary status = request.getStatus();
+        Resume resume = request.getResume();
+        Position position = request.getPosition();
+
+        validateInvitedUsersProjectMembership(resume.getId(), position.getId());
+        if (request.getIsInvite()) {
+            validateUsersResumeOwnership(respondentEmail, resume.getId());
+        } else {
+            validateUsersProjectLeadership(respondentEmail, position.getId());
+        }
+
+        if (isAccepted) {
+
+            status.setStatusName(RequestStatus.ACCEPTED);
+            resumeRepository.updateIsActiveById(resume.getId(), false);
+            positionRepository.updateIsVisibleAndJoinDateAndUserById(
+                    position.getId(),
+                    false,
+                    System.currentTimeMillis(),
+                    resume.getUser()
+            );
+        } else {
+
+            status.setStatusName(RequestStatus.DECLINED);
+        }
+
+        positionRequestRepository.update(request);
     }
 
 

@@ -13,7 +13,9 @@ import io.micronaut.data.model.query.builder.sql.Dialect;
 import io.micronaut.data.repository.CrudRepository;
 import io.micronaut.data.repository.jpa.criteria.QuerySpecification;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Optional;
 
 @JdbcRepository(dialect = Dialect.POSTGRES)
 public interface PositionRequestRepository extends CrudRepository<PositionRequest, Long> {
@@ -38,7 +40,13 @@ public interface PositionRequestRepository extends CrudRepository<PositionReques
     @Join(value = "position", type = Join.Type.FETCH)
     List<PositionRequest> findAllByResumeAndIsDeletedFalseAndIsInviteTrue(Resume resume);
 
-//    @Join(value = "resume", type = Join.Type.FETCH)
+    @Join(value = "position", type = Join.Type.FETCH)
+    @Join(value = "resume", type = Join.Type.FETCH)
+    @Join(value = "resume.user", type = Join.Type.FETCH)
+    @Join(value = "status", type = Join.Type.FETCH)
+    Optional<PositionRequest> findByIdAndIsDeletedFalse(@NotNull Long id);
+
+    //    @Join(value = "resume", type = Join.Type.FETCH)
 //    @Query(value = "select * from position_request ps join (resume rm join users us on rm.user_id = us.id) on ps.resume_id = rm.id")
 //    Page<PositionRequestController> findAllPositionRequestsWithUserResume(Pageable pageable);
 }
