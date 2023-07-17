@@ -95,7 +95,7 @@ public class RESTUserTest extends AbstractIntegrationTest {
         String expectedSurname = "Lieben";
         String expectedEmail = "mercen@yandex.ru";
         List<String> expectedContacts = List.of("https://github.com/Lieben", "https://inst/Lieben");
-        String expectedMainInformation = "I am Karl";
+        String expectedMainInformation = "I am Karl. Love to play basketball, watching films, doing programs, doing popcorn and smth else. Feeling kaif when popcorn is good. Feeling good when programs works";
         int expectedResumesSize = 1;
         int expectedProjectsSize = 1;
 
@@ -135,7 +135,7 @@ public class RESTUserTest extends AbstractIntegrationTest {
         String expectedSurname = "Alonso";
         String expectedEmail = "alex@mail.ru";
         List<String> expectedContacts = List.of("https://github.com/Alonso", "https://inst/Alonso");
-        String expectedMainInformation = "I am Gordon";
+        String expectedMainInformation = "I am Gordon. Love to play basketball, watching films, doing programs, doing popcorn and smth else. Feeling kaif when popcorn is good. Feeling good when programs works";
         int expectedResumesSize = 1;
         int expectedProjectsSize = 1;
 
