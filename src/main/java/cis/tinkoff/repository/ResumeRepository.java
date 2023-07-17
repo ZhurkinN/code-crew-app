@@ -38,6 +38,8 @@ public interface ResumeRepository extends CrudRepository<Resume, Long> {
 
     Optional<Resume> findByIdAndIsDeletedFalse(@Id Long id);
 
+    @Join(value = "direction", type = Join.Type.FETCH)
+    @Join(value = "user", type = Join.Type.FETCH)
     Optional<Resume> findByIdAndIsDeletedFalseAndIsActiveTrue(@Id Long id);
 
     @Query(value = """
@@ -66,4 +68,5 @@ public interface ResumeRepository extends CrudRepository<Resume, Long> {
     List<Resume> findByIdInList(List<Long> id, Sort sort);
 
     DirectionDictionary getDirectionById(@Id Long id);
+
 }

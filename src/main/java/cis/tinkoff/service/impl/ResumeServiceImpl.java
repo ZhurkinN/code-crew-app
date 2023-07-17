@@ -46,15 +46,9 @@ public class ResumeServiceImpl implements ResumeService {
     @Override
     public Resume getById(Long id) throws RecordNotFoundException, DeletedRecordFoundException {
 
-        Resume resume = resumeRepository.findById(id)
+        Resume resume = resumeRepository.findByIdAndIsDeletedFalseAndIsActiveTrue(id)
                 .orElseThrow(() -> new RecordNotFoundException(RESUME_NOT_FOUND));
-        if (!resume.getIsActive() || resume.getIsDeleted()) {
-            throw new DeletedRecordFoundException(DELETED_OR_HIDDEN_RESUME_FOUND);
-        }
-        User author = resumeRepository.getUserById(id);
-        DirectionDictionary direction = resumeRepository.getDirectionById(id);
-        resume.setUser(author);
-        resume.setDirection(direction);
+        resume.getUser().setPassword(null);
 
         return resume;
     }
@@ -65,11 +59,9 @@ public class ResumeServiceImpl implements ResumeService {
         User author = userRepository.findByEmailAndIsDeletedFalse(authorEmail)
                 .orElseThrow(() -> new RecordNotFoundException(USER_NOT_FOUND));
         List<Resume> resumes = resumeRepository.findByUserAndIsDeletedFalse(author);
+        author.setPassword(null);
         resumes.forEach(e -> e.setUser(author));
-        resumes.forEach(e -> {
-            DirectionDictionary direction = resumeRepository.getDirectionById(e.getId());
-            e.setDirection(direction);
-        });
+
         return resumes;
     }
 
@@ -92,6 +84,7 @@ public class ResumeServiceImpl implements ResumeService {
         Direction directionId = Direction.valueOf(directionName);
         DirectionDictionary direction = directionRepository.findById(directionId)
                 .orElseThrow(() -> new RecordNotFoundException(DIRECTION_NOT_FOUND));
+
         Resume resume = new Resume()
                 .setDescription(description)
                 .setSkills(skills)

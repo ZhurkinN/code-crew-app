@@ -6,6 +6,7 @@ import cis.tinkoff.service.FileService;
 import cis.tinkoff.support.exceptions.BadAvatarPathException;
 import cis.tinkoff.support.exceptions.BadMediaTypeException;
 import cis.tinkoff.support.exceptions.RecordNotFoundException;
+import io.micronaut.context.annotation.Property;
 import io.micronaut.http.MediaType;
 import io.micronaut.http.multipart.CompletedFileUpload;
 import io.micronaut.http.server.types.files.StreamedFile;
@@ -24,9 +25,10 @@ import static cis.tinkoff.support.helper.FileHandler.*;
 @RequiredArgsConstructor
 public class FileServiceImpl implements FileService {
 
-    private static final String STORAGE_PATH = "src/main/resources/static/images/";
-
     private final UserRepository userRepository;
+
+    @Property(name = "micronaut.router.static-resources.pictures.path")
+    private String storagePath;
 
     @Override
     public String saveProfilePicture(CompletedFileUpload file,
@@ -48,7 +50,7 @@ public class FileServiceImpl implements FileService {
 
         FileInputStream fileInputStream;
         try {
-            fileInputStream = new FileInputStream(STORAGE_PATH + buildFilename(user.getEmail()));
+            fileInputStream = new FileInputStream(storagePath + buildFilename(user.getEmail()));
         } catch (FileNotFoundException e) {
             throw new BadAvatarPathException("Not found");
         }
@@ -59,7 +61,7 @@ public class FileServiceImpl implements FileService {
     private void savePicture(CompletedFileUpload file,
                              String filename) throws IOException {
 
-        FileOutputStream fileOutputStream = new FileOutputStream(STORAGE_PATH + filename);
+        FileOutputStream fileOutputStream = new FileOutputStream(storagePath + filename);
         fileOutputStream.write(file.getBytes());
         fileOutputStream.close();
     }

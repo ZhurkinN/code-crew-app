@@ -14,6 +14,8 @@ micronaut:
       swagger-ui:
         paths: classpath:META-INF/swagger/views/swagger-ui
         mapping: /swagger-ui/**
+      pictures:
+        path: src/main/resources/static/images/
   metrics:
     enabled: true
     export:
@@ -65,7 +67,7 @@ micronaut:
       jwt:
         generator:
           access-token:
-            expiration: 1_800  # 30 minutes
+            expiration: 1_80000  # 30 minutes
           refresh-token:
             enabled: true
             jws-algorithm: HS512
@@ -89,12 +91,13 @@ micronaut:
     multipart:
       enabled: true
       max-file-size: 5_242_880 # 5 MB
+      common-file-extension: png
 
 datasources:
   default:
-    url: jdbc:postgresql://localhost:5432/code-crew-app
+    url: jdbc:postgresql://localhost:5432/postgres
     username: postgres
-    password: Iissupe5
+    password: g12nokona
     driver-class-name: org.postgresql.Driver
     db-type: postgres
 

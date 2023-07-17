@@ -6,6 +6,7 @@ import cis.tinkoff.controller.model.custom.ProjectCreateDTO;
 import cis.tinkoff.controller.model.custom.ProjectMemberDTO;
 import cis.tinkoff.model.*;
 import cis.tinkoff.model.enumerated.Direction;
+import cis.tinkoff.model.generic.GenericModel;
 import cis.tinkoff.repository.PositionRepository;
 import cis.tinkoff.repository.ProjectContactRepository;
 import cis.tinkoff.repository.ProjectRepository;
@@ -17,7 +18,6 @@ import cis.tinkoff.support.exceptions.InaccessibleActionException;
 import cis.tinkoff.support.exceptions.RecordNotFoundException;
 import cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper;
 import io.micronaut.context.annotation.Primary;
-import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 
@@ -30,17 +30,11 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class ProjectServiceImpl implements ProjectService {
 
-    @Inject
     private final ProjectRepository projectRepository;
-    @Inject
     private final UserRepository userRepository;
-    @Inject
     private final PositionRepository positionRepository;
-    @Inject
     private final ProjectStatusRepository projectStatusRepository;
-    @Inject
     private final ProjectContactRepository projectContactRepository;
-    @Inject
     private final DirectionRepository directionRepository;
 
     @Override
@@ -58,7 +52,7 @@ public class ProjectServiceImpl implements ProjectService {
         }
 
         List<ProjectDTO> projectDTOList = ProjectDTO.toProjectDTO(projects);
-        projectDTOList.stream().forEach(projectDTO -> projectDTO.setIsLeader(
+        projectDTOList.forEach(projectDTO -> projectDTO.setIsLeader(
                 isUserProjectLeader(login, projectDTO.getId())
         ));
 
@@ -70,7 +64,7 @@ public class ProjectServiceImpl implements ProjectService {
         Project project = getAllProjectsByIdsOrElseThrow(List.of(id)).get(0);
 
         List<Long> positionIds = project.getPositions().stream()
-                .map(position -> position.getId())
+                .map(GenericModel::getId)
                 .toList();
         List<Position> positions = (List<Position>) positionRepository.findByIdInList(positionIds);
 
@@ -88,7 +82,7 @@ public class ProjectServiceImpl implements ProjectService {
 
         projectDTO.setIsLeader(isUserProjectLeader(login, project.getId()));
         projectDTO.setMembersCount((int) projectDTO.getMembers().stream()
-                .filter(projectMemberDTO -> projectMemberDTO != null)
+                .filter(Objects::nonNull)
                 .count());
 
         return projectDTO;
@@ -162,7 +156,7 @@ public class ProjectServiceImpl implements ProjectService {
         positionRepository.updateAll(positions);
 
         List<User> members = project.getPositions().stream()
-                .map(position -> position.getUser())
+                .map(Position::getUser)
                 .toList();
         ProjectDTO projectDTO = ProjectDTO.toProjectDTO(project);
         projectDTO.setMembers(ProjectMemberDTO.toProjectMemberDTO(
@@ -275,7 +269,7 @@ public class ProjectServiceImpl implements ProjectService {
         return projectDTO;
     }
 
-    public boolean isUserProjectLeader(String login, Long projectId) {
+    private boolean isUserProjectLeader(String login, Long projectId) {
         List<Project> projects = projectRepository.findByIdInList(List.of(projectId));
 
         if (projects.size() == 0) {

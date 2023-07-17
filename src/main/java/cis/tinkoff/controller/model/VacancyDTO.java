@@ -30,7 +30,7 @@ public class VacancyDTO {
             return null;
         }
 
-        VacancyDTO vacancyDTO = VacancyDTO.builder()
+        return VacancyDTO.builder()
                 .id(position.getId())
                 .direction(position.getDirection())
                 .description(position.getDescription())
@@ -39,8 +39,6 @@ public class VacancyDTO {
                 .isVisible(position.getIsVisible())
                 .project(ProjectDTO.toProjectDTO(position.getProject())) //TODO use method from ProjectMapper class
                 .build();
-
-        return vacancyDTO;
     }
 
     public static List<VacancyDTO> toVacancyDTO(Collection<Position> positions) {
@@ -48,11 +46,9 @@ public class VacancyDTO {
             return null;
         }
 
-        List<VacancyDTO> vacancyDTOList = positions.stream()
+        return positions.stream()
                 .map(VacancyDTO::toVacancyDTO)
                 .toList();
-
-        return vacancyDTOList;
     }
 
     public static void updateEntityByDTO(Position position, VacancyDTO vacancyDTO) {

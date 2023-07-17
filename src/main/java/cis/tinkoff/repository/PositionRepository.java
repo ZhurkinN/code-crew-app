@@ -24,6 +24,7 @@ import java.util.Optional;
 
 @JdbcRepository(dialect = Dialect.POSTGRES)
 public interface PositionRepository extends PageableRepository<Position, Long>, JpaSpecificationExecutor<Position> {
+
     @Query(value = """
             SELECT distinct position_.* FROM position position_
                 JOIN project project_ ON position_.project_id = project_.id

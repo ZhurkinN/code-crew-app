@@ -23,8 +23,8 @@ import io.micronaut.context.annotation.Primary;
 import io.micronaut.data.model.Page;
 import io.micronaut.data.model.Pageable;
 import io.micronaut.data.model.Sort;
-import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+import lombok.RequiredArgsConstructor;
 
 import java.util.Arrays;
 import java.util.List;
@@ -32,16 +32,13 @@ import java.util.Objects;
 
 @Primary
 @Singleton
+@RequiredArgsConstructor
 public class PositionServiceImpl implements PositionService {
 
-    @Inject
-    private PositionRepository positionRepository;
-    @Inject
-    private ProjectRepository projectRepository;
-    @Inject
-    private DirectionRepository directionRepository;
-    @Inject
-    private PositionMapper positionMapper;
+    private final PositionRepository positionRepository;
+    private final ProjectRepository projectRepository;
+    private final DirectionRepository directionRepository;
+    private final PositionMapper positionMapper;
 
     @Override
     public SearchDTO searchVacancyList(Integer page,
