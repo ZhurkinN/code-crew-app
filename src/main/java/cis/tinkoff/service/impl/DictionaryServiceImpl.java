@@ -1,6 +1,7 @@
 package cis.tinkoff.service.impl;
 
 import cis.tinkoff.model.*;
+import cis.tinkoff.model.enumerated.Direction;
 import cis.tinkoff.repository.ResumeRepository;
 import cis.tinkoff.repository.UserRepository;
 import cis.tinkoff.repository.dictionary.DirectionRepository;
@@ -55,5 +56,16 @@ public class DictionaryServiceImpl implements DictionaryService {
         userResumes.forEach(e -> usedDirections.add(e.getDirection()));
         allDirections.removeAll(usedDirections);
         return allDirections;
+    }
+
+    @Override
+    public DirectionDictionary getDirectionDictionaryById(Direction direction) {
+        DirectionDictionary directionDictionary = directionRepository
+                .findById(direction)
+                .orElseThrow(() -> new RecordNotFoundException("Direction with id=" +
+                        direction
+                        + " not found"));
+
+        return directionDictionary;
     }
 }

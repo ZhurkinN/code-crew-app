@@ -33,4 +33,8 @@ public interface PositionService {
     void deleteVacancy(Long id, String login);
 
     List<ProjectMemberDTO> getProjectMembers(String name, Long projectId);
+
+    boolean isUserProjectMember(String login, Long projectId);
+
+    List<Position> findPositionsByIdsOrElseThrow(List<Long> ids);
 }

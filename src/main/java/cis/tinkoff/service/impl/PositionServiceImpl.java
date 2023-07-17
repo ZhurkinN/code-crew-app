@@ -15,7 +15,9 @@ import cis.tinkoff.model.generic.GenericModel;
 import cis.tinkoff.repository.PositionRepository;
 import cis.tinkoff.repository.ProjectRepository;
 import cis.tinkoff.repository.dictionary.DirectionRepository;
+import cis.tinkoff.service.DictionaryService;
 import cis.tinkoff.service.PositionService;
+import cis.tinkoff.service.ProjectService;
 import cis.tinkoff.support.exceptions.InaccessibleActionException;
 import cis.tinkoff.support.exceptions.RecordNotFoundException;
 import cis.tinkoff.support.mapper.PositionMapper;
@@ -36,9 +38,8 @@ import java.util.Objects;
 public class PositionServiceImpl implements PositionService {
 
     private final PositionRepository positionRepository;
-    private final ProjectRepository projectRepository;
-    private final DirectionRepository directionRepository;
-    private final PositionMapper positionMapper;
+    private final ProjectService projectService;
+    private final DictionaryService dictionaryService;
 
     @Override
     public SearchDTO searchVacancyList(Integer page,
@@ -100,11 +101,7 @@ public class PositionServiceImpl implements PositionService {
 
     @Override
     public VacancyDTO getVacancyById(Long id) {
-        List<Position> positions = positionRepository.findByIdInList(List.of(id), Sort.UNSORTED);
-
-        if (positions.size() == 0) {
-            throw new RecordNotFoundException("Vacancy with id=" + id + " not found");
-        }
+        List<Position> positions = findPositionsByIdsOrElseThrow(List.of(id));
 
         Position position = positions.get(0);
 
@@ -124,23 +121,16 @@ public class PositionServiceImpl implements PositionService {
 
     @Override
     public VacancyDTO createVacancy(String login, Long projectId, VacancyCreateDTO vacancyCreateDTO) {
-        DirectionDictionary directionDictionary = directionRepository
-                .findById(vacancyCreateDTO.getDirection())
-                .orElseThrow(() -> new RecordNotFoundException("Direction with id=" +
-                        vacancyCreateDTO.getDirection()
-                        + " not found"));
+        DirectionDictionary directionDictionary =  dictionaryService
+                .getDirectionDictionaryById(vacancyCreateDTO.getDirection());
 
-        List<Project> projects = projectRepository.findByIdInList(List.of(projectId));
-
-        if (projects.size() == 0) {
-            throw new RecordNotFoundException("Project with id=" + projectId + " not found");
-        }
-
-        Project project = projects.get(0);
-
-        if (!project.getLeader().getEmail().equals(login)) {
+        if (!projectService.isUserProjectLeader(login, projectId)) {
             throw new InaccessibleActionException("Actions whit project witch id=" + projectId + " is inaccessible");
         }
+
+        List<Project> projects = projectService.getAllProjectsByIdsOrElseThrow(List.of(projectId));
+
+        Project project = projects.get(0);
 
         Position newPosition = new Position();
 
@@ -160,29 +150,16 @@ public class PositionServiceImpl implements PositionService {
 
     @Override
     public VacancyDTO updateVacancy(Long id, String login, VacancyCreateDTO updateVacancyDTO) {
-        DirectionDictionary directionDictionary = directionRepository
-                .findById(updateVacancyDTO.getDirection())
-                .orElseThrow(() -> new RecordNotFoundException("Direction with id=" +
-                        updateVacancyDTO.getDirection()
-                        + " not found"));
+        DirectionDictionary directionDictionary = dictionaryService
+                .getDirectionDictionaryById(updateVacancyDTO.getDirection());
 
-        List<Position> positions = positionRepository.findByIdInList(List.of(id), Sort.UNSORTED);
-
-        if (positions.size() == 0) {
-            throw new RecordNotFoundException("Position with id=" + id + " not found");
-        }
+        List<Position> positions = findPositionsByIdsOrElseThrow(List.of(id));
 
         Position updatedPosition = positions.get(0);
 
-        List<Project> projects = projectRepository.findByIdInList(List.of(updatedPosition.getProject().getId()));
+        List<Project> projects = projectService.getAllProjectsByIdsOrElseThrow(List.of(updatedPosition.getProject().getId()));
 
-        if (projects.size() == 0) {
-            throw new RecordNotFoundException("Project with id=" +
-                    updatedPosition.getProject().getId()
-                    + " not found");
-        }
-
-        if (!projects.get(0).getLeader().getEmail().equals(login)) {
+        if (!projectService.isUserProjectLeader(login, projects.get(0).getId())) {
             throw new InaccessibleActionException("Actions whit project witch id=" +
                     projects.get(0).getId()
                     + " is inaccessible");
@@ -199,23 +176,13 @@ public class PositionServiceImpl implements PositionService {
 
     @Override
     public VacancyDTO changeVisibility(Long id, String login) {
-        List<Position> positions = positionRepository.findByIdInList(List.of(id), Sort.UNSORTED);
-
-        if (positions.size() == 0) {
-            throw new RecordNotFoundException("Position with id=" + id + " not found");
-        }
+        List<Position> positions = findPositionsByIdsOrElseThrow(List.of(id));
 
         Position updatedPosition = positions.get(0);
 
-        List<Project> projects = projectRepository.findByIdInList(List.of(updatedPosition.getProject().getId()));
+        List<Project> projects = projectService.getAllProjectsByIdsOrElseThrow(List.of(updatedPosition.getProject().getId()));
 
-        if (projects.size() == 0) {
-            throw new RecordNotFoundException("Project with id=" +
-                    updatedPosition.getProject().getId()
-                    + " not found");
-        }
-
-        if (!projects.get(0).getLeader().getEmail().equals(login)) {
+        if (!projectService.isUserProjectLeader(login, projects.get(0).getId())) {
             throw new InaccessibleActionException("Actions whit project witch id=" +
                     projects.get(0).getId()
                     + " is inaccessible");
@@ -230,23 +197,13 @@ public class PositionServiceImpl implements PositionService {
 
     @Override
     public void deleteVacancy(Long id, String login) {
-        List<Position> positions = positionRepository.findByIdInList(List.of(id), Sort.UNSORTED);
-
-        if (positions.size() == 0) {
-            throw new RecordNotFoundException("Position with id=" + id + " not found");
-        }
+        List<Position> positions = findPositionsByIdsOrElseThrow(List.of(id));
 
         Position updatedPosition = positions.get(0);
 
-        List<Project> projects = projectRepository.findByIdInList(List.of(updatedPosition.getProject().getId()));
+        List<Project> projects = projectService.getAllProjectsByIdsOrElseThrow(List.of(updatedPosition.getProject().getId()));
 
-        if (projects.size() == 0) {
-            throw new RecordNotFoundException("Project with id=" +
-                    updatedPosition.getProject().getId()
-                    + " not found");
-        }
-
-        if (!projects.get(0).getLeader().getEmail().equals(login)) {
+        if (!projectService.isUserProjectLeader(login, projects.get(0).getId())) {
             throw new InaccessibleActionException("Actions whit project witch id=" +
                     projects.get(0).getId()
                     + " is inaccessible");
@@ -273,6 +230,7 @@ public class PositionServiceImpl implements PositionService {
         return ProjectMemberDTO.toProjectMemberDTO(members, positions, leader.getId());
     }
 
+    @Override
     public boolean isUserProjectMember(String login, Long projectId) {
         List<Position> members = positionRepository.findByProjectIdAndUserEmail(projectId, login);
 
@@ -282,5 +240,16 @@ public class PositionServiceImpl implements PositionService {
         }
 
         return true;
+    }
+
+    @Override
+    public List<Position> findPositionsByIdsOrElseThrow(List<Long> ids) {
+        List<Position> positions = positionRepository.findByIdInList(ids, Sort.UNSORTED);
+
+        if (positions.size() == 0) {
+            throw new RecordNotFoundException("Position with id=" + ids.toString() + " not found");
+        }
+
+        return positions;
     }
 }

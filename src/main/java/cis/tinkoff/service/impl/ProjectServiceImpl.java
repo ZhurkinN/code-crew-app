@@ -269,19 +269,17 @@ public class ProjectServiceImpl implements ProjectService {
         return projectDTO;
     }
 
-    private boolean isUserProjectLeader(String login, Long projectId) {
-        List<Project> projects = projectRepository.findByIdInList(List.of(projectId));
-
-        if (projects.size() == 0) {
-            throw new RecordNotFoundException("Project with id=" + projectId + " not found");
-        }
+    @Override
+    public boolean isUserProjectLeader(String login, Long projectId) {
+        List<Project> projects = getAllProjectsByIdsOrElseThrow(List.of(projectId));
 
         Project project = projects.get(0);
 
         return project.getLeader().getEmail().equals(login);
     }
 
-    private List<Project> getAllProjectsByIdsOrElseThrow(List<Long> ids) {
+    @Override
+    public List<Project> getAllProjectsByIdsOrElseThrow(List<Long> ids) {
         List<Project> projects = projectRepository.findByIdInList(ids);
 
         if (projects.size() == 0) {
