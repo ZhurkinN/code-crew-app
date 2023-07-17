@@ -12,18 +12,20 @@ import io.restassured.parsing.Parser;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.*;
+import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static io.restassured.RestAssured.given;
 import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.*;
 
-import cis.tinkoff.spec.Specifications;
-
 import java.util.List;
 
 @MicronautTest
 @Testcontainers
-public class RESTUserTest extends AbstractIntegrationTest {
+public class RESTUserTest {
+
+    @Container
+    public static TestSQLContainer container = TestSQLContainer.getInstance();
 
     private static String TOKEN = "";
 
