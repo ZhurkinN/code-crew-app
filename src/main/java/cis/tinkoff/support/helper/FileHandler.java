@@ -2,7 +2,6 @@ package cis.tinkoff.support.helper;
 
 import cis.tinkoff.support.exceptions.BadMediaTypeException;
 import cis.tinkoff.support.exceptions.RequestEntityTooLargeException;
-import io.micronaut.context.annotation.Property;
 import io.micronaut.http.MediaType;
 import io.micronaut.http.multipart.CompletedFileUpload;
 import lombok.AccessLevel;
@@ -19,12 +18,6 @@ public class FileHandler {
         add("png");
     }};
 
-    @Property(name = "micronaut.server.multipart.max-file-size")
-    private static long maxFileSize;
-
-    @Property(name = "micronaut.server.multipart.common-file-extension")
-    private static String commonExtension;
-
     public static void validateFileMediaType(CompletedFileUpload file) {
 
         Optional<MediaType> mediaType = file.getContentType();
@@ -38,7 +31,8 @@ public class FileHandler {
         }
     }
 
-    public static void validateFileSize(CompletedFileUpload file) {
+    public static void validateFileSize(CompletedFileUpload file,
+                                        long maxFileSize) {
 
         if (file.getSize() == 0) {
             throw new BadMediaTypeException("You have not uploaded anything");
@@ -48,7 +42,8 @@ public class FileHandler {
         }
     }
 
-    public static String buildFilename(String user) {
+    public static String buildFilename(String user,
+                                       String commonExtension) {
         return user + "." + commonExtension;
     }
 }

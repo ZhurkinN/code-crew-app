@@ -30,13 +30,19 @@ public class FileServiceImpl implements FileService {
     @Property(name = "micronaut.router.static-resources.pictures.path")
     private String storagePath;
 
+    @Property(name = "micronaut.server.multipart.max-file-size")
+    private long maxFileSize;
+
+    @Property(name = "micronaut.server.multipart.common-file-extension")
+    private String commonExtension;
+
     @Override
     public String saveProfilePicture(CompletedFileUpload file,
                                      String userEmail) throws BadMediaTypeException, IOException {
 
-        validateFileSize(file);
+        validateFileSize(file, maxFileSize);
         validateFileMediaType(file);
-        String filename = buildFilename(userEmail);
+        String filename = buildFilename(userEmail, commonExtension);
         savePicture(file, filename);
 
         return filename;
@@ -50,7 +56,7 @@ public class FileServiceImpl implements FileService {
 
         FileInputStream fileInputStream;
         try {
-            fileInputStream = new FileInputStream(storagePath + buildFilename(user.getEmail()));
+            fileInputStream = new FileInputStream(storagePath + buildFilename(user.getEmail(), commonExtension));
         } catch (FileNotFoundException e) {
             throw new BadAvatarPathException("Not found");
         }
