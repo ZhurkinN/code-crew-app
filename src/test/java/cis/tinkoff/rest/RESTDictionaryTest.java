@@ -124,6 +124,7 @@ public class RESTDictionaryTest extends AbstractIntegrationTest {
         Assertions.assertEquals(expectedSize, directions.size());
 
         Specifications.installSpecification(Specifications.requestSpec("/api/v1/resumes"), Specifications.responseSpec(200));
+
         InteractResumeDTO resumeDTO
                 = new InteractResumeDTO("New resume", List.of("JavaScript", "React"), "FRONTEND");
 

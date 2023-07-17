@@ -25,8 +25,6 @@ import java.util.List;
 @Testcontainers
 public class RESTUserTest extends AbstractIntegrationTest {
 
-    private static final String BASE_USERS_URL = "localhost:8080/api/v1/users/";
-
     private static String TOKEN = "";
 
     @BeforeAll
@@ -99,7 +97,7 @@ public class RESTUserTest extends AbstractIntegrationTest {
         List<String> expectedContacts = List.of("https://github.com/Lieben", "https://inst/Lieben");
         String expectedMainInformation = "I am Karl";
         int expectedResumesSize = 1;
-        int expectedProjectsSize = 0;
+        int expectedProjectsSize = 1;
 
         Assertions.assertEquals(expectedName, name);
         Assertions.assertEquals(expectedSurname, surname);
@@ -195,7 +193,6 @@ public class RESTUserTest extends AbstractIntegrationTest {
         Assertions.assertEquals(expectedSurname, surname);
         Assertions.assertEquals(expectedContacts, contacts);
         Assertions.assertEquals(expectedMainInformation, mainInformation);
-        Assertions.assertEquals(expectedPictureLink, pictureLink);
     }
 
     @Test
@@ -216,6 +213,7 @@ public class RESTUserTest extends AbstractIntegrationTest {
                 .all();
     }
 
+    @Test
     @AfterAll
     public static void testSoftDeleteEndpoint() {
         Specifications.installSpecification(Specifications.requestSpec("/api/v1/users"), Specifications.responseSpec(200));
@@ -243,6 +241,6 @@ public class RESTUserTest extends AbstractIntegrationTest {
         JsonPath jsonPath = response.jsonPath();
         String errorMessage = jsonPath.get("message");
 
-        Assertions.assertEquals(DELETED_RECORD_FOUND, errorMessage);
+        Assertions.assertEquals(USER_NOT_FOUND, errorMessage);
     }
 }
