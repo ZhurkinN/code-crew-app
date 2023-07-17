@@ -20,43 +20,63 @@ values ('ACCEPTED', 'Request is accepted'),
        ('IN_CONSIDERATION', 'Request is under consideration');
 
 insert into users(email, name, surname, password, main_information, contacts)
-values ('alex@mail.ru', 'Gordon', 'Alonso', '123', 'I am Gordon',
+values ('alex@mail.ru', 'Gordon', 'Alonso', '123',
+        'I am Gordon. Love to play basketball, watching films, doing programs, doing popcorn and smth else. Feeling kaif when popcorn is good. Feeling good when programs works',
         ARRAY ['https://github.com/Alonso', 'https://inst/Alonso']),
-       ('weiber@mail.ru', 'Loren', 'Wisen', '123', 'I am Loren',
+       ('weiber@mail.ru', 'Loren', 'Wisen', '123',
+        'I am Loren. Love to play basketball, watching films, doing programs, doing popcorn and smth else. Feeling kaif when popcorn is good. Feeling good when programs works',
         ARRAY ['https://github.com/Wisen', 'https://inst/Wisen']),
-       ('mercen@yandex.ru', 'Karl', 'Lieben', '123', 'I am Karl',
+       ('mercen@yandex.ru', 'Karl', 'Lieben', '123',
+        'I am Karl. Love to play basketball, watching films, doing programs, doing popcorn and smth else. Feeling kaif when popcorn is good. Feeling good when programs works',
         ARRAY ['https://github.com/Lieben', 'https://inst/Lieben']),
-       ('kulich@anser.ru', 'Weiner', 'Arxz', '123', 'I am Weiner',
+       ('kulich@anser.ru', 'Weiner', 'Arxz', '123',
+        'I am Weiner. Love to play basketball, watching films, doing programs, doing popcorn and smth else. Feeling kaif when popcorn is good. Feeling good when programs works',
         ARRAY ['https://github.com/Arxz', 'https://inst/Arxz']),
-       ('reter@mail.ru', 'Isopre', 'Wertin', '123', 'I am Isopre',
+       ('reter@mail.ru', 'Isopre', 'Wertin', '123',
+        'I am Isopre. Love to play basketball, watching films, doing programs, doing popcorn and smth else. Feeling kaif when popcorn is good. Feeling good when programs works',
         ARRAY ['https://github.com/Wertin', 'https://inst/Isopre']),
-       ('kio@mail.ru', 'Gordon', 'Maxs', '123', 'I am Gordon', ARRAY ['https://github.com/Maxs', 'https://inst/alex']),
-       ('alex@yandex.ru', 'Kloner', 'Leiner', '123', 'I am Kloner',
+       ('kio@mail.ru', 'Gordon', 'Maxs', '123',
+        'I am Gordon Maxs. Love to play basketball, watching films, doing programs, doing popcorn and smth else. Feeling kaif when popcorn is good. Feeling good when programs works',
+        ARRAY ['https://github.com/Maxs', 'https://inst/alex']),
+       ('alex@yandex.ru', 'Kloner', 'Leiner', '123',
+        'I am Gordon Kloner. Love to play basketball, watching films, doing programs, doing popcorn and smth else. Feeling kaif when popcorn is good. Feeling good when programs works',
         ARRAY ['https://github.com/Leiner', 'https://inst/Leiner']),
-       ('loire@mail.ru', 'Lioner', 'Wiseben', '123', 'I am Lioner',
+       ('loire@mail.ru', 'Lioner', 'Wiseben', '123',
+        'I am Gordon Lioner. Love to play basketball, watching films, doing programs, doing popcorn and smth else. Feeling kaif when popcorn is good. Feeling good when programs works',
         ARRAY ['https://github.com/Wiseben', 'https://inst/Wiseben']),
-       ('wesber@yandex.ru', 'Alones', 'Lionel', '123', 'I am Alones',
+       ('wesber@yandex.ru', 'Alones', 'Lionel', '123',
+        'I am Gordon Alones. Love to play basketball, watching films, doing programs, doing popcorn and smth else. Feeling kaif when popcorn is good. Feeling good when programs works',
         ARRAY ['https://github.com/Lionel', 'https://inst/Lionel']);
 
 insert into resume(description, direction, user_id, skills)
-values ('Hey, i want to work backend dev', 'BACKEND', 1,
+values ('Hey, i want to work backend dev. Wanna try new technologies and new ideas. Open to new contacts', 'BACKEND', 1,
         ARRAY ['java', 'spring', 'micronaut', 'docker', 'postgres', 'rest']),
-       ('Hey, i want to work frontend dev', 'FRONTEND', 2,
+       ('Hey, i want to work frontend dev. Wanna drink smoozy and draw interfaces. Open to other devs', 'FRONTEND', 2,
         ARRAY ['javaScript', 'next', 'react', 'node', 'postgres', 'rest']),
-       ('Hey, i want to work QA', 'QA', 3, ARRAY ['java', 'mockito', 'rest', 'junit', 'postgres']),
-       ('Hey, i want to work Machine Learning engineer', 'ML', 4, ARRAY ['python']),
-       ('Hey, i want to work Analyst', 'ANALYST', 5, ARRAY ['python']),
-       ('Hey, i want to work Data science', 'DATA_SCIENCE', 6, ARRAY ['python', 'pandas', 'postgres']),
-       ('Hey, i want to work backend dev', 'BACKEND', 7,
+       ('Hey, i want to work QA. Wanna test bugs and write integration and unit tests. Open to new bugs', 'QA', 3,
+        ARRAY ['java', 'mockito', 'rest', 'junit', 'postgres']),
+       ('Hey, i want to work Machine Learning engineer. Wanna learn new practices and write code on python', 'ML', 4,
+        ARRAY ['python']),
+       ('Hey, i want to work Analyst. Wanna analyze business moments and smth else. Doing something', 'ANALYST', 5,
+        ARRAY ['python']),
+       ('Hey, i want to work Data science. Analyzing data and do some conclusions on it', 'DATA_SCIENCE', 6,
+        ARRAY ['python', 'pandas', 'postgres']),
+       ('Hey, i want to work backend dev. Wanna try new technologies and new ideas. Open to new contacts', 'BACKEND', 7,
         ARRAY ['java', 'spring', 'micronaut', 'docker', 'postgres', 'gradle', 'maven']),
-       ('Hey, i want to work frontend dev', 'FRONTEND', 8, ARRAY ['javascript', 'next', 'react', 'node', 'postgres']);
+       ('Hey, i want to work frontend dev. Wanna drink smoozy and draw interfaces. Open to other devs', 'FRONTEND', 8,
+        ARRAY ['javascript', 'next', 'react', 'node', 'postgres']);
 
 insert into project(leader_id, title, theme, description, status)
-values (2, 'Новый сайт РЖД', 'Сайт РЖД', 'Проект разработки нового сайта РЖД', 'PREPARING'),
-       (1, 'Новый Тиндер', 'Приложение Тиндер', 'Проект разработки Тиндера', 'CLOSED'),
-       (4, 'Новое приложение Спотифай', 'Спотифай', 'Проект разработки Спотифая', 'FROZEN'),
-       (6, 'Новый сайт Авиасейлс', 'Сайт АвиаСейлс', 'Проект разработки ТуТу', 'PREPARING'),
-       (3, 'Новый сайт Тинькофф', 'Сайт Тинькофф', 'Проект разработки нового сайта Тинькофф', 'IN_PROGRESS');
+values (2, 'Новый сайт РЖД', 'Сайт РЖД',
+        'Проект разработки нового сайта РЖД. Создаем работающее что-то, а то сейчас как то не очень. Надо много работать...', 'PREPARING'),
+       (1, 'Новый Тиндер', 'Приложение Тиндер',
+        'Проект разработки Тиндера. Знакомства, смузи, все как любим. Знакомимся на все деньги. Сделаем круто', 'CLOSED'),
+       (4, 'Новое приложение Спотифай', 'Спотифай',
+        'Проект разработки Спотифая. Яндекс музыка нам надоела, поэтому делаем немного круче. Подписки, новые альбомы тут.', 'FROZEN'),
+       (6, 'Новый сайт Авиасейлс', 'Сайт АвиаСейлс',
+        'Проект разработки ТуТу. Поезда поездами, а билеты надо покупать, поэтому мы тут. Работаем непокладая рук', 'PREPARING'),
+       (3, 'Новый сайт Тинькофф', 'Сайт Тинькофф',
+        'Проект разработки нового сайта Тинькофф. У нас все с кайфом, но надо быть еще более крутыми. Так что развиваемся', 'IN_PROGRESS');
 
 insert into position(project_id, direction, description, skills, user_id)
 values (1, 'BACKEND', 'Позиция Backend-developer', ARRAY ['java', 'postgres', 'spring', 'maven'], null),
@@ -81,16 +101,16 @@ values (1, 'BACKEND', 'Позиция Backend-developer', ARRAY ['java', 'postgr
        (5, 'ANALYST', 'Позиция аналитика', ARRAY ['postgres', 'python'], null);
 
 insert into position_request(resume_id, position_id, status, cover_letter, is_invite)
-values (1, 1, 'IN_CONSIDERATION', 'Очень хочу работать в вашей команде', false),
-       (8, 2, 'IN_CONSIDERATION', 'Очень хочу работать в вашей команде', false),
-       (3, 3, 'IN_CONSIDERATION', 'Очень хочу работать в вашей команде', false),
-       (7, 4, 'IN_CONSIDERATION', 'Очень хочу работать в вашей команде', false),
-       (8, 5, 'IN_CONSIDERATION', 'Очень хочу работать в вашей команде', false),
-       (3, 6, 'IN_CONSIDERATION', 'Очень хочу работать в вашей команде', false),
-       (5, 7, 'IN_CONSIDERATION', 'Очень хочу работать в вашей команде', false),
-       (7, 8, 'IN_CONSIDERATION', 'Очень хочу работать в вашей команде', false),
-       (3, 9, 'IN_CONSIDERATION', 'Очень хочу работать в вашей команде', false),
-       (7, 10, 'IN_CONSIDERATION', 'Очень хочу работать в вашей команде', false);
+values (1, 1, 'IN_CONSIDERATION', 'Очень хочу работать в вашей команде. Обещаю много работать, иначе можете меня уволить. Хочу много денег', false),
+       (8, 2, 'IN_CONSIDERATION', 'Очень хочу работать в вашей команде. Обещаю много работать, иначе можете меня уволить. Хочу много денег', false),
+       (3, 3, 'IN_CONSIDERATION', 'Очень хочу работать в вашей команде. Обещаю много работать, иначе можете меня уволить. Хочу много денег', false),
+       (7, 4, 'IN_CONSIDERATION', 'Очень хочу работать в вашей команде. Обещаю много работать, иначе можете меня уволить. Хочу много денег', false),
+       (8, 5, 'IN_CONSIDERATION', 'Очень хочу работать в вашей команде. Обещаю много работать, иначе можете меня уволить. Хочу много денег', false),
+       (3, 6, 'IN_CONSIDERATION', 'Очень хочу работать в вашей команде. Обещаю много работать, иначе можете меня уволить. Хочу много денег', false),
+       (5, 7, 'IN_CONSIDERATION', 'Очень хочу работать в вашей команде. Обещаю много работать, иначе можете меня уволить. Хочу много денег', false),
+       (7, 8, 'IN_CONSIDERATION', 'Очень хочу работать в вашей команде. Обещаю много работать, иначе можете меня уволить. Хочу много денег', false),
+       (3, 9, 'IN_CONSIDERATION', 'Очень хочу работать в вашей команде. Обещаю много работать, иначе можете меня уволить. Хочу много денег', false),
+       (7, 10, 'IN_CONSIDERATION', 'Очень хочу работать в вашей команде. Обещаю много работать, иначе можете меня уволить. Хочу много денег', false);
 
 insert into project_members (user_id, project_id)
 values (2, 1),
