@@ -30,4 +30,6 @@ public interface UserService {
     void softDelete(String email);
 
     void delete(Long id);
+
+    List<User> findUsersByIdsOrElseThrow(List<Long> ids);
 }

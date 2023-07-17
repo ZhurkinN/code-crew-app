@@ -2,6 +2,7 @@ package cis.tinkoff.service.impl;
 
 import cis.tinkoff.model.*;
 import cis.tinkoff.model.enumerated.Direction;
+import cis.tinkoff.model.enumerated.ProjectStatus;
 import cis.tinkoff.repository.ResumeRepository;
 import cis.tinkoff.repository.UserRepository;
 import cis.tinkoff.repository.dictionary.DirectionRepository;
@@ -67,5 +68,16 @@ public class DictionaryServiceImpl implements DictionaryService {
                         + " not found"));
 
         return directionDictionary;
+    }
+
+    @Override
+    public ProjectStatusDictionary getProjectStatusDictionaryById(ProjectStatus status) {
+        ProjectStatusDictionary projectStatusDictionary = projectStatusRepository
+                .findById(status)
+                .orElseThrow(() -> new RecordNotFoundException("Project status with id=" +
+                        status
+                        + " not found"));
+
+        return projectStatusDictionary;
     }
 }

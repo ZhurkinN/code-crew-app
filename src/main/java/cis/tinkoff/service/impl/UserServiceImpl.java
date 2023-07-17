@@ -111,4 +111,16 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
+    @Override
+    public List<User> findUsersByIdsOrElseThrow(List<Long> ids) {
+        List<User> users = userRepository.findByIdInList(ids);
+
+        if (users.size() == 0) {
+            throw new RecordNotFoundException("Users with ids = " +
+                    ids + " not found");
+        }
+
+        return users;
+    }
+
 }

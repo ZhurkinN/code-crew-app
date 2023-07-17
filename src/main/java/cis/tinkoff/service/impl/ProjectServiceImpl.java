@@ -13,11 +13,15 @@ import cis.tinkoff.repository.ProjectRepository;
 import cis.tinkoff.repository.UserRepository;
 import cis.tinkoff.repository.dictionary.DirectionRepository;
 import cis.tinkoff.repository.dictionary.ProjectStatusRepository;
+import cis.tinkoff.service.DictionaryService;
+import cis.tinkoff.service.PositionService;
 import cis.tinkoff.service.ProjectService;
+import cis.tinkoff.service.UserService;
 import cis.tinkoff.support.exceptions.InaccessibleActionException;
 import cis.tinkoff.support.exceptions.RecordNotFoundException;
 import cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper;
 import io.micronaut.context.annotation.Primary;
+import io.micronaut.data.model.Sort;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 
@@ -31,11 +35,10 @@ import java.util.Objects;
 public class ProjectServiceImpl implements ProjectService {
 
     private final ProjectRepository projectRepository;
-    private final UserRepository userRepository;
     private final PositionRepository positionRepository;
-    private final ProjectStatusRepository projectStatusRepository;
     private final ProjectContactRepository projectContactRepository;
-    private final DirectionRepository directionRepository;
+    private final UserService userService;
+    private final DictionaryService dictionaryService;
 
     @Override
     public List<Project> getAll() {
@@ -66,13 +69,17 @@ public class ProjectServiceImpl implements ProjectService {
         List<Long> positionIds = project.getPositions().stream()
                 .map(GenericModel::getId)
                 .toList();
-        List<Position> positions = (List<Position>) positionRepository.findByIdInList(positionIds);
+        List<Position> positions = positionRepository.findByIdInList(positionIds, Sort.UNSORTED);
+
+        if (positions.size() == 0) {
+            throw new RecordNotFoundException("Position with id=" + positionIds.toString() + " not found");
+        }
 
         List<Long> userIds = positions.stream()
                 .filter(position -> position.getUser() != null)
                 .map(position -> position.getUser().getId())
                 .toList();
-        List<User> users = userRepository.findByIdInList(userIds);
+        List<User> users = userService.findUsersByIdsOrElseThrow(userIds);
 
         ProjectDTO projectDTO = ProjectDTO.toProjectDTO(project);
         projectDTO.setMembers(ProjectMemberDTO.toProjectMemberDTO(users, positions, project.getLeader().getId()));
@@ -113,7 +120,7 @@ public class ProjectServiceImpl implements ProjectService {
             throw new RecordNotFoundException(ErrorDisplayMessageKeeper.RECORD_NOT_FOUND);
         }
 
-        User oldUser = userRepository.findByEmailAndIsDeletedFalse(login).orElseThrow(() -> new RecordNotFoundException(ErrorDisplayMessageKeeper.RECORD_NOT_FOUND));
+        User oldUser = userService.getByEmail(login);
         List<Position> positions = positionRepository.findByUserIdAndProjectId(oldUser.getId(), project.getId());
 
         if (positions.size() == 0) {
@@ -127,8 +134,8 @@ public class ProjectServiceImpl implements ProjectService {
             if (positionRepository.findByUserIdAndProjectId(newLeaderId, project.getId()).size() == 0) {
                 throw new RecordNotFoundException(ErrorDisplayMessageKeeper.RECORD_NOT_FOUND);
             }
-            User newLeader = userRepository.findById(newLeaderId)
-                    .orElseThrow(() -> new RecordNotFoundException(ErrorDisplayMessageKeeper.RECORD_NOT_FOUND));
+            User newLeader = userService.getById(newLeaderId);
+
             projectRepository.updateLeaderByLeaderId(project.getId(), newLeader);
         }
     }
@@ -174,12 +181,11 @@ public class ProjectServiceImpl implements ProjectService {
     @Transactional
     @Override
     public ProjectDTO createProject(String login, ProjectCreateDTO projectCreateDTO) throws RecordNotFoundException {
-        User leader = userRepository.findByEmailAndIsDeletedFalse(login)
-                .orElseThrow(() -> new RecordNotFoundException("user not found"));
-        ProjectStatusDictionary status = projectStatusRepository.findById(projectCreateDTO.getStatus())
-                .orElseThrow(() -> new RecordNotFoundException("status not found"));
-        DirectionDictionary direction = directionRepository.findById(projectCreateDTO.getDirection())
-                .orElseThrow(() -> new RecordNotFoundException("direction not found"));
+        User leader = userService.getByEmail(login);
+        ProjectStatusDictionary status = dictionaryService
+                .getProjectStatusDictionaryById(projectCreateDTO.getStatus());
+        DirectionDictionary direction = dictionaryService
+                .getDirectionDictionaryById(projectCreateDTO.getDirection());
 
         Project newProject = new Project();
 
@@ -235,8 +241,8 @@ public class ProjectServiceImpl implements ProjectService {
         List<ProjectContact> contacts = projectForUpdate.getContacts().stream()
                 .map(this::mapToProjectContactEntity)
                 .toList();
-        ProjectStatusDictionary status = projectStatusRepository.findById(projectForUpdate.getStatus())
-                .orElseThrow(() -> new RecordNotFoundException("status " + projectForUpdate.getStatus() + " not found"));
+        ProjectStatusDictionary status = dictionaryService
+                .getProjectStatusDictionaryById(projectForUpdate.getStatus());
 
         updatedProject.setTitle(projectForUpdate.getTitle());
         updatedProject.setTheme(projectForUpdate.getTheme());
