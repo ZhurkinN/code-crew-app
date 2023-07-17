@@ -13,19 +13,18 @@ import cis.tinkoff.model.enumerated.ProjectStatus;
 import cis.tinkoff.model.enumerated.SortDirection;
 import cis.tinkoff.model.generic.GenericModel;
 import cis.tinkoff.repository.PositionRepository;
-import cis.tinkoff.repository.ProjectRepository;
-import cis.tinkoff.repository.dictionary.DirectionRepository;
 import cis.tinkoff.service.DictionaryService;
 import cis.tinkoff.service.PositionService;
 import cis.tinkoff.service.ProjectService;
 import cis.tinkoff.support.exceptions.InaccessibleActionException;
 import cis.tinkoff.support.exceptions.RecordNotFoundException;
-import cis.tinkoff.support.mapper.PositionMapper;
+import cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper;
 import io.micronaut.context.annotation.Primary;
 import io.micronaut.data.model.Page;
 import io.micronaut.data.model.Pageable;
 import io.micronaut.data.model.Sort;
 import jakarta.inject.Singleton;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Arrays;
@@ -251,5 +250,44 @@ public class PositionServiceImpl implements PositionService {
         }
 
         return positions;
+    }
+
+    @Override
+    public List<Position> findPositionsByUserAndProjectAndDirectionOrElseThrow(Long userId, Long projectId, Direction direction) {
+        List<Position> positions;
+        if (Objects.nonNull(direction)) {
+            positions = positionRepository.findByUserIdAndProjectIdAndDirectionDirectionName(userId, projectId, direction);
+        } else {
+            positions = positionRepository.findByUserIdAndProjectId(userId, projectId);
+        }
+
+        if (positions.size() == 0) {
+            throw new RecordNotFoundException(ErrorDisplayMessageKeeper.RECORD_NOT_FOUND);
+        }
+
+        return positions;
+    }
+
+    @Override
+    public Position createPosition(@NonNull User user, @NonNull Project project, @NonNull Direction direction, String description, List<String> skills, Long joinDate, Boolean isVisible) {
+        DirectionDictionary directionDictionary = dictionaryService
+                .getDirectionDictionaryById(direction);
+        Position newPosition = new Position();
+
+        newPosition.setUser(user);
+        newPosition.setProject(project);
+        newPosition.setDirection(directionDictionary);
+        newPosition.setDescription(description);
+        newPosition.setJoinDate(joinDate);
+        newPosition.setIsVisible(isVisible);
+
+//        newPosition = positionRepository.save(newPosition);
+
+        return newPosition;
+    }
+
+    @Override
+    public List<Position> saveAllPositions(List<Position> positions) {
+        return (List<Position>) positionRepository.saveAll(positions);
     }
 }

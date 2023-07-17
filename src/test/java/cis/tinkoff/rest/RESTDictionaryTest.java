@@ -11,10 +11,10 @@ import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.parsing.Parser;
-import io.restassured.response.Response;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.List;
@@ -23,7 +23,10 @@ import static io.restassured.RestAssured.given;
 
 @MicronautTest
 @Testcontainers
-public class RESTDictionaryTest extends AbstractIntegrationTest {
+public class RESTDictionaryTest {
+
+    @Container
+    public static TestSQLContainer container = TestSQLContainer.getInstance();
 
     private static String TOKEN = "";
 

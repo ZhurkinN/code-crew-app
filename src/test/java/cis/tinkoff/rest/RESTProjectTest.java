@@ -5,7 +5,6 @@ import cis.tinkoff.controller.model.VacancyDTO;
 import cis.tinkoff.controller.model.custom.ContactDTO;
 import cis.tinkoff.controller.model.custom.ProjectCreateDTO;
 import cis.tinkoff.controller.model.custom.ProjectMemberDTO;
-import cis.tinkoff.model.DirectionDictionary;
 import cis.tinkoff.model.ProjectStatusDictionary;
 import cis.tinkoff.model.enumerated.Direction;
 import cis.tinkoff.model.enumerated.ProjectStatus;
@@ -17,19 +16,23 @@ import io.restassured.http.ContentType;
 import io.restassured.parsing.Parser;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
-import org.junit.Assert;
+import jakarta.inject.Inject;
 import org.junit.jupiter.api.*;
+import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
-import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.DELETED_RECORD_FOUND;
 import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.PROJECT_WRONG_ACCESS;
 import static io.restassured.RestAssured.given;
 
-@MicronautTest
 @Testcontainers
-public class RESTProjectTest extends AbstractIntegrationTest {
+@MicronautTest(transactional = false)
+public class RESTProjectTest {
+
+    @Container
+    public static TestSQLContainer container = TestSQLContainer.getInstance();
 
     private static String TOKEN = "";
 
@@ -50,7 +53,18 @@ public class RESTProjectTest extends AbstractIntegrationTest {
                 .path("access_token");
     }
 
+    @BeforeEach
+    void startContainer() {
+        container.start();
+    }
+
+    @AfterEach
+    void stopContainer() {
+        container.stop();
+    }
+
     @Test
+    @Order(1)
     public void testGetUserProjects() {
         Specifications.installSpecification(Specifications.requestSpec("/api/v1/projects?lead"), Specifications.responseSpec(200));
 
@@ -65,10 +79,13 @@ public class RESTProjectTest extends AbstractIntegrationTest {
 
         int expectedSize = 1;
 
+        System.out.println(projectsNotLead);
+
         Assertions.assertEquals(expectedSize, projectsNotLead.size());
     }
 
     @Test
+    @Order(2)
     public void testGetUserLeadProjects() {
         Specifications.installSpecification(Specifications.requestSpec("/api/v1/projects?lead=true"), Specifications.responseSpec(200));
 
@@ -95,6 +112,7 @@ public class RESTProjectTest extends AbstractIntegrationTest {
     }
 
     @Test
+    @Order(3)
     public void testGetProjectById() {
         Specifications.installSpecification(Specifications.requestSpec("/api/v1/projects/" + 1), Specifications.responseSpec(200));
 
@@ -131,6 +149,7 @@ public class RESTProjectTest extends AbstractIntegrationTest {
     }
 
     @Test
+    @Order(3)
     public void testDeleteProjectByIdWithNotLead() {
         Specifications.installSpecification(Specifications.requestSpec("/api/v1/projects/" + 1), Specifications.responseSpec(406));
 
@@ -150,6 +169,7 @@ public class RESTProjectTest extends AbstractIntegrationTest {
     }
 
     @Test
+    @Order(4)
     public void testChangeProjectById() {
         Specifications.installSpecification(Specifications.requestSpec("/api/v1/projects/" + 2), Specifications.responseSpec(200));
 
@@ -194,6 +214,7 @@ public class RESTProjectTest extends AbstractIntegrationTest {
     }
 
     @Test
+    @Order(5)
     public void testChangeProjectByIdWithNotLead() {
         Specifications.installSpecification(Specifications.requestSpec("/api/v1/projects/" + 1), Specifications.responseSpec(406));
 
@@ -232,6 +253,7 @@ public class RESTProjectTest extends AbstractIntegrationTest {
 
     // TODO: retest with new inserted data
     @Test
+    @Order(6)
     public void testGetProjectMembers() {
         Specifications.installSpecification(Specifications.requestSpec("/api/v1/positions/projects/members?projectId=" + 2), Specifications.responseSpec(200));
 
@@ -249,6 +271,7 @@ public class RESTProjectTest extends AbstractIntegrationTest {
     }
 
     @Test
+    @Order(7)
     public void testGetProjectMembersWithInvalidUser() {
         Specifications.installSpecification(Specifications.requestSpec("/api/v1/positions/projects/members?projectId=" + 1), Specifications.responseSpec(404));
 
@@ -263,7 +286,8 @@ public class RESTProjectTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void testCreateProject() {
+    @AfterAll
+    public static void testCreateProject() {
         Specifications.installSpecification(Specifications.requestSpec("/api/v1/projects"), Specifications.responseSpec(200));
 
         ProjectCreateDTO dto = new ProjectCreateDTO();
@@ -287,7 +311,7 @@ public class RESTProjectTest extends AbstractIntegrationTest {
                 .body(dto)
                 .header("Authorization", "Bearer " + TOKEN)
                 .header("Content-Type", ContentType.JSON)
-                .patch("/api/v1/projects/" + 2)
+                .post("/api/v1/projects")
                 .then()
                 .extract()
                 .body().as(ProjectDTO.class);
@@ -312,21 +336,20 @@ public class RESTProjectTest extends AbstractIntegrationTest {
                 (Specifications.requestSpec("/api/v1/positions/projects?projectId=" + projectDTO.getId() + "&isVisible=false"),
                 Specifications.responseSpec(200));
 
-        // TODO: fix
-//        List<VacancyDTO> vacancyDTOList = given()
-//                .when()
-//                .header("Authorization", "Bearer " + TOKEN)
-//                .header("Content-Type", ContentType.JSON)
-//                .patch("/api/v1/positions/projects?projectId=" + projectDTO.getId() + "&isVisible=false")
-//                .then()
-//                .extract()
-//                .body().jsonPath().getList(".", VacancyDTO.class);
-//
-//        int expectedNumberOfVacancies = 1;
-//
-//        Assertions.assertEquals(expectedNumberOfVacancies, vacancyDTOList.size());
+        List<ProjectMemberDTO> vacancyDTOList = given()
+                .when()
+                .header("Authorization", "Bearer " + TOKEN)
+                .header("Content-Type", ContentType.JSON)
+                .get("/api/v1/positions/projects/members?projectId=" + projectDTO.getId())
+                .then()
+                .extract()
+                .body().jsonPath().getList(".", ProjectMemberDTO.class);
 
-        // протестить, что у юзера добавился этот проект
+        int expectedNumberOfVacancies = 1;
+
+        Assertions.assertEquals(expectedNumberOfVacancies, vacancyDTOList.size());
+
+//         протестить, что у юзера добавился этот проект
     }
 
     @Test
