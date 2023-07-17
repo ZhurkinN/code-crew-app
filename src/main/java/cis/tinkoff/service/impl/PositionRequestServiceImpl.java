@@ -4,6 +4,7 @@ import cis.tinkoff.model.*;
 import cis.tinkoff.model.enumerated.RequestStatus;
 import cis.tinkoff.repository.PositionRepository;
 import cis.tinkoff.repository.PositionRequestRepository;
+import cis.tinkoff.repository.ProjectRepository;
 import cis.tinkoff.repository.ResumeRepository;
 import cis.tinkoff.repository.dictionary.RequestStatusRepository;
 import cis.tinkoff.service.PositionRequestService;
@@ -28,6 +29,7 @@ public class PositionRequestServiceImpl implements PositionRequestService {
     private final ResumeRepository resumeRepository;
     private final PositionRepository positionRepository;
     private final RequestStatusRepository requestStatusRepository;
+    private final ProjectRepository projectRepository;
 
     @Override
     public List<PositionRequest> getAll() {
@@ -158,6 +160,7 @@ public class PositionRequestServiceImpl implements PositionRequestService {
         if (isAccepted) {
 
             status.setStatusName(RequestStatus.ACCEPTED);
+            projectRepository.saveMember(position.getProject().getId(), resume.getUser().getId());
             resumeRepository.updateIsActiveById(resume.getId(), false);
             positionRepository.updateIsVisibleAndJoinDateAndUserById(
                     position.getId(),

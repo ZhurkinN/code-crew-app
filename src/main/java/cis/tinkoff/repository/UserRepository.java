@@ -23,8 +23,6 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
     List<Project> findProjectsById(@Id Long id);
 
-    List<Project> findLeadProjectsById(@Id Long id);
-
     void update(@Id Long id,
                 String[] contacts);
 

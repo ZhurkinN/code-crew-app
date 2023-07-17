@@ -46,9 +46,9 @@ public class ProjectServiceImpl implements ProjectService {
     public List<ProjectDTO> getAllUserProjects(String login, Boolean isLead) {
         List<Project> projects;
         if (isLead) {
-            projects = projectRepository.findByLeaderEmail(login);
+            projects = projectRepository.findByLeaderEmailAndIsDeletedFalse(login);
         } else {
-            projects = projectRepository.findByPositionsUserEmail(login);
+            projects = projectRepository.findByPositionsUserEmailAndIsDeletedFalse(login);
         }
 
         List<ProjectDTO> projectDTOList = ProjectDTO.toProjectDTO(projects);
