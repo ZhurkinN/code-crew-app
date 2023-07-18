@@ -19,6 +19,8 @@ micronaut:
   metrics:
     enabled: true
     export:
+      statsd:
+        enabled: false
       prometheus:
         enabled: true
         step: PT1M
