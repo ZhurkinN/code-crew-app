@@ -73,7 +73,7 @@ public class ProjectServiceImpl implements ProjectService {
         List<Position> positions = positionService.get().findPositionsByIdsOrElseThrow(positionIds);
 
         if (positions.size() == 0) {
-            throw new RecordNotFoundException("Position with id=" + positionIds.toString() + " not found");
+            throw new RecordNotFoundException("Position with id=" + positionIds + " not found");
         }
 
         List<Long> userIds = positions.stream()

@@ -120,7 +120,7 @@ public class PositionServiceImpl implements PositionService {
 
     @Override
     public VacancyDTO createVacancy(String login, Long projectId, VacancyCreateDTO vacancyCreateDTO) {
-        DirectionDictionary directionDictionary =  dictionaryService
+        DirectionDictionary directionDictionary = dictionaryService
                 .getDirectionDictionaryById(vacancyCreateDTO.getDirection());
 
         if (!projectService.isUserProjectLeader(login, projectId)) {

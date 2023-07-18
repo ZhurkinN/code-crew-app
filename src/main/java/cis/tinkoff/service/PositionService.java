@@ -4,7 +4,6 @@ import cis.tinkoff.controller.model.VacancyDTO;
 import cis.tinkoff.controller.model.custom.ProjectMemberDTO;
 import cis.tinkoff.controller.model.custom.SearchDTO;
 import cis.tinkoff.controller.model.custom.VacancyCreateDTO;
-import cis.tinkoff.model.DirectionDictionary;
 import cis.tinkoff.model.Position;
 import cis.tinkoff.model.Project;
 import cis.tinkoff.model.User;

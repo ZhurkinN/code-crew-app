@@ -18,4 +18,10 @@ public interface ErrorDisplayMessageKeeper {
     String USER_ALREADY_IN_PROJECT = "A user with this email is already in this project.";
     String SAME_REQUEST_ALREADY_EXISTS = "User already created same request. It's still in consideration.";
     String PROJECT_WRONG_ACCESS = "Action with this project is not available.";
+
+
+    //Exception messages
+    String PICTURE_NOT_FOUND = "Profile picture for user with id = %d wasn't found.";
+    String WRONG_MEDIA_TYPE = "User with email - %s tried to upload a file with unavailable type. File name - %s";
+    String WRONG_FILE_SIZE = "User with email - %s tried to upload a file too large or empty. The size must be less than %d B.";
 }

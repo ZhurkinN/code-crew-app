@@ -3,8 +3,7 @@ package cis.tinkoff.controller;
 
 import cis.tinkoff.controller.model.FileDTO;
 import cis.tinkoff.service.FileService;
-import cis.tinkoff.support.exceptions.BadAvatarPathException;
-import cis.tinkoff.support.exceptions.RequestEntityTooLargeException;
+import cis.tinkoff.support.exceptions.ProfilePictureNotFoundException;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.annotation.*;
 import io.micronaut.http.multipart.CompletedFileUpload;
@@ -32,7 +31,7 @@ public class FileController {
             produces = APPLICATION_JSON
     )
     public HttpResponse<FileDTO> uploadProfilePicture(@Part CompletedFileUpload picture,
-                                                      Authentication authentication) throws RequestEntityTooLargeException, IOException {
+                                                      Authentication authentication) throws IOException {
 
         String email = authentication.getName();
         String path = fileService.saveProfilePicture(picture, email);
@@ -42,7 +41,7 @@ public class FileController {
 
     @Get(value = "/{id}", produces = IMAGE_PNG)
     @Secured(SecurityRule.IS_ANONYMOUS)
-    public StreamedFile download(@PathVariable("id") Long userId) throws BadAvatarPathException {
+    public StreamedFile download(@PathVariable("id") Long userId) throws ProfilePictureNotFoundException {
 
         return fileService.getProfilePicture(userId);
     }

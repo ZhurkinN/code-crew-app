@@ -1,7 +1,6 @@
 package cis.tinkoff.support.helper;
 
-import cis.tinkoff.support.exceptions.BadMediaTypeException;
-import cis.tinkoff.support.exceptions.RequestEntityTooLargeException;
+import cis.tinkoff.support.exceptions.UnavailableMediaTypeException;
 import io.micronaut.http.MediaType;
 import io.micronaut.http.multipart.CompletedFileUpload;
 import lombok.AccessLevel;
@@ -18,27 +17,12 @@ public class FileHandler {
         add("png");
     }};
 
-    public static void validateFileMediaType(CompletedFileUpload file) {
+    public static void validateFileMediaType(CompletedFileUpload file,
+                                             String userEmail) {
 
         Optional<MediaType> mediaType = file.getContentType();
-        if (mediaType.isEmpty()) {
-            throw new BadMediaTypeException("The file does not contain an extension");
-        }
-
-        String type = mediaType.get().getSubtype();
-        if (!ALLOWED_MEDIA_TYPES.contains(type)) {
-            throw new BadMediaTypeException("This type is not allowed for loading");
-        }
-    }
-
-    public static void validateFileSize(CompletedFileUpload file,
-                                        long maxFileSize) {
-
-        if (file.getSize() == 0) {
-            throw new BadMediaTypeException("You have not uploaded anything");
-        }
-        if (file.getSize() > maxFileSize) {
-            throw new RequestEntityTooLargeException(String.format("File is so large for uploading. Size should be less than: %d bytes", maxFileSize));
+        if (mediaType.isEmpty() || !ALLOWED_MEDIA_TYPES.contains(mediaType.get().getSubtype())) {
+            throw new UnavailableMediaTypeException(userEmail, file.getFilename());
         }
     }
 

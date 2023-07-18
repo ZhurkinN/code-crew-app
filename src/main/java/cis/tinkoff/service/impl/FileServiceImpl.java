@@ -3,9 +3,9 @@ package cis.tinkoff.service.impl;
 import cis.tinkoff.model.User;
 import cis.tinkoff.repository.UserRepository;
 import cis.tinkoff.service.FileService;
-import cis.tinkoff.support.exceptions.BadAvatarPathException;
-import cis.tinkoff.support.exceptions.BadMediaTypeException;
+import cis.tinkoff.support.exceptions.ProfilePictureNotFoundException;
 import cis.tinkoff.support.exceptions.RecordNotFoundException;
+import cis.tinkoff.support.exceptions.UnavailableMediaTypeException;
 import io.micronaut.context.annotation.Property;
 import io.micronaut.http.MediaType;
 import io.micronaut.http.multipart.CompletedFileUpload;
@@ -19,7 +19,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.USER_NOT_FOUND;
-import static cis.tinkoff.support.helper.FileHandler.*;
+import static cis.tinkoff.support.helper.FileHandler.buildFilename;
+import static cis.tinkoff.support.helper.FileHandler.validateFileMediaType;
 
 @Singleton
 @RequiredArgsConstructor
@@ -38,10 +39,9 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public String saveProfilePicture(CompletedFileUpload file,
-                                     String userEmail) throws BadMediaTypeException, IOException {
+                                     String userEmail) throws UnavailableMediaTypeException, IOException {
 
-        validateFileSize(file, maxFileSize);
-        validateFileMediaType(file);
+        validateFileMediaType(file, userEmail);
         String filename = buildFilename(userEmail, commonExtension);
         savePicture(file, filename);
 
@@ -58,7 +58,7 @@ public class FileServiceImpl implements FileService {
         try {
             fileInputStream = new FileInputStream(storagePath + buildFilename(user.getEmail(), commonExtension));
         } catch (FileNotFoundException e) {
-            throw new BadAvatarPathException("Not found");
+            throw new ProfilePictureNotFoundException(userId);
         }
 
         return new StreamedFile(fileInputStream, MediaType.IMAGE_PNG_TYPE);

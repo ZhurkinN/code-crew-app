@@ -36,12 +36,12 @@ public class GlobalExceptionHandler implements ExceptionHandler<RuntimeException
         int statusCode;
         if (exception instanceof DeletedRecordFoundException
                 || exception instanceof RecordNotFoundException
-                || exception instanceof BadAvatarPathException) {
+                || exception instanceof ProfilePictureNotFoundException) {
             statusCode = HttpStatus.NOT_FOUND.getCode();
         } else if (exception instanceof InaccessibleActionException) {
             statusCode = HttpStatus.NOT_ACCEPTABLE.getCode();
-        } else if (exception instanceof RequestEntityTooLargeException) {
-            statusCode = HttpStatus.REQUEST_ENTITY_TOO_LARGE.getCode();
+        } else if (exception instanceof UnavailableMediaTypeException) {
+            statusCode = HttpStatus.UNSUPPORTED_MEDIA_TYPE.getCode();
         } else {
             statusCode = HttpStatus.CONFLICT.getCode();
         }
