@@ -100,10 +100,6 @@ public class ProjectServiceImpl implements ProjectService {
     public void deleteProjectById(Long id, String login) throws RecordNotFoundException, InaccessibleActionException {
         Project project = getAllProjectsByIdsOrElseThrow(List.of(id)).get(0);
 
-        if (project == null) {
-            throw new RecordNotFoundException(ErrorDisplayMessageKeeper.RECORD_NOT_FOUND);
-        }
-
         if (!isUserProjectLeader(login, project.getId())) {
             throw new InaccessibleActionException(ErrorDisplayMessageKeeper.PROJECT_WRONG_ACCESS);
         }
