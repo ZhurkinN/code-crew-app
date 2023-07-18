@@ -31,9 +31,6 @@ public class FileServiceImpl implements FileService {
     @Property(name = "micronaut.router.static-resources.pictures.path")
     private String storagePath;
 
-    @Property(name = "micronaut.server.multipart.max-file-size")
-    private long maxFileSize;
-
     @Property(name = "micronaut.server.multipart.common-file-extension")
     private String commonExtension;
 

@@ -15,7 +15,7 @@ micronaut:
         paths: classpath:META-INF/swagger/views/swagger-ui
         mapping: /swagger-ui/**
       pictures:
-        path: src/main/resources/static/images/
+        path: /images/
   metrics:
     enabled: true
     export:
@@ -97,7 +97,7 @@ micronaut:
 
 datasources:
   default:
-    url: jdbc:postgresql://localhost:5432/postgres
+    url: jdbc:postgresql://postgres:5432/postgres
     username: postgres
     password: g12nokona
     driver-class-name: org.postgresql.Driver
