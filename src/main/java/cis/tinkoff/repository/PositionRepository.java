@@ -89,6 +89,7 @@ public interface PositionRepository extends PageableRepository<Position, Long>, 
     @Join(value = "user", type = Join.Type.LEFT_FETCH)
     List<Position> retrieveByProjectId(Long project_id);
 
+    @Join(value = "direction", type = Join.Type.FETCH)
     Optional<Position> findByIdAndIsDeletedFalseAndIsVisibleTrue(@Id Long id);
 
     @Query(

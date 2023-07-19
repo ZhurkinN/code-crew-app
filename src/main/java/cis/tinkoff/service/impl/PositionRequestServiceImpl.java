@@ -106,6 +106,7 @@ public class PositionRequestServiceImpl implements PositionRequestService {
                     .setName(user.getName())
                     .setSurname(user.getSurname());
 
+            detailedUser.setId(user.getId());
             detailedUser.setCreatedWhen(null);
             detailedUser.setIsDeleted(null);
             e.getResume().setUser(detailedUser);
@@ -130,6 +131,7 @@ public class PositionRequestServiceImpl implements PositionRequestService {
                     .setStatus(project.getStatus())
                     .setMembers(project.getMembers());
 
+            detailedProject.setId(project.getId());
             detailedProject.setCreatedWhen(null);
             detailedProject.setIsDeleted(null);
             e.getPosition().setProject(detailedProject);
