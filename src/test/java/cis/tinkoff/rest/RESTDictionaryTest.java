@@ -31,7 +31,7 @@ public class RESTDictionaryTest {
     private static String TOKEN = "";
 
     @BeforeAll
-    static void init() {
+    static void setUp() {
         RestAssured.defaultParser = Parser.JSON;
         UserLoginDTO dto = new UserLoginDTO("alex@mail.ru", "123");
 
@@ -62,6 +62,7 @@ public class RESTDictionaryTest {
 
         int expectedSize = 8;
 
+        // TODO: change to lists
         DirectionDictionary[] expectedDirections = new DirectionDictionary[8];
 
         expectedDirections[0] = new DirectionDictionary(Direction.BACKEND, "Backend-developer");

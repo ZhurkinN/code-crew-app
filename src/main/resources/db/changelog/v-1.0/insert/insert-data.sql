@@ -51,6 +51,8 @@ values ('alex@mail.ru', 'Gordon', 'Alonso', '123',
 insert into resume(description, direction, user_id, skills)
 values ('Hey, i want to work backend dev. Wanna try new technologies and new ideas. Open to new contacts', 'BACKEND', 1,
         ARRAY ['java', 'spring', 'micronaut', 'docker', 'postgres', 'rest']),
+       ('Hey, i want to work Machine Learning engineer. Wanna learn new practices and write code on python', 'ML', 1,
+        ARRAY ['python']),
        ('Hey, i want to work frontend dev. Wanna drink smoozy and draw interfaces. Open to other devs', 'FRONTEND', 2,
         ARRAY ['javaScript', 'next', 'react', 'node', 'postgres', 'rest']),
        ('Hey, i want to work QA. Wanna test bugs and write integration and unit tests. Open to new bugs', 'QA', 3,
@@ -84,9 +86,9 @@ values (1, 'BACKEND', 'Позиция Backend-developer', ARRAY ['java', 'postgr
        (1, 'QA', 'Позиция QA-engineer', ARRAY ['java', 'mockito', 'junit'], null),
 
        (2, 'BACKEND', 'Позиция Backend-developer', ARRAY ['python', 'postgres', 'django', 'maven'], 1),
-       (2, 'FRONTEND', 'Позиция Frontend-developer', ARRAY ['javascript', 'typescript', 'react'], null),
-       (2, 'QA', 'Позиция тестировщика', ARRAY ['java', 'mockito', 'junit', 'selenium'], null),
-       (2, 'ANALYST', 'Позиция аналитика', ARRAY ['java'], null),
+       (2, 'FRONTEND', 'Позиция Frontend-developer', ARRAY ['javascript', 'typescript', 'react'], 8),
+       (2, 'QA', 'Позиция тестировщика', ARRAY ['java', 'mockito', 'junit', 'selenium'], 3),
+       (2, 'ANALYST', 'Позиция аналитика', ARRAY ['java'], 5),
 
        (3, 'BACKEND', 'Позиция Backend-developer', ARRAY ['java', 'postgres', 'spring', 'maven'], null),
        (3, 'QA', 'Позиция тестировщика', ARRAY ['java', 'mockito', 'jUnit', 'selenium'], 3),

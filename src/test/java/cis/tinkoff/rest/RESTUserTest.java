@@ -30,7 +30,7 @@ public class RESTUserTest {
     private static String TOKEN = "";
 
     @BeforeAll
-    static void init() {
+    static void setUp() {
         RestAssured.defaultParser = Parser.JSON;
         UserLoginDTO dto = new UserLoginDTO("alex@mail.ru", "123");
 

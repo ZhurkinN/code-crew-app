@@ -11,6 +11,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import java.util.List;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -30,4 +31,16 @@ public class ResumeDTO extends GenericDTO {
     @JsonInclude
     private User user;
     private List<PositionRequest> requests;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ResumeDTO resumeDTO)) return false;
+        return Objects.equals(getDescription(), resumeDTO.getDescription()) && Objects.equals(getIsActive(), resumeDTO.getIsActive()) && Objects.equals(getDirection(), resumeDTO.getDirection()) && Objects.equals(getSkills(), resumeDTO.getSkills()) && Objects.equals(getUser(), resumeDTO.getUser()) && Objects.equals(getRequests(), resumeDTO.getRequests());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getDescription(), getIsActive(), getDirection(), getSkills(), getUser(), getRequests());
+    }
 }

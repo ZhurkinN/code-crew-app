@@ -15,6 +15,7 @@ import lombok.experimental.Accessors;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -98,6 +99,18 @@ public class User extends GenericModel {
         this.leadProjects = leadProjects;
         this.positions = positions;
         this.projects = projects;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User user)) return false;
+        return Objects.equals(getEmail(), user.getEmail()) && Objects.equals(getPassword(), user.getPassword()) && Objects.equals(getName(), user.getName()) && Objects.equals(getSurname(), user.getSurname()) && Objects.equals(getMainInformation(), user.getMainInformation()) && Objects.equals(getPictureLink(), user.getPictureLink()) && Objects.equals(getContacts(), user.getContacts()) && Objects.equals(getResumes(), user.getResumes()) && Objects.equals(getLeadProjects(), user.getLeadProjects()) && Objects.equals(getPositions(), user.getPositions()) && Objects.equals(getProjects(), user.getProjects());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getEmail(), getPassword(), getName(), getSurname(), getMainInformation(), getPictureLink(), getContacts(), getResumes(), getLeadProjects(), getPositions(), getProjects());
     }
 }
 

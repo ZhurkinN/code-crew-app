@@ -30,7 +30,7 @@ import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.proxy;
 
 @Testcontainers
-@MicronautTest(transactional = false)
+@MicronautTest
 public class RESTProjectTest {
 
     @Container
@@ -39,7 +39,7 @@ public class RESTProjectTest {
     private static String TOKEN = "";
 
     @BeforeAll
-    static void init() {
+    static void setUp() {
         RestAssured.defaultParser = Parser.JSON;
         UserLoginDTO dto = new UserLoginDTO("alex@mail.ru", "123");
 
