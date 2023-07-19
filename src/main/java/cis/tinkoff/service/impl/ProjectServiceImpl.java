@@ -11,13 +11,13 @@ import cis.tinkoff.model.generic.GenericModel;
 import cis.tinkoff.repository.PositionRepository;
 import cis.tinkoff.repository.ProjectContactRepository;
 import cis.tinkoff.repository.ProjectRepository;
+import cis.tinkoff.repository.UserRepository;
 import cis.tinkoff.service.DictionaryService;
 import cis.tinkoff.service.PositionService;
 import cis.tinkoff.service.ProjectService;
 import cis.tinkoff.service.UserService;
 import cis.tinkoff.support.exceptions.InaccessibleActionException;
 import cis.tinkoff.support.exceptions.RecordNotFoundException;
-import cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper;
 import io.micronaut.context.annotation.Primary;
 import jakarta.inject.Inject;
 import jakarta.inject.Provider;
@@ -28,6 +28,8 @@ import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Objects;
 
+import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.INACCESSIBLE_PROJECT_ACTION;
+
 @Primary
 @Singleton
 @RequiredArgsConstructor
@@ -37,6 +39,7 @@ public class ProjectServiceImpl implements ProjectService {
     private final PositionRepository positionRepository;
     private final ProjectContactRepository projectContactRepository;
     private final UserService userService;
+    private final UserRepository userRepository;
     private final DictionaryService dictionaryService;
     @Inject
     private Provider<PositionService> positionService;
@@ -97,20 +100,27 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public void deleteProjectById(Long id, String login) throws RecordNotFoundException, InaccessibleActionException {
-        Project project = getAllProjectsByIdsOrElseThrow(List.of(id)).get(0);
+    public void deleteProjectById(Long projectId,
+                                  String email) throws RecordNotFoundException, InaccessibleActionException {
+        Project project = getAllProjectsByIdsOrElseThrow(List.of(projectId)).get(0);
 
-        if (!isUserProjectLeader(login, project.getId())) {
-            throw new InaccessibleActionException(ErrorDisplayMessageKeeper.PROJECT_WRONG_ACCESS);
+        if (!isUserProjectLeader(email, project.getId())) {
+            throw new InaccessibleActionException(
+                    INACCESSIBLE_PROJECT_ACTION,
+                    userRepository.findIdByEmail(email),
+                    projectId
+            );
         }
 
-        projectRepository.softDeleteProject(id);
+        projectRepository.softDeleteProject(projectId);
 
     }
 
     @Transactional
     @Override
-    public void leaveUserFromProject(Long id, String login, Long newLeaderId) throws Exception {
+    public void leaveUserFromProject(Long id,
+                                     String login,
+                                     Long newLeaderId) {
         Project project = getAllProjectsByIdsOrElseThrow(List.of(id)).get(0);
 
         User oldUser = userService.getByEmail(login);
@@ -139,24 +149,32 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Transactional
     @Override
-    public ProjectDTO deleteUserFromProject(Long id, String login, Long userId, Direction direction) throws RecordNotFoundException, InaccessibleActionException {
-        Project project = getAllProjectsByIdsOrElseThrow(List.of(id)).get(0);
+    public ProjectDTO deleteUserFromProject(Long projectId,
+                                            String email,
+                                            Long userId,
+                                            Direction direction) throws RecordNotFoundException, InaccessibleActionException {
+        Project project = getAllProjectsByIdsOrElseThrow(List.of(projectId)).get(0);
 
-        if (!isUserProjectLeader(login, project.getId())) {
-            throw new InaccessibleActionException(ErrorDisplayMessageKeeper.PROJECT_WRONG_ACCESS);
+        if (!isUserProjectLeader(email, project.getId())) {
+            throw new InaccessibleActionException(
+                    INACCESSIBLE_PROJECT_ACTION,
+                    userRepository.findIdByEmail(email),
+                    projectId
+            );
         }
 
         List<Position> positions = positionService.get()
                 .findPositionsByUserAndProjectAndDirectionOrElseThrow(
                         userId,
-                        id,
+                        projectId,
                         direction
                 );
         positions.forEach(position -> position.setUser(null).setIsDeleted(true));
 
         positionRepository.updateAll(positions);
 
-        List<User> members = project.getPositions().stream()
+        List<User> members = project.getPositions()
+                .stream()
                 .map(Position::getUser)
                 .toList();
         ProjectDTO projectDTO = ProjectDTO.toProjectDTO(project);
@@ -167,14 +185,15 @@ public class ProjectServiceImpl implements ProjectService {
         ));
 
         projectDTO = getProjectDTO(project);
-        projectDTO.setIsLeader(isUserProjectLeader(login, project.getId()));
+        projectDTO.setIsLeader(isUserProjectLeader(email, project.getId()));
 
         return projectDTO;
     }
 
     @Transactional
     @Override
-    public ProjectDTO createProject(String login, ProjectCreateDTO projectCreateDTO) throws RecordNotFoundException {
+    public ProjectDTO createProject(String login,
+                                    ProjectCreateDTO projectCreateDTO) throws RecordNotFoundException {
         User leader = userService.getByEmail(login);
         ProjectStatusDictionary status = dictionaryService
                 .getProjectStatusDictionaryById(projectCreateDTO.getStatus());
@@ -235,14 +254,21 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public ProjectDTO updateProject(Long id, String login, ProjectCreateDTO projectForUpdate) throws RecordNotFoundException, InaccessibleActionException {
-        Project updatedProject = getAllProjectsByIdsOrElseThrow(List.of(id)).get(0);
+    public ProjectDTO updateProject(Long projectId,
+                                    String email,
+                                    ProjectCreateDTO projectForUpdate) throws RecordNotFoundException, InaccessibleActionException {
+        Project updatedProject = getAllProjectsByIdsOrElseThrow(List.of(projectId)).get(0);
 
-        if (!isUserProjectLeader(login, updatedProject.getId())) {
-            throw new InaccessibleActionException(ErrorDisplayMessageKeeper.PROJECT_WRONG_ACCESS);
+        if (!isUserProjectLeader(email, updatedProject.getId())) {
+            throw new InaccessibleActionException(
+                    INACCESSIBLE_PROJECT_ACTION,
+                    userRepository.findIdByEmail(email),
+                    projectId
+            );
         }
 
-        List<ProjectContact> contacts = projectForUpdate.getContacts().stream()
+        List<ProjectContact> contacts = projectForUpdate.getContacts()
+                .stream()
                 .map(this::mapToProjectContactEntity)
                 .toList();
         ProjectStatusDictionary status = dictionaryService
@@ -257,7 +283,7 @@ public class ProjectServiceImpl implements ProjectService {
         projectContactRepository.deleteByProjectId(updatedProject.getId());
         projectRepository.update(updatedProject);
 
-        updatedProject = projectRepository.findByIdInList(List.of(id)).get(0);
+        updatedProject = projectRepository.findByIdInList(List.of(projectId)).get(0);
 
         ProjectDTO projectDTO = getProjectDTO(updatedProject);
         projectDTO.setIsLeader(true);
@@ -266,7 +292,8 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     private ProjectDTO getProjectDTO(Project project) {
-        List<User> members = project.getPositions().stream()
+        List<User> members = project.getPositions()
+                .stream()
                 .map(Position::getUser)
                 .filter(Objects::nonNull)
                 .toList();

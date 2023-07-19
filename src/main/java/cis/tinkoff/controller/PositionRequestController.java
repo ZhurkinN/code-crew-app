@@ -5,8 +5,6 @@ import cis.tinkoff.controller.model.ResumeInviteDTO;
 import cis.tinkoff.controller.model.custom.CreateRequestDTO;
 import cis.tinkoff.model.PositionRequest;
 import cis.tinkoff.service.PositionRequestService;
-import cis.tinkoff.support.exceptions.InaccessibleActionException;
-import cis.tinkoff.support.exceptions.RecordNotFoundException;
 import cis.tinkoff.support.mapper.PositionRequestMapper;
 import cis.tinkoff.support.mapper.ResumeInviteMapper;
 import io.micronaut.http.HttpResponse;
@@ -40,8 +38,7 @@ public class PositionRequestController {
     @Operation(method = "createPositionRequest", description = "Creates request for joining position (for interested users)")
     @Post(value = "/vacancies", processes = MediaType.APPLICATION_JSON)
     public HttpResponse<PositionRequestDTO> createPositionRequest(@Body CreateRequestDTO requestDto,
-                                                                  Authentication authentication)
-            throws RecordNotFoundException, InaccessibleActionException {
+                                                                  Authentication authentication) {
 
         String authorEmail = authentication.getName();
         PositionRequest positionRequest = positionRequestService.createPositionRequest(
@@ -58,8 +55,7 @@ public class PositionRequestController {
     @Operation(method = "createPositionInvite", description = "Creates invite to join position (for team leaders)")
     @Post(value = "/resumes", processes = MediaType.APPLICATION_JSON)
     public HttpResponse<PositionRequestDTO> createPositionInvite(@Body CreateRequestDTO requestDto,
-                                                                 Authentication authentication)
-            throws RecordNotFoundException, InaccessibleActionException {
+                                                                 Authentication authentication) {
 
         String authorEmail = authentication.getName();
         PositionRequest positionRequest = positionRequestService.createPositionInvite(
@@ -76,8 +72,7 @@ public class PositionRequestController {
     @Operation(method = "getPositionRequests", description = "Get position requests by position id (for team leaders)")
     @Get(value = "/vacancies/{id}", produces = MediaType.APPLICATION_JSON)
     public HttpResponse<List<PositionRequestDTO>> getPositionRequests(@PathVariable("id") Long positionId,
-                                                                      Authentication authentication)
-            throws RecordNotFoundException, InaccessibleActionException {
+                                                                      Authentication authentication) {
 
         String leaderEmail = authentication.getName();
         List<PositionRequest> positionRequests = positionRequestService.getPositionsRequests(positionId, leaderEmail);
@@ -89,8 +84,7 @@ public class PositionRequestController {
     @Operation(method = "getResumeInvites", description = "Get position invites by resume id (for interested users)")
     @Get(value = "/resumes/{id}", produces = MediaType.APPLICATION_JSON)
     public HttpResponse<List<ResumeInviteDTO>> getResumeInvites(@PathVariable("id") Long resumeId,
-                                                                Authentication authentication)
-            throws RecordNotFoundException, InaccessibleActionException {
+                                                                Authentication authentication) {
 
         String resumeOwnerEmail = authentication.getName();
         List<PositionRequest> resumeInvites = positionRequestService.getResumesPositionRequests(resumeId, resumeOwnerEmail);

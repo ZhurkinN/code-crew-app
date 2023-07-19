@@ -11,7 +11,6 @@ import cis.tinkoff.repository.ResumeRepository;
 import cis.tinkoff.repository.UserRepository;
 import cis.tinkoff.repository.dictionary.DirectionRepository;
 import cis.tinkoff.service.ResumeService;
-import cis.tinkoff.support.exceptions.DeletedRecordFoundException;
 import cis.tinkoff.support.exceptions.InaccessibleActionException;
 import cis.tinkoff.support.exceptions.RecordNotFoundException;
 import cis.tinkoff.support.mapper.ResumeMapper;
@@ -44,7 +43,7 @@ public class ResumeServiceImpl implements ResumeService {
     }
 
     @Override
-    public Resume getById(Long id) throws RecordNotFoundException, DeletedRecordFoundException {
+    public Resume getById(Long id) throws RecordNotFoundException {
 
         Resume resume = resumeRepository.findByIdAndIsDeletedFalseAndIsActiveTrue(id)
                 .orElseThrow(() -> new RecordNotFoundException(RESUME_NOT_FOUND));
@@ -107,9 +106,15 @@ public class ResumeServiceImpl implements ResumeService {
         Direction directionId = Direction.valueOf(directionName);
         DirectionDictionary direction = directionRepository.findById(directionId)
                 .orElseThrow(() -> new RecordNotFoundException(DIRECTION_NOT_FOUND));
+
         if (!authorEmail.equals(author.getEmail())) {
-            throw new InaccessibleActionException(RESUME_WRONG_ACCESS);
+            throw new InaccessibleActionException(
+                    INACCESSIBLE_RESUME_ACTION,
+                    author.getId(),
+                    resumeId
+            );
         }
+
         resume.setDescription(description)
                 .setSkills(skills)
                 .setDirection(direction)
@@ -119,30 +124,38 @@ public class ResumeServiceImpl implements ResumeService {
     }
 
     @Override
-    public Resume updateActivity(Long id,
+    public Resume updateActivity(Long resumeId,
                                  String authorEmail) throws InaccessibleActionException, RecordNotFoundException {
 
-        User author = resumeRepository.getUserById(id);
+        User author = resumeRepository.getUserById(resumeId);
         if (!authorEmail.equals(author.getEmail())) {
-            throw new InaccessibleActionException(RESUME_WRONG_ACCESS);
+            throw new InaccessibleActionException(
+                    INACCESSIBLE_RESUME_ACTION,
+                    author.getId(),
+                    resumeId
+            );
         }
-        boolean newActivity = !resumeRepository.getIsActiveById(id);
-        resumeRepository.updateIsActiveById(id, newActivity);
+        boolean newActivity = !resumeRepository.getIsActiveById(resumeId);
+        resumeRepository.updateIsActiveById(resumeId, newActivity);
 
-        return resumeRepository.findByIdAndIsDeletedFalse(id)
+        return resumeRepository.findByIdAndIsDeletedFalse(resumeId)
                 .orElseThrow(() -> new RecordNotFoundException(RESUME_NOT_FOUND));
     }
 
     @Override
-    public void softDelete(Long id,
+    public void softDelete(Long resumeId,
                            String authorEmail) throws InaccessibleActionException {
 
-        User author = resumeRepository.getUserById(id);
+        User author = resumeRepository.getUserById(resumeId);
         if (!authorEmail.equals(author.getEmail())) {
-            throw new InaccessibleActionException(RESUME_WRONG_ACCESS);
+            throw new InaccessibleActionException(
+                    INACCESSIBLE_RESUME_ACTION,
+                    author.getId(),
+                    resumeId
+            );
         }
 
-        resumeRepository.updateById(id, true);
+        resumeRepository.updateById(resumeId, true);
     }
 
     @Override

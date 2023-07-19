@@ -1,8 +1,6 @@
 package cis.tinkoff.service;
 
 import cis.tinkoff.model.PositionRequest;
-import cis.tinkoff.support.exceptions.InaccessibleActionException;
-import cis.tinkoff.support.exceptions.RecordNotFoundException;
 
 import java.util.List;
 
@@ -13,20 +11,20 @@ public interface PositionRequestService {
     PositionRequest createPositionRequest(String authorEmail,
                                           Long positionId,
                                           Long resumeId,
-                                          String coverLetter) throws RecordNotFoundException, InaccessibleActionException;
+                                          String coverLetter);
 
     PositionRequest createPositionInvite(String authorEmail,
                                          Long positionId,
                                          Long resumeId,
-                                         String coverLetter) throws RecordNotFoundException, InaccessibleActionException;
+                                         String coverLetter);
 
     List<PositionRequest> getPositionsRequests(Long positionId,
-                                               String leaderEmail) throws RecordNotFoundException, InaccessibleActionException;
+                                               String leaderEmail);
 
     List<PositionRequest> getResumesPositionRequests(Long resumeId,
-                                                     String resumeOwnerEmail) throws RecordNotFoundException, InaccessibleActionException;
+                                                     String resumeOwnerEmail);
 
     void processRequest(Long requestId,
                         Boolean isAccepted,
-                        String respondentEmail) throws RecordNotFoundException, InaccessibleActionException;
+                        String respondentEmail);
 }

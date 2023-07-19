@@ -1,7 +1,6 @@
 package cis.tinkoff.service;
 
 import cis.tinkoff.model.User;
-import cis.tinkoff.support.exceptions.DeletedRecordFoundException;
 import cis.tinkoff.support.exceptions.RecordNotFoundException;
 import cis.tinkoff.support.exceptions.UserAlreadyExistsException;
 
@@ -11,9 +10,9 @@ public interface UserService {
 
     List<User> getAll();
 
-    User getById(Long id) throws RecordNotFoundException, DeletedRecordFoundException;
+    User getById(Long id) throws RecordNotFoundException;
 
-    User getByEmail(String email) throws RecordNotFoundException, DeletedRecordFoundException;
+    User getByEmail(String email) throws RecordNotFoundException;
 
     User register(String email,
                   String password,

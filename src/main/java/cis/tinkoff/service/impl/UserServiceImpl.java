@@ -7,7 +7,6 @@ import cis.tinkoff.model.generic.GenericModel;
 import cis.tinkoff.repository.ResumeRepository;
 import cis.tinkoff.repository.UserRepository;
 import cis.tinkoff.service.UserService;
-import cis.tinkoff.support.exceptions.DeletedRecordFoundException;
 import cis.tinkoff.support.exceptions.RecordNotFoundException;
 import cis.tinkoff.support.exceptions.UserAlreadyExistsException;
 import io.micronaut.context.annotation.Primary;
@@ -16,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.USER_ALREADY_EXISTS;
 import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.USER_NOT_FOUND;
 
 @Primary
@@ -36,7 +34,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getById(Long id) throws RecordNotFoundException, DeletedRecordFoundException {
+    public User getById(Long id) throws RecordNotFoundException {
 
         User user = userRepository.findByIdAndIsDeletedFalse(id)
                 .orElseThrow(() -> new RecordNotFoundException(USER_NOT_FOUND));
@@ -45,7 +43,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getByEmail(String email) throws RecordNotFoundException, DeletedRecordFoundException {
+    public User getByEmail(String email) throws RecordNotFoundException {
 
         User user = userRepository.findByEmailAndIsDeletedFalse(email)
                 .orElseThrow(() -> new RecordNotFoundException(USER_NOT_FOUND));
@@ -60,7 +58,7 @@ public class UserServiceImpl implements UserService {
                          String surname) throws UserAlreadyExistsException {
 
         if (userRepository.existsByEmail(email)) {
-            throw new UserAlreadyExistsException(USER_ALREADY_EXISTS);
+            throw new UserAlreadyExistsException(email);
         }
         User user = new User()
                 .setEmail(email)

@@ -3,7 +3,6 @@ package cis.tinkoff.service;
 import cis.tinkoff.controller.model.custom.SearchDTO;
 import cis.tinkoff.model.Resume;
 import cis.tinkoff.model.enumerated.SortDirection;
-import cis.tinkoff.support.exceptions.DeletedRecordFoundException;
 import cis.tinkoff.support.exceptions.InaccessibleActionException;
 import cis.tinkoff.support.exceptions.RecordNotFoundException;
 
@@ -19,7 +18,7 @@ public interface ResumeService {
                             String direction,
                             String skills);
 
-    Resume getById(Long id) throws RecordNotFoundException, DeletedRecordFoundException;
+    Resume getById(Long id) throws RecordNotFoundException;
 
     List<Resume> getALlByUser(String authorEmail) throws RecordNotFoundException;
 

@@ -2,14 +2,12 @@ package cis.tinkoff.service.impl;
 
 import cis.tinkoff.model.*;
 import cis.tinkoff.model.enumerated.RequestStatus;
-import cis.tinkoff.repository.PositionRepository;
-import cis.tinkoff.repository.PositionRequestRepository;
-import cis.tinkoff.repository.ProjectRepository;
-import cis.tinkoff.repository.ResumeRepository;
+import cis.tinkoff.repository.*;
 import cis.tinkoff.repository.dictionary.RequestStatusRepository;
 import cis.tinkoff.service.PositionRequestService;
 import cis.tinkoff.support.exceptions.InaccessibleActionException;
 import cis.tinkoff.support.exceptions.RecordNotFoundException;
+import cis.tinkoff.support.exceptions.RequestAlreadyExistsException;
 import io.micronaut.context.annotation.Primary;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +28,7 @@ public class PositionRequestServiceImpl implements PositionRequestService {
     private final PositionRepository positionRepository;
     private final RequestStatusRepository requestStatusRepository;
     private final ProjectRepository projectRepository;
+    private final UserRepository userRepository;
 
     @Override
     public List<PositionRequest> getAll() {
@@ -40,7 +39,7 @@ public class PositionRequestServiceImpl implements PositionRequestService {
     public PositionRequest createPositionRequest(String authorEmail,
                                                  Long positionId,
                                                  Long resumeId,
-                                                 String coverLetter) throws RecordNotFoundException, InaccessibleActionException {
+                                                 String coverLetter) {
 
         Resume resume = resumeRepository.findByIdAndIsDeletedFalseAndIsActiveTrue(resumeId)
                 .orElseThrow(() -> new RecordNotFoundException(RESUME_NOT_FOUND));
@@ -51,7 +50,7 @@ public class PositionRequestServiceImpl implements PositionRequestService {
 
         validateUsersResumeOwnership(authorEmail, resumeId);
         validateUsersProjectMembership(authorEmail, positionId);
-        validateUnansweredRequestDuplication(resume, positionId, defaultStatus);
+        validateUnansweredRequestDuplication(resume, positionId, defaultStatus, authorEmail);
 
         PositionRequest positionRequest = new PositionRequest()
                 .setPosition(position)
@@ -67,7 +66,7 @@ public class PositionRequestServiceImpl implements PositionRequestService {
     public PositionRequest createPositionInvite(String authorEmail,
                                                 Long positionId,
                                                 Long resumeId,
-                                                String coverLetter) throws RecordNotFoundException, InaccessibleActionException {
+                                                String coverLetter) {
 
         Resume resume = resumeRepository.findByIdAndIsDeletedFalseAndIsActiveTrue(resumeId)
                 .orElseThrow(() -> new RecordNotFoundException(RESUME_NOT_FOUND));
@@ -78,7 +77,7 @@ public class PositionRequestServiceImpl implements PositionRequestService {
 
         validateUsersProjectLeadership(authorEmail, positionId);
         validateInvitedUsersProjectMembership(resumeId, positionId);
-        validateUnansweredRequestDuplication(resume, positionId, defaultStatus);
+        validateUnansweredRequestDuplication(resume, positionId, defaultStatus, authorEmail);
 
         PositionRequest positionRequest = new PositionRequest()
                 .setPosition(position)
@@ -92,7 +91,7 @@ public class PositionRequestServiceImpl implements PositionRequestService {
 
     @Override
     public List<PositionRequest> getPositionsRequests(Long positionId,
-                                                      String leaderEmail) throws RecordNotFoundException, InaccessibleActionException {
+                                                      String leaderEmail) {
 
         Position position = positionRepository.findByIdAndIsDeletedFalseAndIsVisibleTrue(positionId)
                 .orElseThrow(() -> new RecordNotFoundException(POSITION_NOT_FOUND));
@@ -117,7 +116,7 @@ public class PositionRequestServiceImpl implements PositionRequestService {
 
     @Override
     public List<PositionRequest> getResumesPositionRequests(Long resumeId,
-                                                            String resumeOwnerEmail) throws RecordNotFoundException, InaccessibleActionException {
+                                                            String resumeOwnerEmail) {
 
         Resume resume = resumeRepository.findByIdAndIsDeletedFalseAndIsActiveTrue(resumeId)
                 .orElseThrow(() -> new RecordNotFoundException(RESUME_NOT_FOUND));
@@ -144,7 +143,7 @@ public class PositionRequestServiceImpl implements PositionRequestService {
     @Transactional
     public void processRequest(Long requestId,
                                Boolean isAccepted,
-                               String respondentEmail) throws RecordNotFoundException, InaccessibleActionException {
+                               String respondentEmail) {
 
         PositionRequest request = positionRequestRepository.findByIdAndIsDeletedFalse(requestId)
                 .orElseThrow(() -> new RecordNotFoundException(RESUME_NOT_FOUND));
@@ -184,7 +183,11 @@ public class PositionRequestServiceImpl implements PositionRequestService {
 
         User author = resumeRepository.getUserById(resumeId);
         if (!userEmail.equals(author.getEmail())) {
-            throw new InaccessibleActionException(RESUME_WRONG_ACCESS);
+            throw new InaccessibleActionException(
+                    INACCESSIBLE_RESUME_ACTION,
+                    author.getId(),
+                    resumeId
+            );
         }
     }
 
@@ -197,13 +200,18 @@ public class PositionRequestServiceImpl implements PositionRequestService {
                 .map(User::getEmail)
                 .toList();
         if (emails.contains(userEmail)) {
-            throw new InaccessibleActionException(USER_ALREADY_IN_PROJECT);
+            throw new InaccessibleActionException(
+                    USER_ALREADY_IN_PROJECT,
+                    userRepository.findIdByEmail(userEmail),
+                    positionId
+            );
         }
     }
 
     private void validateUnansweredRequestDuplication(Resume resume,
                                                       Long positionId,
-                                                      RequestStatusDictionary defaultStatus) {
+                                                      RequestStatusDictionary defaultStatus,
+                                                      String userEmail) {
 
         List<PositionRequest> unansweredResumesRequests =
                 positionRequestRepository.findByResumeAndIsDeletedFalseAndStatus(resume, defaultStatus);
@@ -212,7 +220,7 @@ public class PositionRequestServiceImpl implements PositionRequestService {
                 .map(e -> positionRequestRepository.findPositionById(e.getId()).getId())
                 .toList();
         if (requestsPositionIds.contains(positionId)) {
-            throw new InaccessibleActionException(SAME_REQUEST_ALREADY_EXISTS);
+            throw new RequestAlreadyExistsException(userRepository.findIdByEmail(userEmail));
         }
     }
 
@@ -220,7 +228,11 @@ public class PositionRequestServiceImpl implements PositionRequestService {
                                                 Long positionId) {
         String leaderEmail = positionRepository.getProjectsLeadersEmailById(positionId);
         if (!leaderEmail.equals(authorEmail)) {
-            throw new InaccessibleActionException(PROJECT_WRONG_ACCESS);
+            throw new InaccessibleActionException(
+                    INACCESSIBLE_POSITION_ACTION,
+                    userRepository.findIdByEmail(authorEmail),
+                    positionId
+            );
         }
     }
 

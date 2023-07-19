@@ -7,7 +7,6 @@ import cis.tinkoff.controller.model.custom.SearchDTO;
 import cis.tinkoff.model.Resume;
 import cis.tinkoff.model.enumerated.SortDirection;
 import cis.tinkoff.service.ResumeService;
-import cis.tinkoff.support.exceptions.DeletedRecordFoundException;
 import cis.tinkoff.support.exceptions.InaccessibleActionException;
 import cis.tinkoff.support.exceptions.RecordNotFoundException;
 import cis.tinkoff.support.mapper.ResumeMapper;
@@ -44,8 +43,7 @@ public class ResumeController {
 
     @Operation(method = "findById", description = "Finds resume by it's id")
     @Get(value = "/{id}", produces = MediaType.APPLICATION_JSON)
-    public HttpResponse<ResumeDTO> findById(@PathVariable Long id)
-            throws RecordNotFoundException, DeletedRecordFoundException {
+    public HttpResponse<ResumeDTO> findById(@PathVariable Long id) throws RecordNotFoundException {
 
         Resume resume = resumeService.getById(id);
         ResumeDTO responseDto = resumeMapper.toDto(resume);
@@ -81,7 +79,7 @@ public class ResumeController {
     @Operation(method = "create", description = "Creates new resume")
     @Post(processes = MediaType.APPLICATION_JSON)
     public HttpResponse<ResumeDTO> create(@Body InteractResumeDTO requestDto,
-                                          Authentication authentication) throws RecordNotFoundException, DeletedRecordFoundException {
+                                          Authentication authentication) throws RecordNotFoundException {
 
         String authorEmail = authentication.getName();
         Resume resume = resumeService.create(

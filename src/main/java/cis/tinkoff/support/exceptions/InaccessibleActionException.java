@@ -9,4 +9,14 @@ public class InaccessibleActionException extends RuntimeException {
     public InaccessibleActionException(String message) {
         super(message);
     }
+
+    public InaccessibleActionException(String formattedMessage,
+                                       Long userId,
+                                       Long inaccessibleRecordId) {
+        super(String.format(
+                formattedMessage,
+                userId,
+                inaccessibleRecordId
+        ));
+    }
 }

@@ -34,4 +34,6 @@ public interface UserRepository extends CrudRepository<User, Long> {
     List<User> findByIdInList(Collection<Long> id);
 
     Optional<User> findByIdAndIsDeletedFalse(@Id Long id);
+
+    Long findIdByEmail(String email);
 }

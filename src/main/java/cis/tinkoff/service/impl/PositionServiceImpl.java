@@ -13,6 +13,7 @@ import cis.tinkoff.model.enumerated.ProjectStatus;
 import cis.tinkoff.model.enumerated.SortDirection;
 import cis.tinkoff.model.generic.GenericModel;
 import cis.tinkoff.repository.PositionRepository;
+import cis.tinkoff.repository.UserRepository;
 import cis.tinkoff.service.DictionaryService;
 import cis.tinkoff.service.PositionService;
 import cis.tinkoff.service.ProjectService;
@@ -31,12 +32,15 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.INACCESSIBLE_PROJECT_ACTION;
+
 @Primary
 @Singleton
 @RequiredArgsConstructor
 public class PositionServiceImpl implements PositionService {
 
     private final PositionRepository positionRepository;
+    private final UserRepository userRepository;
     private final ProjectService projectService;
     private final DictionaryService dictionaryService;
 
@@ -105,7 +109,9 @@ public class PositionServiceImpl implements PositionService {
         Position position = positions.get(0);
 
         if (!position.getIsVisible() || position.getUser() != null) {
-            throw new InaccessibleActionException("Vacancy with id=" + id + " is inaccessible");
+            throw new RecordNotFoundException(
+                    "Vacancy with id=" + id + " is inaccessible"
+            );
         }
 
         return VacancyDTO.toVacancyDTO(position);
@@ -119,12 +125,18 @@ public class PositionServiceImpl implements PositionService {
     }
 
     @Override
-    public VacancyDTO createVacancy(String login, Long projectId, VacancyCreateDTO vacancyCreateDTO) {
+    public VacancyDTO createVacancy(String email,
+                                    Long projectId,
+                                    VacancyCreateDTO vacancyCreateDTO) {
         DirectionDictionary directionDictionary = dictionaryService
                 .getDirectionDictionaryById(vacancyCreateDTO.getDirection());
 
-        if (!projectService.isUserProjectLeader(login, projectId)) {
-            throw new InaccessibleActionException("Actions whit project witch id=" + projectId + " is inaccessible");
+        if (!projectService.isUserProjectLeader(email, projectId)) {
+            throw new InaccessibleActionException(
+                    INACCESSIBLE_PROJECT_ACTION,
+                    userRepository.findIdByEmail(email),
+                    projectId
+            );
         }
 
         List<Project> projects = projectService.getAllProjectsByIdsOrElseThrow(List.of(projectId));
@@ -148,7 +160,9 @@ public class PositionServiceImpl implements PositionService {
     }
 
     @Override
-    public VacancyDTO updateVacancy(Long id, String login, VacancyCreateDTO updateVacancyDTO) {
+    public VacancyDTO updateVacancy(Long id,
+                                    String email,
+                                    VacancyCreateDTO updateVacancyDTO) {
         DirectionDictionary directionDictionary = dictionaryService
                 .getDirectionDictionaryById(updateVacancyDTO.getDirection());
 
@@ -158,10 +172,12 @@ public class PositionServiceImpl implements PositionService {
 
         List<Project> projects = projectService.getAllProjectsByIdsOrElseThrow(List.of(updatedPosition.getProject().getId()));
 
-        if (!projectService.isUserProjectLeader(login, projects.get(0).getId())) {
-            throw new InaccessibleActionException("Actions whit project witch id=" +
+        if (!projectService.isUserProjectLeader(email, projects.get(0).getId())) {
+            throw new InaccessibleActionException(
+                    INACCESSIBLE_PROJECT_ACTION,
+                    userRepository.findIdByEmail(email),
                     projects.get(0).getId()
-                    + " is inaccessible");
+            );
         }
 
         updatedPosition.setDirection(directionDictionary);
@@ -174,17 +190,20 @@ public class PositionServiceImpl implements PositionService {
     }
 
     @Override
-    public VacancyDTO changeVisibility(Long id, String login) {
+    public VacancyDTO changeVisibility(Long id,
+                                       String email) {
         List<Position> positions = findPositionsByIdsOrElseThrow(List.of(id));
 
         Position updatedPosition = positions.get(0);
 
         List<Project> projects = projectService.getAllProjectsByIdsOrElseThrow(List.of(updatedPosition.getProject().getId()));
 
-        if (!projectService.isUserProjectLeader(login, projects.get(0).getId())) {
-            throw new InaccessibleActionException("Actions whit project witch id=" +
+        if (!projectService.isUserProjectLeader(email, projects.get(0).getId())) {
+            throw new InaccessibleActionException(
+                    INACCESSIBLE_PROJECT_ACTION,
+                    userRepository.findIdByEmail(email),
                     projects.get(0).getId()
-                    + " is inaccessible");
+            );
         }
 
         updatedPosition.setIsVisible(!updatedPosition.getIsVisible());
@@ -195,17 +214,20 @@ public class PositionServiceImpl implements PositionService {
     }
 
     @Override
-    public void deleteVacancy(Long id, String login) {
+    public void deleteVacancy(Long id,
+                              String email) {
         List<Position> positions = findPositionsByIdsOrElseThrow(List.of(id));
 
         Position updatedPosition = positions.get(0);
 
         List<Project> projects = projectService.getAllProjectsByIdsOrElseThrow(List.of(updatedPosition.getProject().getId()));
 
-        if (!projectService.isUserProjectLeader(login, projects.get(0).getId())) {
-            throw new InaccessibleActionException("Actions whit project witch id=" +
+        if (!projectService.isUserProjectLeader(email, projects.get(0).getId())) {
+            throw new InaccessibleActionException(
+                    INACCESSIBLE_PROJECT_ACTION,
+                    userRepository.findIdByEmail(email),
                     projects.get(0).getId()
-                    + " is inaccessible");
+            );
         }
 
         updatedPosition.setIsDeleted(true);
@@ -213,10 +235,14 @@ public class PositionServiceImpl implements PositionService {
     }
 
     @Override
-    public List<ProjectMemberDTO> getProjectMembers(String login, Long projectId) {
-        if (!isUserProjectMember(login, projectId)) {
-            throw new InaccessibleActionException("Actions whit project witch id=" +
-                    projectId + " is inaccessible");
+    public List<ProjectMemberDTO> getProjectMembers(String email,
+                                                    Long projectId) {
+        if (!isUserProjectMember(email, projectId)) {
+            throw new InaccessibleActionException(
+                    INACCESSIBLE_PROJECT_ACTION,
+                    userRepository.findIdByEmail(email),
+                    projectId
+            );
         }
 
         List<Position> positions = positionRepository.retrieveByProjectId(projectId);

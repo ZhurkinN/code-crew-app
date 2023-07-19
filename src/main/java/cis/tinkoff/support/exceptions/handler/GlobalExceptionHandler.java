@@ -1,6 +1,9 @@
 package cis.tinkoff.support.exceptions.handler;
 
-import cis.tinkoff.support.exceptions.*;
+import cis.tinkoff.support.exceptions.InaccessibleActionException;
+import cis.tinkoff.support.exceptions.ProfilePictureNotFoundException;
+import cis.tinkoff.support.exceptions.RecordNotFoundException;
+import cis.tinkoff.support.exceptions.UnavailableMediaTypeException;
 import cis.tinkoff.support.exceptions.model.ErrorDTO;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.http.HttpRequest;
@@ -34,8 +37,7 @@ public class GlobalExceptionHandler implements ExceptionHandler<RuntimeException
     private int getStatusCode(RuntimeException exception) {
 
         int statusCode;
-        if (exception instanceof DeletedRecordFoundException
-                || exception instanceof RecordNotFoundException
+        if (exception instanceof RecordNotFoundException
                 || exception instanceof ProfilePictureNotFoundException) {
             statusCode = HttpStatus.NOT_FOUND.getCode();
         } else if (exception instanceof InaccessibleActionException) {

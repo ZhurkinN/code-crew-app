@@ -5,7 +5,6 @@ import cis.tinkoff.controller.model.custom.RegisterUserDTO;
 import cis.tinkoff.controller.model.custom.UpdateUserDTO;
 import cis.tinkoff.model.User;
 import cis.tinkoff.service.UserService;
-import cis.tinkoff.support.exceptions.DeletedRecordFoundException;
 import cis.tinkoff.support.exceptions.RecordNotFoundException;
 import cis.tinkoff.support.exceptions.UserAlreadyExistsException;
 import cis.tinkoff.support.mapper.UserMapper;
@@ -41,8 +40,7 @@ public class UserController {
 
     @Operation(method = "findById", description = "Finds user by id")
     @Get(value = "/{id}", produces = MediaType.APPLICATION_JSON)
-    public HttpResponse<UserDTO> findById(@PathVariable Long id)
-            throws RecordNotFoundException, DeletedRecordFoundException {
+    public HttpResponse<UserDTO> findById(@PathVariable Long id) throws RecordNotFoundException {
 
         User user = userService.getById(id);
         UserDTO responseDto = userMapper.toDto(user);
@@ -51,8 +49,7 @@ public class UserController {
 
     @Operation(method = "find", description = "Finds user")
     @Get(processes = MediaType.APPLICATION_JSON)
-    public HttpResponse<UserDTO> find(Authentication authentication)
-            throws RecordNotFoundException, DeletedRecordFoundException {
+    public HttpResponse<UserDTO> find(Authentication authentication) throws RecordNotFoundException {
 
         String email = authentication.getName();
         User user = userService.getByEmail(email);

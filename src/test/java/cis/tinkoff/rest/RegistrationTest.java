@@ -104,6 +104,6 @@ public class RegistrationTest {
         JsonPath jsonPath = response.jsonPath();
         String errorMessage = jsonPath.get("message");
 
-        Assertions.assertEquals(USER_ALREADY_EXISTS, errorMessage);
+        Assertions.assertEquals(String.format(USER_ALREADY_EXISTS, expectedEmail), errorMessage);
     }
 }
