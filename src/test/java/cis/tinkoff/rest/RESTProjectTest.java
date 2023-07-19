@@ -23,9 +23,11 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.PROJECT_WRONG_ACCESS;
 import static io.restassured.RestAssured.given;
+import static io.restassured.RestAssured.proxy;
 
 @Testcontainers
 @MicronautTest(transactional = false)
@@ -266,7 +268,7 @@ public class RESTProjectTest {
                 .extract()
                 .body().jsonPath().getList(".", ProjectMemberDTO.class);
 
-        int expectedNumberOfProjectMembers = 1;
+        int expectedNumberOfProjectMembers = 4;
         Assertions.assertEquals(expectedNumberOfProjectMembers, dtos.size());
     }
 
@@ -283,6 +285,142 @@ public class RESTProjectTest {
                 .then()
                 .extract()
                 .response();
+    }
+
+    @Test
+    @Order(8)
+    public void testDeleteUserFromProject() {
+        Specifications.installSpecification(Specifications.requestSpec("/api/v1/projects/2"), Specifications.responseSpec(200));
+
+        ProjectDTO dto = given()
+                .when()
+                .header("Authorization", "Bearer " + TOKEN)
+                .header("Content-Type", ContentType.JSON)
+                .get("/api/v1/projects/" + 2)
+                .then()
+                .extract()
+                .body().as(ProjectDTO.class);
+
+        Long expectedId = dto.getId();
+        boolean expectedIsLeader = dto.getIsLeader();
+        String expectedTitle = dto.getTitle();
+        String expectedTheme = dto.getTheme();
+        String expectedDescription = dto.getDescription();
+        Integer expectedMembersCount = dto.getMembersCount();
+        ProjectStatusDictionary expectedStatus = dto.getStatus();
+        List<ContactDTO> expectedContacts = dto.getContacts();
+        Integer expectedVacanciesCount = dto.getVacanciesCount();
+        List<ProjectMemberDTO> expectedMembers = dto.getMembers();
+
+        Specifications.installSpecification(Specifications.requestSpec("api/v1/positions/projects/members?projectId=2"), Specifications.responseSpec(200));
+
+        List<ProjectMemberDTO> projectMemberDTOSBeforeDeleting
+                = given()
+                .when()
+                .header("Authorization", "Bearer " + TOKEN)
+                .header("Content-Type", ContentType.JSON)
+                .get("api/v1/positions/projects/members?projectId=2")
+                .then()
+                .extract()
+                .body().jsonPath().getList(".", ProjectMemberDTO.class);
+
+        int expectedMemberNumber = projectMemberDTOSBeforeDeleting.size() - 1;
+
+        Specifications.installSpecification(Specifications.requestSpec("/api/v1/projects/2/delete-user?userId=3&direction=QA"), Specifications.responseSpec(200));
+
+        ProjectDTO dtoWithDeletedUser = given()
+                .when()
+                .header("Authorization", "Bearer " + TOKEN)
+                .header("Content-Type", ContentType.JSON)
+                .post("/api/v1/projects/2/delete-user?userId=3&direction=QA")
+                .then()
+                .extract()
+                .body().as(ProjectDTO.class);
+
+        Assertions.assertEquals(expectedId, dtoWithDeletedUser.getId());
+        Assertions.assertEquals(expectedIsLeader, dtoWithDeletedUser.getIsLeader());
+        Assertions.assertEquals(expectedTitle, dtoWithDeletedUser.getTitle());
+        Assertions.assertEquals(expectedTheme, dtoWithDeletedUser.getTheme());
+        Assertions.assertEquals(expectedDescription, dtoWithDeletedUser.getDescription());
+        Assertions.assertEquals(expectedMembersCount, dtoWithDeletedUser.getMembersCount());
+        Assertions.assertEquals(expectedStatus, dtoWithDeletedUser.getStatus());
+        Assertions.assertEquals(expectedContacts, dtoWithDeletedUser.getContacts());
+        Assertions.assertEquals(expectedVacanciesCount, dtoWithDeletedUser.getVacanciesCount());
+        Assertions.assertEquals(expectedMembers.size(), dtoWithDeletedUser.getMembers().size());
+
+        Specifications.installSpecification(Specifications.requestSpec("api/v1/positions/projects/members?projectId=2"), Specifications.responseSpec(200));
+
+        List<ProjectMemberDTO> projectMemberDTOSAfterDeleting
+                = given()
+                .when()
+                .header("Authorization", "Bearer " + TOKEN)
+                .header("Content-Type", ContentType.JSON)
+                .get("api/v1/positions/projects/members?projectId=2")
+                .then()
+                .extract()
+                .body().jsonPath().getList(".", ProjectMemberDTO.class);
+
+        Assertions.assertEquals(expectedMemberNumber, projectMemberDTOSAfterDeleting.size());
+    }
+
+    @Test
+    @Order(9)
+    public void testDeleteUserFromProjectByNotLead() {
+        Specifications.installSpecification(Specifications.requestSpec("/api/v1/projects/1/delete-user?userId=3&direction=QA"), Specifications.responseSpec(406));
+
+        Response response = given()
+                .when()
+                .header("Authorization", "Bearer " + TOKEN)
+                .header("Content-Type", ContentType.JSON)
+                .post("/api/v1/projects/1/delete-user?userId=3&direction=QA")
+                .then()
+                .extract()
+                .response();
+    }
+
+    @Test
+    @AfterAll
+    public static void testLeaveUserFromProjects() {
+        Specifications.installSpecification(Specifications.requestSpec("/api/v1/projects/" + 2), Specifications.responseSpec(200));
+
+        ProjectDTO dto = given()
+                .when()
+                .header("Authorization", "Bearer " + TOKEN)
+                .header("Content-Type", ContentType.JSON)
+                .get("/api/v1/projects/" + 2)
+                .then()
+                .extract()
+                .body().as(ProjectDTO.class);
+
+        Long expectedLeaderId = 8L;
+        int expectedNumberOfLeaders = 1;
+
+        Specifications.installSpecification(Specifications.requestSpec("/api/v1/projects/leave/2?newLeaderId=8"), Specifications.responseSpec(200));
+
+        Response response = given()
+                .when()
+                .header("Authorization", "Bearer " + TOKEN)
+                .header("Content-Type", ContentType.JSON)
+                .post("/api/v1/projects/leave/2?newLeaderId=8")
+                .then()
+                .extract()
+                .response();
+
+        Specifications.installSpecification(Specifications.requestSpec("/api/v1/projects/" + 2), Specifications.responseSpec(200));
+
+        ProjectDTO newDto = given()
+                .when()
+                .header("Authorization", "Bearer " + TOKEN)
+                .header("Content-Type", ContentType.JSON)
+                .get("/api/v1/projects/" + 2)
+                .then()
+                .extract()
+                .body().as(ProjectDTO.class);
+
+        List<ProjectMemberDTO> members = newDto.getMembers().stream().filter(ProjectMemberDTO::getIsLead).toList();
+
+        Assertions.assertEquals(expectedNumberOfLeaders, members.size());
+        Assertions.assertEquals(expectedLeaderId, members.get(0).getUserId());
     }
 
     @Test
@@ -334,7 +472,7 @@ public class RESTProjectTest {
 
         Specifications.installSpecification
                 (Specifications.requestSpec("/api/v1/positions/projects?projectId=" + projectDTO.getId() + "&isVisible=false"),
-                Specifications.responseSpec(200));
+                        Specifications.responseSpec(200));
 
         List<ProjectMemberDTO> vacancyDTOList = given()
                 .when()
@@ -349,19 +487,32 @@ public class RESTProjectTest {
 
         Assertions.assertEquals(expectedNumberOfVacancies, vacancyDTOList.size());
 
-//         протестить, что у юзера добавился этот проект
+        // TODO: протестить, что у юзера добавился этот проект
     }
 
     @Test
     @AfterAll
     public static void testDeleteProjectByIdWithLead() {
-        Specifications.installSpecification(Specifications.requestSpec("/api/v1/projects/" + 2), Specifications.responseSpec(200));
+        UserLoginDTO dto = new UserLoginDTO("weiber@mail.ru", "123");
+
+        Specifications.installSpecification(Specifications.requestSpec("/auth/login"), Specifications.responseSpec(200));
+
+        TOKEN = given()
+                .urlEncodingEnabled(false)
+                .body(dto)
+                .when()
+                .post("/auth/login")
+                .then()
+                .extract()
+                .path("access_token");
+
+        Specifications.installSpecification(Specifications.requestSpec("/api/v1/projects/" + 1), Specifications.responseSpec(200));
 
         given()
                 .when()
                 .header("Authorization", "Bearer " + TOKEN)
                 .header("Content-Type", ContentType.JSON)
-                .delete("/api/v1/projects/" + 2)
+                .delete("/api/v1/projects/" + 1)
                 .then()
                 .extract()
                 .response();
