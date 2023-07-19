@@ -2,9 +2,8 @@ package cis.tinkoff.rest;
 
 import cis.tinkoff.controller.model.ProjectDTO;
 import cis.tinkoff.controller.model.ResumeDTO;
+import cis.tinkoff.controller.model.custom.InteractResumeDTO;
 import cis.tinkoff.model.DirectionDictionary;
-import cis.tinkoff.model.Project;
-import cis.tinkoff.model.Resume;
 import cis.tinkoff.model.User;
 import cis.tinkoff.model.enumerated.Direction;
 import cis.tinkoff.rest.model.UserLoginDTO;
@@ -164,7 +163,129 @@ public class RESTResumeTest {
     }
 
     @Test
-    public void testFindUsersResumeWithoutAuth() {
+    public void testUpdate() {
+        Specifications.installSpecification(Specifications.requestSpec("/api/v1/resumes/1"), Specifications.responseSpec(200));
 
+        String expectedDescription = "New description";
+        List<String> expectedSkills = List.of("Skill 1", "Skill 2", "Skill 3");
+        String direction = "ML";
+        DirectionDictionary expectedDirection = new DirectionDictionary(Direction.ML, "Machine Learning Engineer");
+        InteractResumeDTO updateDTO = new InteractResumeDTO(expectedDescription, expectedSkills, direction);
+
+        ResumeDTO dto = given()
+                .body(updateDTO)
+                .when()
+                .header("Authorization", "Bearer " + TOKEN)
+                .header("Content-Type", ContentType.JSON)
+                .patch("/api/v1/resumes/1")
+                .then()
+                .extract()
+                .body().as(ResumeDTO.class);
+
+        Assertions.assertEquals(expectedDescription, dto.getDescription());
+        Assertions.assertEquals(expectedSkills, dto.getSkills());
+        Assertions.assertEquals(expectedDirection, dto.getDirection());
+    }
+
+    @Test
+    public void testUpdateWithInvalidUser() {
+        Specifications.installSpecification(Specifications.requestSpec("/api/v1/resumes/3"), Specifications.responseSpec(406));
+
+        String expectedDescription = "New description";
+        List<String> expectedSkills = List.of("Skill 1", "Skill 2", "Skill 3");
+        String direction = "DEVOPS";
+        DirectionDictionary expectedDirection = new DirectionDictionary(Direction.DEVOPS, "DevOps Engineer");
+        InteractResumeDTO updateDTO = new InteractResumeDTO(expectedDescription, expectedSkills, direction);
+
+        Response response = given()
+                .body(updateDTO)
+                .when()
+                .header("Authorization", "Bearer " + TOKEN)
+                .header("Content-Type", ContentType.JSON)
+                .patch("/api/v1/resumes/3")
+                .then()
+                .extract()
+                .response();
+    }
+
+    @Test
+    public void testChangeActivity() {
+        Specifications.installSpecification(Specifications.requestSpec("/api/v1/resumes/1"), Specifications.responseSpec(200));
+
+        ResumeDTO dto = given()
+                .when()
+                .header("Authorization", "Bearer " + TOKEN)
+                .header("Content-Type", ContentType.JSON)
+                .get("/api/v1/resumes/1")
+                .then()
+                .extract()
+                .body().as(ResumeDTO.class);
+
+        Long expectedId = dto.getId();
+        DirectionDictionary expectedDirection = dto.getDirection();
+        String expectedDescription = dto.getDescription();
+        List<String> expectedSkills = dto.getSkills();
+        Long expectedCreatedWhen = dto.getCreatedWhen();
+        boolean expectedIsActive = !dto.getIsActive();
+
+        Specifications.installSpecification(Specifications.requestSpec("/api/v1/resumes/active/1"), Specifications.responseSpec(200));
+
+        dto = given()
+                .when()
+                .header("Authorization", "Bearer " + TOKEN)
+                .header("Content-Type", ContentType.JSON)
+                .post("/api/v1/resumes/active/1")
+                .then()
+                .extract()
+                .body().as(ResumeDTO.class);
+
+        Assertions.assertEquals(expectedId, dto.getId());
+//        Assertions.assertEquals(expectedDirection, dto.getDirection());
+        Assertions.assertEquals(expectedDescription, dto.getDescription());
+        Assertions.assertEquals(expectedSkills, dto.getSkills());
+        Assertions.assertEquals(expectedCreatedWhen, dto.getCreatedWhen());
+        Assertions.assertEquals(expectedIsActive, dto.getIsActive());
+
+    }
+
+    @Test
+    @AfterAll
+    public static void testSoftDelete() {
+        Specifications.installSpecification(Specifications.requestSpec("/api/v1/resumes"), Specifications.responseSpec(200));
+
+        List<ResumeDTO> resumes = given()
+                .when()
+                .header("Authorization", "Bearer " + TOKEN)
+                .header("Content-Type", ContentType.JSON)
+                .get("/api/v1/resumes")
+                .then()
+                .extract()
+                .body().jsonPath().getList(".", ResumeDTO.class);
+
+        int expectedResumesSize = resumes.size() - 1;
+
+        Specifications.installSpecification(Specifications.requestSpec("/api/v1/resumes/1"), Specifications.responseSpec(200));
+
+        given()
+                .when()
+                .header("Authorization", "Bearer " + TOKEN)
+                .header("Content-Type", ContentType.JSON)
+                .delete("/api/v1/resumes/1")
+                .then()
+                .log()
+                .all();
+
+        Specifications.installSpecification(Specifications.requestSpec("/api/v1/resumes"), Specifications.responseSpec(200));
+
+        resumes = given()
+                .when()
+                .header("Authorization", "Bearer " + TOKEN)
+                .header("Content-Type", ContentType.JSON)
+                .get("/api/v1/resumes")
+                .then()
+                .extract()
+                .body().jsonPath().getList(".", ResumeDTO.class);
+
+        Assertions.assertEquals(expectedResumesSize, resumes.size());
     }
 }
