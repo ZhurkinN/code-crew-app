@@ -97,9 +97,9 @@ micronaut:
 
 datasources:
   default:
-    url: postgres://codecrew:smoKAMHyHgi7lN1Fo79co6HtrdghBPQO@dpg-cir1n95iuie930jea92g-a/codecrew
-    username: codecrew
-    password: smoKAMHyHgi7lN1Fo79co6HtrdghBPQO
+    url: jdbc:postgresql://postgres:5432/${MICRONAUT_DB}
+    username: ${MICRONAUT_USER}
+    password: ${MICRONAUT_PASSWORD}
     driver-class-name: org.postgresql.Driver
     db-type: postgres
 

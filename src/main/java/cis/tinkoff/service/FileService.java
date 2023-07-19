@@ -1,7 +1,7 @@
 package cis.tinkoff.service;
 
-import cis.tinkoff.support.exceptions.ProfilePictureNotFoundException;
 import cis.tinkoff.support.exceptions.UnavailableMediaTypeException;
+import cis.tinkoff.support.exceptions.ProfilePictureNotFoundException;
 import io.micronaut.http.multipart.CompletedFileUpload;
 import io.micronaut.http.server.types.files.StreamedFile;
 
