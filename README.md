@@ -1,69 +1,114 @@
-## Micronaut 3.9.4 Documentation
+## <center> CodeCrew-API </center>
+<a name="readme-top"></a>
 
-- [User Guide](https://docs.micronaut.io/3.9.4/guide/index.html)
-- [API Reference](https://docs.micronaut.io/3.9.4/api/index.html)
-- [Configuration Reference](https://docs.micronaut.io/3.9.4/guide/configurationreference.html)
-- [Micronaut Guides](https://guides.micronaut.io/index.html)
+___
+<br>
+
+![cover](https://github.com/grishuchkov/RestTranslatorService/blob/master/gitsrc/logo.png)
+#### <center> Данный репозиторий является Backend частью проекта CodeCrew. </center>
+
+___
+### Навигация:
+[1. Цель проекта](#Цель)  
+[2. Основные технологии](#Технологии)  
+[3. Быстрый старт](#Старт)   
+[4. Взаимодействие с приложением](#Взаимодействие)  
+[5. Авторы проекта](#Авторство)
+
+____
+<a name="Цель"></a> 
+### Цель проекта:
+
+**CodeCrew** – это платформа для поиска команды, целью которой является объединение неравнодушных к IT, амбициозных и желающих развиваться людей.  
+
+Вы начинающий программист, которого еще не берут на стажировки, а при программировании в одиночку нет ощущения профессионального роста? Наша платформа дает возможность найти подходящую команду, благодаря которой вы сможете быстрее освоить необохимые технологии, получить опыт совместной разработки и познакомиться с новыми людьми из комьюнити программистов.
+
+Если же у вас есть идея, но программировать вы не умеете: платформа позволит собрать команду, где вы будете исполнять роль руководителя и координатора. 
+
+Наш проект также позволяет реализовать себя людям в смежных с программированием областях: аналитикам, дизайнерам, менджерам проектов, будущим DevOps и QA инженерам – **команда найдется всем!**
+
+<p align="right">(<a href="#readme-top">↑ Наверх</a>)</p>
+
+---
+<a name="Технологии"></a> 
+### Основные технологии:
+<center>
+
+
+![Java](https://img.shields.io/badge/java-%23ED8B00.svg?style=for-the-badge&logo=openjdk&logoColor=white)
+![Micronaut](https://img.shields.io/badge/Micronaut-1e394e.svg?style=for-the-badge&logo=micronaut&logoColor=white)
+![Micrometer](https://img.shields.io/badge/Micrometer-35b393.svg?style=for-the-badge&logo=&logoColor=white)
+![Gradle](https://img.shields.io/badge/Gradle-02303A.svg?style=for-the-badge&logo=Gradle&logoColor=white)
+![Git](https://img.shields.io/badge/git-%23F05033.svg?style=for-the-badge&logo=git&logoColor=white)
+\
+![Postgres](https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white)
+![Liquibase](https://img.shields.io/badge/Liquibase-%230288D1.svg?style=for-the-badge&logo=liquibase&logoColor=white)
+![JDBC](https://img.shields.io/badge/JDBC-59666C?style=for-the-badge&logo=Hibernate&logoColor=white)
+\
+![Swagger](https://img.shields.io/badge/-Swagger-%23Clojure?style=for-the-badge&logo=swagger&logoColor=white)
+![Postman](https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=postman&logoColor=white)
+![Rest-Assured](https://img.shields.io/badge/REST%20Assured-25D366?style=for-the-badge&logo=&logoColor=white)
+![Testcontainers](https://img.shields.io/badge/Testcontainers-%230db7ed.svg?style=for-the-badge&logo=&logoColor=white)
+![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
+</center>
+
+<p align="right">(<a href="#readme-top">↑ Наверх</a>)</p>
+
 ---
 
-- [Micronaut Gradle Plugin documentation](https://micronaut-projects.github.io/micronaut-gradle-plugin/latest/)
-- [GraalVM Gradle Plugin documentation](https://graalvm.github.io/native-build-tools/latest/gradle-plugin.html)
-- [Shadow Gradle Plugin](https://plugins.gradle.org/plugin/com.github.johnrengelman.shadow)
-## Feature testcontainers documentation
+<a name="Старт"></a> 
+### Быстрый старт:
 
-- [https://www.testcontainers.org/](https://www.testcontainers.org/)
+1. Клонируйте репозиторий:  
+   `git clone https://github.com/ZhurkinN/code-crew-app.git`
 
+2. Сконфигурируйте свои настройки для: `application.yml`  
+   Необходимо настроить переменный окружения. Внести изменения в настройки БД, если необходимо.
 
-## Feature kafka documentation
+3. Для сборки проекта используйте стандартный: `gradle clean build`.  
+<br>
+Это создает `<file>.jar` в каталоге, приложение теперь доступно для запуска с использованием `java -jar <your path> <file>.jar`
 
-- [Micronaut Kafka Messaging documentation](https://micronaut-projects.github.io/micronaut-kafka/latest/guide/index.html)
+4. В проекте присутствует **Dockerfile**, благодаря которому можно создать Docker Image.  
+   Для этого используйте команду: `docker build -t <filename> .`
 
-
-## Feature http-client documentation
-
-- [Micronaut HTTP Client documentation](https://docs.micronaut.io/latest/guide/index.html#httpClient)
-
-
-## Feature mockito documentation
-
-- [https://site.mockito.org](https://site.mockito.org)
-
-
-## Feature swagger-ui documentation
-
-- [Micronaut Swagger UI documentation](https://micronaut-projects.github.io/micronaut-openapi/latest/guide/index.html)
-
-- [https://swagger.io/tools/swagger-ui/](https://swagger.io/tools/swagger-ui/)
+5. Чтобы запустить контейнер, необходимо прописать: `docker run -p port1:port2 <filename>` 
+   Обратите внимание на порты в `application.yml`.
+   
+6. Все должно работать.
 
 
-## Feature openapi documentation
+<p align="right">(<a href="#readme-top">↑ Наверх</a>)</p>
 
-- [Micronaut OpenAPI Support documentation](https://micronaut-projects.github.io/micronaut-openapi/latest/guide/index.html)
+---
+<a name="Взаимодействие"></a> 
+### Взаимодействие с приложением:
 
-- [https://www.openapis.org](https://www.openapis.org)
+**Взаимодействие с приложением** осуществляется путём HTTP REST запросов, в тело которых нужно передать JSON c необходимыми данными. В ответ приходит JSON. 
 
+Для проверки того, работает ли приложение, можно зарегистрировать нового пользователя, используя приложение Postman.
 
-## Feature security-oauth2 documentation
+Все запросы можно найти в документации к API: Вставить ссылку.
 
-- [Micronaut Security OAuth 2.0 documentation](https://micronaut-projects.github.io/micronaut-security/latest/guide/index.html#oauth)
+<br>  
 
+<p align="right">(<a href="#readme-top">↑ Наверх</a>)</p>
 
-## Feature lombok documentation
+---
 
-- [Micronaut Project Lombok documentation](https://docs.micronaut.io/latest/guide/index.html#lombok)
+<a name="Авторство"></a> 
+### Авторы проекта:
 
-- [https://projectlombok.org/features/all](https://projectlombok.org/features/all)
+**Backend**:  
+1. [Nikita Sergeevich Zhurkin](https://github.com/ZhurkinN)   
+2. [Grishuchkov Danila](https://github.com/grishuchkov)  
+3. [AlexeyTimofeevRzn](https://github.com/AlexeyTimofeevRzn)  
+4. [EugeneBUSUEK ](https://github.com/EugeneBUSUEK)  
 
+**Frontend**:  
+1. [luvlaceeeee](https://github.com/luvlaceeeee)   
 
-## Feature jdbc-hikari documentation
+<p align="right">(<a href="#readme-top">↑ Наверх</a>)</p>
 
-- [Micronaut Hikari JDBC Connection Pool documentation](https://micronaut-projects.github.io/micronaut-sql/latest/guide/index.html#jdbc)
-
-
-## Feature liquibase documentation
-
-- [Micronaut Liquibase Database Migration documentation](https://micronaut-projects.github.io/micronaut-liquibase/latest/guide/index.html)
-
-- [https://www.liquibase.org/](https://www.liquibase.org/)
-
-
+---
+Проект создан в рамках "проектной мастерской" при поддержке Рязанского центра разработки Тинькофф. :yellow_heart::exclamation:   
