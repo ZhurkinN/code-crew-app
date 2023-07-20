@@ -142,12 +142,12 @@ public class PositionRequestServiceImpl implements PositionRequestService {
             case INCOMING -> positionRequestRepository.findAllByResumeAndStatusAndIsDeletedFalseAndIsInvite(
                     resume,
                     inConsiderationStatus,
-                    false
+                    true
             );
             case SENT -> positionRequestRepository.findAllByResumeAndStatusAndIsDeletedFalseAndIsInvite(
                     resume,
                     inConsiderationStatus,
-                    true
+                    false
             );
             case RECENT -> positionRequestRepository.findAllByResumeAndStatusNotEqualsAndIsDeletedFalse(
                     resume,
@@ -158,7 +158,7 @@ public class PositionRequestServiceImpl implements PositionRequestService {
             Project project = positionRepository.findProjectById(Objects.requireNonNull(e.getPosition()).getId());
             Project detailedProject = new Project()
                     .setStatus(project.getStatus())
-                    .setMembers(project.getMembers());
+                    .setTitle(project.getTitle());
 
             detailedProject.setId(project.getId());
             detailedProject.setCreatedWhen(null);

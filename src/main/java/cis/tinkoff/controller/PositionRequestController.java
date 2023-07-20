@@ -1,13 +1,11 @@
 package cis.tinkoff.controller;
 
 import cis.tinkoff.controller.model.PositionRequestDTO;
-import cis.tinkoff.controller.model.ResumeInviteDTO;
 import cis.tinkoff.controller.model.custom.CreateRequestDTO;
 import cis.tinkoff.model.PositionRequest;
 import cis.tinkoff.model.enumerated.RequestType;
 import cis.tinkoff.service.PositionRequestService;
 import cis.tinkoff.support.mapper.PositionRequestMapper;
-import cis.tinkoff.support.mapper.ResumeInviteMapper;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.MediaType;
 import io.micronaut.http.annotation.*;
@@ -28,7 +26,6 @@ public class PositionRequestController {
 
     private final PositionRequestService positionRequestService;
     private final PositionRequestMapper positionRequestMapper;
-    private final ResumeInviteMapper resumeInviteMapper;
 
     @Operation(method = "createPositionRequest", description = "Creates request for joining position (for interested users)")
     @Post(value = "/vacancies", processes = MediaType.APPLICATION_JSON)
@@ -83,9 +80,9 @@ public class PositionRequestController {
 
     @Operation(method = "getResumeInvites", description = "Get position invites by resume id (for interested users)")
     @Get(value = "/resumes/{id}", produces = MediaType.APPLICATION_JSON)
-    public HttpResponse<List<ResumeInviteDTO>> getResumeInvites(@PathVariable("id") Long resumeId,
-                                                                @QueryValue RequestType requestType,
-                                                                Authentication authentication) {
+    public HttpResponse<List<PositionRequestDTO>> getResumeInvites(@PathVariable("id") Long resumeId,
+                                                                   @QueryValue RequestType requestType,
+                                                                   Authentication authentication) {
 
         String resumeOwnerEmail = authentication.getName();
         List<PositionRequest> resumeInvites = positionRequestService.getResumesPositionRequests(
@@ -93,7 +90,7 @@ public class PositionRequestController {
                 requestType,
                 resumeOwnerEmail
         );
-        List<ResumeInviteDTO> responseDtos = resumeInviteMapper.toDtos(resumeInvites);
+        List<PositionRequestDTO> responseDtos = positionRequestMapper.toDtos(resumeInvites);
 
         return HttpResponse.ok(responseDtos);
     }
