@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 
 import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.USER_NOT_FOUND;
+import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.USER_NOT_FOUND_BY_EMAIL;
 
 @Singleton
 @RequiredArgsConstructor
@@ -27,7 +28,7 @@ public class UserServiceImpl implements UserService {
     public User getById(Long id) {
 
         User user = userRepository.findByIdAndIsDeletedFalse(id)
-                .orElseThrow(() -> new RecordNotFoundException(USER_NOT_FOUND));
+                .orElseThrow(() -> new RecordNotFoundException(USER_NOT_FOUND, id));
 
         return setOtherModelsData(user);
     }
@@ -36,7 +37,7 @@ public class UserServiceImpl implements UserService {
     public User getByEmail(String email) {
 
         User user = userRepository.findByEmailAndIsDeletedFalse(email)
-                .orElseThrow(() -> new RecordNotFoundException(USER_NOT_FOUND));
+                .orElseThrow(() -> new RecordNotFoundException(USER_NOT_FOUND_BY_EMAIL, email));
 
         return setOtherModelsData(user);
     }
@@ -68,7 +69,7 @@ public class UserServiceImpl implements UserService {
                        String mainInformation) {
 
         User user = userRepository.findByEmailAndIsDeletedFalse(email)
-                .orElseThrow(() -> new RecordNotFoundException(USER_NOT_FOUND));
+                .orElseThrow(() -> new RecordNotFoundException(USER_NOT_FOUND_BY_EMAIL, email));
         user.setName(name)
                 .setSurname(surname)
                 .setPictureLink(pictureLink)
@@ -99,8 +100,7 @@ public class UserServiceImpl implements UserService {
         List<User> users = userRepository.findByIdInList(ids);
 
         if (users.size() == 0) {
-            throw new RecordNotFoundException("Users with ids = " +
-                    ids + " not found");
+            throw new RecordNotFoundException(USER_NOT_FOUND, ids.get(0));
         }
 
         return users;

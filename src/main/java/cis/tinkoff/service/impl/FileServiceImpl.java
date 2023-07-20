@@ -48,7 +48,7 @@ public class FileServiceImpl implements FileService {
     public StreamedFile getProfilePicture(Long userId) {
 
         User user = userRepository.findByIdAndIsDeletedFalse(userId)
-                .orElseThrow(() -> new RecordNotFoundException(USER_NOT_FOUND));
+                .orElseThrow(() -> new RecordNotFoundException(USER_NOT_FOUND, userId));
 
         FileInputStream fileInputStream;
         try {

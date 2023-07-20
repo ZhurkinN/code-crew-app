@@ -16,7 +16,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 
-import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.USER_NOT_FOUND;
+import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.*;
 
 @Singleton
 @RequiredArgsConstructor
@@ -48,7 +48,7 @@ public class DictionaryServiceImpl implements DictionaryService {
 
         List<DirectionDictionary> allDirections = (List<DirectionDictionary>) directionRepository.findAll();
         User resumeAuthor = userRepository.findByEmailAndIsDeletedFalse(email)
-                .orElseThrow(() -> new RecordNotFoundException(USER_NOT_FOUND));
+                .orElseThrow(() -> new RecordNotFoundException(USER_NOT_FOUND_BY_EMAIL, email));
         List<Resume> userResumes = resumeRepository.findByUserAndIsDeletedFalse(resumeAuthor);
         List<DirectionDictionary> usedDirections = new ArrayList<>();
 
@@ -58,22 +58,18 @@ public class DictionaryServiceImpl implements DictionaryService {
     }
 
     @Override
-    public DirectionDictionary getDirectionDictionaryById(Direction direction) {
+    public DirectionDictionary getDirectionDictionaryById(Direction directionId) {
 
         return directionRepository
-                .findById(direction)
-                .orElseThrow(() -> new RecordNotFoundException("Direction with id=" +
-                        direction
-                        + " not found"));
+                .findById(directionId)
+                .orElseThrow(() -> new RecordNotFoundException(DIRECTION_NOT_FOUND, String.valueOf(directionId)));
     }
 
     @Override
-    public ProjectStatusDictionary getProjectStatusDictionaryById(ProjectStatus status) {
+    public ProjectStatusDictionary getProjectStatusDictionaryById(ProjectStatus statusId) {
 
         return projectStatusRepository
-                .findById(status)
-                .orElseThrow(() -> new RecordNotFoundException("Project status with id=" +
-                        status
-                        + " not found"));
+                .findById(statusId)
+                .orElseThrow(() -> new RecordNotFoundException(PROJECT_STATUS_NOT_FOUND, String.valueOf(statusId)));
     }
 }

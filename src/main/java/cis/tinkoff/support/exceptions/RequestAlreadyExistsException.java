@@ -8,10 +8,10 @@ public class RequestAlreadyExistsException extends RuntimeException {
         super();
     }
 
-    public RequestAlreadyExistsException(Long userId) {
+    public RequestAlreadyExistsException(String userEmail) {
         super(String.format(
                 REQUEST_ALREADY_EXISTS,
-                userId
+                userEmail
         ));
     }
 }

@@ -36,9 +36,9 @@ public class PositionRequestServiceImpl implements PositionRequestService {
                                                  String coverLetter) {
 
         Resume resume = resumeRepository.findByIdAndIsDeletedFalseAndIsActiveTrue(resumeId)
-                .orElseThrow(() -> new RecordNotFoundException(RESUME_NOT_FOUND));
+                .orElseThrow(() -> new RecordNotFoundException(RESUME_NOT_FOUND, resumeId));
         Position position = positionRepository.findByIdAndIsDeletedFalseAndIsVisibleTrue(positionId)
-                .orElseThrow(() -> new RecordNotFoundException(POSITION_NOT_FOUND));
+                .orElseThrow(() -> new RecordNotFoundException(POSITION_NOT_FOUND, positionId));
         RequestStatusDictionary defaultStatus = requestStatusRepository.findById(RequestStatus.IN_CONSIDERATION)
                 .orElseThrow();
 
@@ -63,9 +63,9 @@ public class PositionRequestServiceImpl implements PositionRequestService {
                                                 String coverLetter) {
 
         Resume resume = resumeRepository.findByIdAndIsDeletedFalseAndIsActiveTrue(resumeId)
-                .orElseThrow(() -> new RecordNotFoundException(RESUME_NOT_FOUND));
+                .orElseThrow(() -> new RecordNotFoundException(RESUME_NOT_FOUND, resumeId));
         Position position = positionRepository.findByIdAndIsDeletedFalseAndIsVisibleTrue(positionId)
-                .orElseThrow(() -> new RecordNotFoundException(POSITION_NOT_FOUND));
+                .orElseThrow(() -> new RecordNotFoundException(POSITION_NOT_FOUND, positionId));
         RequestStatusDictionary defaultStatus = requestStatusRepository.findById(RequestStatus.IN_CONSIDERATION)
                 .orElseThrow();
 
@@ -89,7 +89,7 @@ public class PositionRequestServiceImpl implements PositionRequestService {
                                                       String leaderEmail) {
 
         Position position = positionRepository.findByIdAndIsDeletedFalseAndIsVisibleTrue(positionId)
-                .orElseThrow(() -> new RecordNotFoundException(POSITION_NOT_FOUND));
+                .orElseThrow(() -> new RecordNotFoundException(POSITION_NOT_FOUND, positionId));
         validateUsersProjectLeadership(leaderEmail, positionId);
         RequestStatusDictionary inConsiderationStatus = requestStatusRepository
                 .findById(RequestStatus.IN_CONSIDERATION)
@@ -132,7 +132,7 @@ public class PositionRequestServiceImpl implements PositionRequestService {
                                                             String resumeOwnerEmail) {
 
         Resume resume = resumeRepository.findByIdAndIsDeletedFalseAndIsActiveTrue(resumeId)
-                .orElseThrow(() -> new RecordNotFoundException(RESUME_NOT_FOUND));
+                .orElseThrow(() -> new RecordNotFoundException(RESUME_NOT_FOUND, resumeId));
         validateUsersResumeOwnership(resumeOwnerEmail, resumeId);
         RequestStatusDictionary inConsiderationStatus = requestStatusRepository
                 .findById(RequestStatus.IN_CONSIDERATION)
@@ -176,7 +176,7 @@ public class PositionRequestServiceImpl implements PositionRequestService {
                                String respondentEmail) {
 
         PositionRequest request = positionRequestRepository.findByIdAndIsDeletedFalse(requestId)
-                .orElseThrow(() -> new RecordNotFoundException(RESUME_NOT_FOUND));
+                .orElseThrow(() -> new RecordNotFoundException(REQUEST_NOT_FOUND, requestId));
         RequestStatusDictionary status = request.getStatus();
         Resume resume = request.getResume();
         Position position = request.getPosition();
@@ -250,7 +250,7 @@ public class PositionRequestServiceImpl implements PositionRequestService {
                 .map(e -> positionRequestRepository.findPositionById(e.getId()).getId())
                 .toList();
         if (requestsPositionIds.contains(positionId)) {
-            throw new RequestAlreadyExistsException(userRepository.findIdByEmail(userEmail));
+            throw new RequestAlreadyExistsException(userEmail);
         }
     }
 

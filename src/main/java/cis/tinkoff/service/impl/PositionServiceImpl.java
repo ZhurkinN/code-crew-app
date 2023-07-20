@@ -18,7 +18,6 @@ import cis.tinkoff.service.PositionService;
 import cis.tinkoff.service.ProjectService;
 import cis.tinkoff.support.exceptions.InaccessibleActionException;
 import cis.tinkoff.support.exceptions.RecordNotFoundException;
-import cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper;
 import io.micronaut.data.model.Page;
 import io.micronaut.data.model.Pageable;
 import io.micronaut.data.model.Sort;
@@ -30,8 +29,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.INACCESSIBLE_PROJECT_ACTION;
-import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.POSITION_NOT_FOUND;
+import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.*;
 
 @Singleton
 @RequiredArgsConstructor
@@ -99,11 +97,11 @@ public class PositionServiceImpl implements PositionService {
                                      String userEmail) {
 
         Position vacancy = positionRepository.findByIdAndIsDeletedFalse(positionId)
-                .orElseThrow(() -> new RecordNotFoundException(POSITION_NOT_FOUND));
+                .orElseThrow(() -> new RecordNotFoundException(POSITION_NOT_FOUND, positionId));
 
         if ((!vacancy.getIsVisible() || Objects.nonNull(vacancy.getUser()))
                 && !projectService.isUserProjectLeader(userEmail, vacancy.getProject().getId())) {
-            throw new RecordNotFoundException(POSITION_NOT_FOUND);
+            throw new RecordNotFoundException(POSITION_NOT_FOUND, positionId);
         }
 
         return VacancyDTO.toVacancyDTO(vacancy);
@@ -251,12 +249,7 @@ public class PositionServiceImpl implements PositionService {
     public boolean isUserProjectMember(String login, Long projectId) {
         List<Position> members = positionRepository.findByProjectIdAndUserEmail(projectId, login);
 
-        if (members.size() == 0) {
-            throw new RecordNotFoundException("There is no user with login = " + login +
-                    " in project with id=" + projectId);
-        }
-
-        return true;
+        return members.size() != 0;
     }
 
     @Override
@@ -264,7 +257,7 @@ public class PositionServiceImpl implements PositionService {
         List<Position> positions = positionRepository.findByIdInList(ids, Sort.UNSORTED);
 
         if (positions.size() == 0) {
-            throw new RecordNotFoundException("Position with id=" + ids.toString() + " not found");
+            throw new RecordNotFoundException(POSITION_NOT_FOUND, ids.get(0));
         }
 
         return positions;
@@ -280,7 +273,7 @@ public class PositionServiceImpl implements PositionService {
         }
 
         if (positions.size() == 0) {
-            throw new RecordNotFoundException(ErrorDisplayMessageKeeper.RECORD_NOT_FOUND);
+            throw new RecordNotFoundException(POSITION_NOT_FOUND_BY_USER, userId);
         }
 
         return positions;

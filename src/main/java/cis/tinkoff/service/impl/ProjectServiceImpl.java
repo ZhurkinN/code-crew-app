@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.INACCESSIBLE_PROJECT_ACTION;
+import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.PROJECT_NOT_FOUND;
 
 @Singleton
 @RequiredArgsConstructor
@@ -67,7 +68,7 @@ public class ProjectServiceImpl implements ProjectService {
         List<Position> positions = positionService.get().findPositionsByIdsOrElseThrow(positionIds);
 
         if (positions.size() == 0) {
-            throw new RecordNotFoundException("Position with id=" + positionIds + " not found");
+            throw new RecordNotFoundException(PROJECT_NOT_FOUND, id);
         }
 
         List<Long> userIds = positions.stream()
@@ -311,7 +312,7 @@ public class ProjectServiceImpl implements ProjectService {
         List<Project> projects = projectRepository.findByIdInList(ids);
 
         if (projects.size() == 0) {
-            throw new RecordNotFoundException("Projects with ids=" + ids.toString() + " not found");
+            throw new RecordNotFoundException(PROJECT_NOT_FOUND, ids.get(0));
         }
 
         return projects;

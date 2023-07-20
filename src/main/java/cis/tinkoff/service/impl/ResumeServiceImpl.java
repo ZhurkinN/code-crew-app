@@ -40,11 +40,11 @@ public class ResumeServiceImpl implements ResumeService {
                           String userEmail) {
 
         Resume resume = resumeRepository.findByIdAndIsDeletedFalse(resumeId)
-                .orElseThrow(() -> new RecordNotFoundException(RESUME_NOT_FOUND));
+                .orElseThrow(() -> new RecordNotFoundException(RESUME_NOT_FOUND, resumeId));
         resume.getUser().setPassword(null);
 
         if (!resume.getIsActive() && !resume.getUser().getEmail().equals(userEmail)) {
-            throw new RecordNotFoundException(RESUME_NOT_FOUND);
+            throw new RecordNotFoundException(RESUME_NOT_FOUND, resumeId);
         }
 
         return resume;
@@ -55,7 +55,7 @@ public class ResumeServiceImpl implements ResumeService {
                                         Boolean isActive) {
 
         User author = userRepository.findByEmailAndIsDeletedFalse(authorEmail)
-                .orElseThrow(() -> new RecordNotFoundException(USER_NOT_FOUND));
+                .orElseThrow(() -> new RecordNotFoundException(USER_NOT_FOUND_BY_EMAIL, authorEmail));
         List<Resume> resumes = resumeRepository.findByUserAndIsDeletedFalseAndIsActive(author, isActive);
         resumes.forEach(e -> e.getUser().setPassword(null));
 
@@ -66,7 +66,7 @@ public class ResumeServiceImpl implements ResumeService {
     public List<Resume> getAllActiveResumesByUser(String authorEmail) {
 
         User author = userRepository.findByEmailAndIsDeletedFalse(authorEmail)
-                .orElseThrow(() -> new RecordNotFoundException(USER_NOT_FOUND));
+                .orElseThrow(() -> new RecordNotFoundException(USER_NOT_FOUND_BY_EMAIL, authorEmail));
         return resumeRepository.findByUserAndIsDeletedFalseAndIsActiveTrue(author);
     }
 
@@ -77,10 +77,10 @@ public class ResumeServiceImpl implements ResumeService {
                          String directionName) {
 
         User author = userRepository.findByEmailAndIsDeletedFalse(authorEmail)
-                .orElseThrow(() -> new RecordNotFoundException(USER_NOT_FOUND));
+                .orElseThrow(() -> new RecordNotFoundException(USER_NOT_FOUND_BY_EMAIL, authorEmail));
         Direction directionId = Direction.valueOf(directionName);
         DirectionDictionary direction = directionRepository.findById(directionId)
-                .orElseThrow(() -> new RecordNotFoundException(DIRECTION_NOT_FOUND));
+                .orElseThrow(() -> new RecordNotFoundException(DIRECTION_NOT_FOUND, String.valueOf(directionId)));
 
         Resume resume = new Resume()
                 .setDescription(description)
@@ -99,10 +99,10 @@ public class ResumeServiceImpl implements ResumeService {
                          String directionName) {
 
         Resume resume = resumeRepository.findByIdAndIsDeletedFalse(resumeId)
-                .orElseThrow(() -> new RecordNotFoundException(RESUME_NOT_FOUND));
+                .orElseThrow(() -> new RecordNotFoundException(RESUME_NOT_FOUND, resumeId));
         Direction directionId = Direction.valueOf(directionName);
         DirectionDictionary direction = directionRepository.findById(directionId)
-                .orElseThrow(() -> new RecordNotFoundException(DIRECTION_NOT_FOUND));
+                .orElseThrow(() -> new RecordNotFoundException(DIRECTION_NOT_FOUND, String.valueOf(directionId)));
 
         if (!authorEmail.equals(resume.getUser().getEmail())) {
             throw new InaccessibleActionException(
@@ -136,7 +136,7 @@ public class ResumeServiceImpl implements ResumeService {
         resumeRepository.updateIsActiveById(resumeId, newActivity);
 
         return resumeRepository.getByIdAndIsDeletedFalse(resumeId)
-                .orElseThrow(() -> new RecordNotFoundException(RESUME_NOT_FOUND));
+                .orElseThrow(() -> new RecordNotFoundException(RESUME_NOT_FOUND, resumeId));
     }
 
     @Override
