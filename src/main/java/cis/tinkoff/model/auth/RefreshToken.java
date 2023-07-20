@@ -1,4 +1,4 @@
-package cis.tinkoff.auth.model;
+package cis.tinkoff.model.auth;
 
 import io.micronaut.data.annotation.DateCreated;
 import io.micronaut.data.annotation.GeneratedValue;

@@ -4,6 +4,7 @@ import cis.tinkoff.controller.model.PositionRequestDTO;
 import cis.tinkoff.controller.model.ResumeInviteDTO;
 import cis.tinkoff.controller.model.custom.CreateRequestDTO;
 import cis.tinkoff.model.PositionRequest;
+import cis.tinkoff.model.enumerated.RequestType;
 import cis.tinkoff.service.PositionRequestService;
 import cis.tinkoff.support.mapper.PositionRequestMapper;
 import cis.tinkoff.support.mapper.ResumeInviteMapper;
@@ -72,10 +73,15 @@ public class PositionRequestController {
     @Operation(method = "getPositionRequests", description = "Get position requests by position id (for team leaders)")
     @Get(value = "/vacancies/{id}", produces = MediaType.APPLICATION_JSON)
     public HttpResponse<List<PositionRequestDTO>> getPositionRequests(@PathVariable("id") Long positionId,
+                                                                      @QueryValue RequestType requestType,
                                                                       Authentication authentication) {
 
         String leaderEmail = authentication.getName();
-        List<PositionRequest> positionRequests = positionRequestService.getPositionsRequests(positionId, leaderEmail);
+        List<PositionRequest> positionRequests = positionRequestService.getPositionsRequests(
+                positionId,
+                requestType,
+                leaderEmail
+        );
         List<PositionRequestDTO> responseDtos = positionRequestMapper.toDtos(positionRequests);
 
         return HttpResponse.ok(responseDtos);
@@ -84,10 +90,15 @@ public class PositionRequestController {
     @Operation(method = "getResumeInvites", description = "Get position invites by resume id (for interested users)")
     @Get(value = "/resumes/{id}", produces = MediaType.APPLICATION_JSON)
     public HttpResponse<List<ResumeInviteDTO>> getResumeInvites(@PathVariable("id") Long resumeId,
+                                                                @QueryValue RequestType requestType,
                                                                 Authentication authentication) {
 
         String resumeOwnerEmail = authentication.getName();
-        List<PositionRequest> resumeInvites = positionRequestService.getResumesPositionRequests(resumeId, resumeOwnerEmail);
+        List<PositionRequest> resumeInvites = positionRequestService.getResumesPositionRequests(
+                resumeId,
+                requestType,
+                resumeOwnerEmail
+        );
         List<ResumeInviteDTO> responseDtos = resumeInviteMapper.toDtos(resumeInvites);
 
         return HttpResponse.ok(responseDtos);

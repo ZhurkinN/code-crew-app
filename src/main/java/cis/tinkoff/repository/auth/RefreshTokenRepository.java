@@ -1,6 +1,6 @@
-package cis.tinkoff.auth.repository;
+package cis.tinkoff.repository.auth;
 
-import cis.tinkoff.auth.model.RefreshToken;
+import cis.tinkoff.model.auth.RefreshToken;
 import io.micronaut.context.annotation.Parameter;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.data.annotation.Query;
@@ -15,17 +15,11 @@ import java.util.Optional;
 @JdbcRepository(dialect = Dialect.POSTGRES)
 public interface RefreshTokenRepository extends CrudRepository<RefreshToken, Long> {
 
-    RefreshToken saveRefreshToken(RefreshToken refreshToken);
-
     Optional<RefreshToken> findByRefreshToken(@NonNull @NotBlank String refreshToken);
-
-    Optional<RefreshToken> findByUsername(@NonNull @NotBlank String username);
-
-    void deleteByUsername(@NonNull @NotNull String username);
 
     @Query("UPDATE refresh_token SET revoked = TRUE WHERE(" +
             "SELECT COUNT(*) FROM refresh_token rt WHERE" +
             " rt.revoked = FALSE and rt.username = :username) > :maxCount - 1 AND revoked = FALSE")
     void checkAndUpdateActiveRefreshTokensByUsername(@NonNull @NotNull String username,
-                                                     @Parameter("maxCount") @NonNull @NotNull Integer maxCountOfActiveRefreshTokens);
+                                                     @Parameter("maxCount") @NonNull @NotNull int maxCountOfActiveRefreshTokens);
 }

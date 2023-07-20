@@ -1,8 +1,8 @@
 package cis.tinkoff.auth;
 
-import cis.tinkoff.auth.repository.RefreshTokenRepository;
 import cis.tinkoff.model.User;
 import cis.tinkoff.repository.UserRepository;
+import cis.tinkoff.repository.auth.RefreshTokenRepository;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.security.authentication.AuthenticationProvider;
 import io.micronaut.security.authentication.AuthenticationRequest;
@@ -21,7 +21,7 @@ import java.util.Optional;
 public class UserPasswordProvider implements AuthenticationProvider {
 
     private final static List<String> BASIC_ROLES = List.of("USER_ROLE");
-    private final static Integer MAX_COUNT_OF_ACTIVE_REFRESH_TOKENS = 5;
+    private final static int MAX_COUNT_OF_ACTIVE_REFRESH_TOKENS = 5;
 
     private final UserRepository userRepository;
     private final RefreshTokenRepository refreshTokenRepository;

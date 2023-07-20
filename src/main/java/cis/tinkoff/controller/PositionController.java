@@ -39,8 +39,8 @@ public class PositionController {
     public HttpResponse<SearchDTO> searchVacancies(
             @QueryValue(value = "page", defaultValue = "0") Integer page,
             @QueryValue(value = "size", defaultValue = "1") Integer sizeLimit,
-            @Nullable @QueryValue(value = "dateSort", defaultValue = "null") SortDirection dateSort,
-            @Nullable @QueryValue(value = "status", defaultValue = "PREPARING") String status,
+            @Nullable @QueryValue(value = "dateSort") SortDirection dateSort,
+            @Nullable @QueryValue(value = "status") String status,
             @Nullable @QueryValue(value = "direction") String direction,
             @Nullable @QueryValue("skills") String skills
     ) {

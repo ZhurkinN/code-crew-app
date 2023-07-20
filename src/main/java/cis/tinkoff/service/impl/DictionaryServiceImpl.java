@@ -10,7 +10,6 @@ import cis.tinkoff.repository.dictionary.ProjectStatusRepository;
 import cis.tinkoff.repository.dictionary.RequestStatusRepository;
 import cis.tinkoff.service.DictionaryService;
 import cis.tinkoff.support.exceptions.RecordNotFoundException;
-import io.micronaut.context.annotation.Primary;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 
@@ -19,7 +18,6 @@ import java.util.List;
 
 import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.USER_NOT_FOUND;
 
-@Primary
 @Singleton
 @RequiredArgsConstructor
 public class DictionaryServiceImpl implements DictionaryService {

@@ -1,6 +1,7 @@
 package cis.tinkoff.service;
 
 import cis.tinkoff.model.PositionRequest;
+import cis.tinkoff.model.enumerated.RequestType;
 
 import java.util.List;
 
@@ -19,9 +20,11 @@ public interface PositionRequestService {
                                          String coverLetter);
 
     List<PositionRequest> getPositionsRequests(Long positionId,
+                                               RequestType requestType,
                                                String leaderEmail);
 
     List<PositionRequest> getResumesPositionRequests(Long resumeId,
+                                                     RequestType requestType,
                                                      String resumeOwnerEmail);
 
     void processRequest(Long requestId,

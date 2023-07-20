@@ -36,6 +36,7 @@ public interface ResumeRepository extends CrudRepository<Resume, Long> {
 
     User getUserById(Long id);
 
+    @Join(value = "direction", type = Join.Type.FETCH)
     Optional<Resume> findByIdAndIsDeletedFalse(@Id Long id);
 
     @Join(value = "direction", type = Join.Type.FETCH)

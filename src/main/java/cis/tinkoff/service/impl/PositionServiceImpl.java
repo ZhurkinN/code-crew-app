@@ -20,7 +20,6 @@ import cis.tinkoff.service.ProjectService;
 import cis.tinkoff.support.exceptions.InaccessibleActionException;
 import cis.tinkoff.support.exceptions.RecordNotFoundException;
 import cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper;
-import io.micronaut.context.annotation.Primary;
 import io.micronaut.data.model.Page;
 import io.micronaut.data.model.Pageable;
 import io.micronaut.data.model.Sort;
@@ -34,7 +33,6 @@ import java.util.Objects;
 
 import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.INACCESSIBLE_PROJECT_ACTION;
 
-@Primary
 @Singleton
 @RequiredArgsConstructor
 public class PositionServiceImpl implements PositionService {

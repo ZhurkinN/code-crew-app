@@ -35,12 +35,28 @@ public interface PositionRequestRepository extends CrudRepository<PositionReques
     @Join(value = "status", type = Join.Type.FETCH)
     @Join(value = "resume", type = Join.Type.FETCH)
     @Join(value = "resume.direction", type = Join.Type.FETCH)
-    List<PositionRequest> findAllByPositionAndIsDeletedFalseAndIsInviteFalse(Position position);
+    List<PositionRequest> findAllByPositionAndStatusAndIsDeletedFalseAndIsInvite(Position position,
+                                                                                 RequestStatusDictionary status,
+                                                                                 boolean isInvite);
+
+    @Join(value = "status", type = Join.Type.FETCH)
+    @Join(value = "resume", type = Join.Type.FETCH)
+    @Join(value = "resume.direction", type = Join.Type.FETCH)
+    List<PositionRequest> findAllByPositionAndStatusNotEqualsAndIsDeletedFalse(Position position,
+                                                                               RequestStatusDictionary status);
 
     @Join(value = "status", type = Join.Type.FETCH)
     @Join(value = "position", type = Join.Type.FETCH)
     @Join(value = "position.direction", type = Join.Type.FETCH)
-    List<PositionRequest> findAllByResumeAndIsDeletedFalseAndIsInviteTrue(Resume resume);
+    List<PositionRequest> findAllByResumeAndStatusAndIsDeletedFalseAndIsInvite(Resume resume,
+                                                                               RequestStatusDictionary status,
+                                                                               boolean isInvite);
+
+    @Join(value = "status", type = Join.Type.FETCH)
+    @Join(value = "position", type = Join.Type.FETCH)
+    @Join(value = "position.direction", type = Join.Type.FETCH)
+    List<PositionRequest> findAllByResumeAndStatusNotEqualsAndIsDeletedFalse(Resume resume,
+                                                                             RequestStatusDictionary status);
 
     @Join(value = "position", type = Join.Type.FETCH)
     @Join(value = "position.project", type = Join.Type.FETCH)
@@ -49,7 +65,4 @@ public interface PositionRequestRepository extends CrudRepository<PositionReques
     @Join(value = "status", type = Join.Type.FETCH)
     Optional<PositionRequest> findByIdAndIsDeletedFalse(@NotNull Long id);
 
-    //    @Join(value = "resume", type = Join.Type.FETCH)
-//    @Query(value = "select * from position_request ps join (resume rm join users us on rm.user_id = us.id) on ps.resume_id = rm.id")
-//    Page<PositionRequestController> findAllPositionRequestsWithUserResume(Pageable pageable);
 }

@@ -2,13 +2,13 @@ package cis.tinkoff.service.impl;
 
 import cis.tinkoff.model.*;
 import cis.tinkoff.model.enumerated.RequestStatus;
+import cis.tinkoff.model.enumerated.RequestType;
 import cis.tinkoff.repository.*;
 import cis.tinkoff.repository.dictionary.RequestStatusRepository;
 import cis.tinkoff.service.PositionRequestService;
 import cis.tinkoff.support.exceptions.InaccessibleActionException;
 import cis.tinkoff.support.exceptions.RecordNotFoundException;
 import cis.tinkoff.support.exceptions.RequestAlreadyExistsException;
-import io.micronaut.context.annotation.Primary;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 
@@ -18,7 +18,6 @@ import java.util.Objects;
 
 import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.*;
 
-@Primary
 @Singleton
 @RequiredArgsConstructor
 public class PositionRequestServiceImpl implements PositionRequestService {
@@ -91,14 +90,32 @@ public class PositionRequestServiceImpl implements PositionRequestService {
 
     @Override
     public List<PositionRequest> getPositionsRequests(Long positionId,
+                                                      RequestType requestType,
                                                       String leaderEmail) {
 
         Position position = positionRepository.findByIdAndIsDeletedFalseAndIsVisibleTrue(positionId)
                 .orElseThrow(() -> new RecordNotFoundException(POSITION_NOT_FOUND));
         validateUsersProjectLeadership(leaderEmail, positionId);
+        RequestStatusDictionary inConsiderationStatus = requestStatusRepository
+                .findById(RequestStatus.IN_CONSIDERATION)
+                .orElseThrow();
 
-        List<PositionRequest> positionRequests =
-                positionRequestRepository.findAllByPositionAndIsDeletedFalseAndIsInviteFalse(position);
+        List<PositionRequest> positionRequests = switch (requestType) {
+            case INCOMING -> positionRequestRepository.findAllByPositionAndStatusAndIsDeletedFalseAndIsInvite(
+                    position,
+                    inConsiderationStatus,
+                    false
+            );
+            case SENT -> positionRequestRepository.findAllByPositionAndStatusAndIsDeletedFalseAndIsInvite(
+                    position,
+                    inConsiderationStatus,
+                    true
+            );
+            case RECENT -> positionRequestRepository.findAllByPositionAndStatusNotEqualsAndIsDeletedFalse(
+                    position,
+                    inConsiderationStatus
+            );
+        };
         positionRequests.forEach(e -> {
             User user = resumeRepository.getUserById(Objects.requireNonNull(e.getResume()).getId());
             User detailedUser = new User()
@@ -116,14 +133,32 @@ public class PositionRequestServiceImpl implements PositionRequestService {
 
     @Override
     public List<PositionRequest> getResumesPositionRequests(Long resumeId,
+                                                            RequestType requestType,
                                                             String resumeOwnerEmail) {
 
         Resume resume = resumeRepository.findByIdAndIsDeletedFalseAndIsActiveTrue(resumeId)
                 .orElseThrow(() -> new RecordNotFoundException(RESUME_NOT_FOUND));
         validateUsersResumeOwnership(resumeOwnerEmail, resumeId);
+        RequestStatusDictionary inConsiderationStatus = requestStatusRepository
+                .findById(RequestStatus.IN_CONSIDERATION)
+                .orElseThrow();
 
-        List<PositionRequest> resumesPositionRequests =
-                positionRequestRepository.findAllByResumeAndIsDeletedFalseAndIsInviteTrue(resume);
+        List<PositionRequest> resumesPositionRequests = switch (requestType) {
+            case INCOMING -> positionRequestRepository.findAllByResumeAndStatusAndIsDeletedFalseAndIsInvite(
+                    resume,
+                    inConsiderationStatus,
+                    false
+            );
+            case SENT -> positionRequestRepository.findAllByResumeAndStatusAndIsDeletedFalseAndIsInvite(
+                    resume,
+                    inConsiderationStatus,
+                    true
+            );
+            case RECENT -> positionRequestRepository.findAllByResumeAndStatusNotEqualsAndIsDeletedFalse(
+                    resume,
+                    inConsiderationStatus
+            );
+        };
         resumesPositionRequests.forEach(e -> {
             Project project = positionRepository.findProjectById(Objects.requireNonNull(e.getPosition()).getId());
             Project detailedProject = new Project()

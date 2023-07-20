@@ -9,7 +9,6 @@ import cis.tinkoff.repository.UserRepository;
 import cis.tinkoff.service.UserService;
 import cis.tinkoff.support.exceptions.RecordNotFoundException;
 import cis.tinkoff.support.exceptions.UserAlreadyExistsException;
-import io.micronaut.context.annotation.Primary;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 
@@ -17,7 +16,6 @@ import java.util.List;
 
 import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.USER_NOT_FOUND;
 
-@Primary
 @Singleton
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {

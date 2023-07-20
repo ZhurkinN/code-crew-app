@@ -1,7 +1,7 @@
 package cis.tinkoff.auth;
 
-import cis.tinkoff.auth.model.RefreshToken;
-import cis.tinkoff.auth.repository.RefreshTokenRepository;
+import cis.tinkoff.model.auth.RefreshToken;
+import cis.tinkoff.repository.auth.RefreshTokenRepository;
 import io.micronaut.runtime.event.annotation.EventListener;
 import io.micronaut.security.authentication.Authentication;
 import io.micronaut.security.errors.OauthErrorResponseException;

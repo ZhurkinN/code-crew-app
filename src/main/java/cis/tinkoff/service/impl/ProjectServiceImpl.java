@@ -18,7 +18,6 @@ import cis.tinkoff.service.ProjectService;
 import cis.tinkoff.service.UserService;
 import cis.tinkoff.support.exceptions.InaccessibleActionException;
 import cis.tinkoff.support.exceptions.RecordNotFoundException;
-import io.micronaut.context.annotation.Primary;
 import jakarta.inject.Inject;
 import jakarta.inject.Provider;
 import jakarta.inject.Singleton;
@@ -30,7 +29,6 @@ import java.util.Objects;
 
 import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.INACCESSIBLE_PROJECT_ACTION;
 
-@Primary
 @Singleton
 @RequiredArgsConstructor
 public class ProjectServiceImpl implements ProjectService {

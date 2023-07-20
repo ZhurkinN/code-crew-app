@@ -14,7 +14,6 @@ import cis.tinkoff.service.ResumeService;
 import cis.tinkoff.support.exceptions.InaccessibleActionException;
 import cis.tinkoff.support.exceptions.RecordNotFoundException;
 import cis.tinkoff.support.mapper.ResumeMapper;
-import io.micronaut.context.annotation.Primary;
 import io.micronaut.data.model.Page;
 import io.micronaut.data.model.Pageable;
 import io.micronaut.data.model.Sort;
@@ -27,7 +26,6 @@ import java.util.Objects;
 
 import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.*;
 
-@Primary
 @Singleton
 @RequiredArgsConstructor
 public class ResumeServiceImpl implements ResumeService {
