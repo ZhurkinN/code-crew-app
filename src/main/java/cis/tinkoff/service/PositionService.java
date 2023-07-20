@@ -21,8 +21,6 @@ public interface PositionService {
                                 String direction,
                                 String skills);
 
-    List<Position> getAll();
-
     VacancyDTO getVacancyById(Long id);
 
     List<VacancyDTO> getProjectVacancies(Long projectId, Boolean isVisible);

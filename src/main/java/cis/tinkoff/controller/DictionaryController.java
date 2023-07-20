@@ -4,7 +4,6 @@ import cis.tinkoff.model.DirectionDictionary;
 import cis.tinkoff.model.ProjectStatusDictionary;
 import cis.tinkoff.model.RequestStatusDictionary;
 import cis.tinkoff.service.DictionaryService;
-import cis.tinkoff.support.exceptions.RecordNotFoundException;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.MediaType;
 import io.micronaut.http.annotation.Controller;
@@ -36,8 +35,7 @@ public class DictionaryController {
     @Secured(SecurityRule.IS_AUTHENTICATED)
     @Operation(method = "getUsersResumeAvailableDirections", description = "Returns all available directions for making resumes")
     @Get(value = "/directions/resumes", produces = MediaType.APPLICATION_JSON)
-    public HttpResponse<List<DirectionDictionary>> getUsersResumeAvailableDirections(Authentication authentication)
-            throws RecordNotFoundException {
+    public HttpResponse<List<DirectionDictionary>> getUsersResumeAvailableDirections(Authentication authentication) {
 
         String email = authentication.getName();
         return HttpResponse.ok(dictionaryService.getAllAvailableDirections(email));

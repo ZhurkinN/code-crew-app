@@ -5,18 +5,17 @@ import cis.tinkoff.repository.UserRepository;
 import cis.tinkoff.service.FileService;
 import cis.tinkoff.support.exceptions.ProfilePictureNotFoundException;
 import cis.tinkoff.support.exceptions.RecordNotFoundException;
-import cis.tinkoff.support.exceptions.UnavailableMediaTypeException;
 import io.micronaut.context.annotation.Property;
 import io.micronaut.http.MediaType;
 import io.micronaut.http.multipart.CompletedFileUpload;
 import io.micronaut.http.server.types.files.StreamedFile;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 
 import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.USER_NOT_FOUND;
 import static cis.tinkoff.support.helper.FileHandler.buildFilename;
@@ -36,7 +35,7 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public String saveProfilePicture(CompletedFileUpload file,
-                                     String userEmail) throws UnavailableMediaTypeException, IOException {
+                                     String userEmail) {
 
         validateFileMediaType(file, userEmail);
         String filename = buildFilename(userEmail, commonExtension);
@@ -61,8 +60,9 @@ public class FileServiceImpl implements FileService {
         return new StreamedFile(fileInputStream, MediaType.IMAGE_PNG_TYPE);
     }
 
+    @SneakyThrows
     private void savePicture(CompletedFileUpload file,
-                             String filename) throws IOException {
+                             String filename) {
 
         FileOutputStream fileOutputStream = new FileOutputStream(storagePath + filename);
         fileOutputStream.write(file.getBytes());

@@ -3,14 +3,10 @@ package cis.tinkoff.service;
 import cis.tinkoff.controller.model.custom.SearchDTO;
 import cis.tinkoff.model.Resume;
 import cis.tinkoff.model.enumerated.SortDirection;
-import cis.tinkoff.support.exceptions.InaccessibleActionException;
-import cis.tinkoff.support.exceptions.RecordNotFoundException;
 
 import java.util.List;
 
 public interface ResumeService {
-
-    List<Resume> getAll();
 
     SearchDTO searchResumes(Integer page,
                             Integer sizeLimit,
@@ -18,26 +14,26 @@ public interface ResumeService {
                             String direction,
                             String skills);
 
-    Resume getById(Long id) throws RecordNotFoundException;
+    Resume getById(Long id);
 
-    List<Resume> getALlByUser(String authorEmail) throws RecordNotFoundException;
+    List<Resume> getAllUsersResumes(String authorEmail);
 
-    List<Resume> getALlActiveByUser(String authorEmail) throws RecordNotFoundException;
+    List<Resume> getAllActiveResumesByUser(String authorEmail);
 
     Resume create(String authorEmail,
                   String description,
                   List<String> skills,
-                  String directionName) throws RecordNotFoundException;
+                  String directionName);
 
     Resume update(String authorEmail,
                   Long resumeId,
                   String description,
                   List<String> skills,
-                  String directionName) throws RecordNotFoundException, InaccessibleActionException;
+                  String directionName);
 
     Resume updateActivity(Long id,
-                          String authorEmail) throws InaccessibleActionException, RecordNotFoundException;
+                          String authorEmail);
 
     void softDelete(Long id,
-                    String authorEmail) throws InaccessibleActionException, RecordNotFoundException;
+                    String authorEmail);
 }

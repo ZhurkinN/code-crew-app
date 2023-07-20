@@ -5,8 +5,6 @@ import cis.tinkoff.controller.model.custom.RegisterUserDTO;
 import cis.tinkoff.controller.model.custom.UpdateUserDTO;
 import cis.tinkoff.model.User;
 import cis.tinkoff.service.UserService;
-import cis.tinkoff.support.exceptions.RecordNotFoundException;
-import cis.tinkoff.support.exceptions.UserAlreadyExistsException;
 import cis.tinkoff.support.mapper.UserMapper;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.MediaType;
@@ -18,8 +16,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
-import java.util.List;
-
 @Tag(name = "Users", description = "All actions with users.")
 @Controller("/api/v1/users")
 @Secured(SecurityRule.IS_AUTHENTICATED)
@@ -29,18 +25,9 @@ public class UserController {
     private final UserService userService;
     private final UserMapper userMapper;
 
-    @Operation(method = "findAll", description = "Finds all users")
-    @Get(value = "/all", produces = MediaType.APPLICATION_JSON)
-    public HttpResponse<List<UserDTO>> findAll() {
-
-        List<User> users = userService.getAll();
-        List<UserDTO> responseDtos = userMapper.toDtos(users);
-        return HttpResponse.ok(responseDtos);
-    }
-
     @Operation(method = "findById", description = "Finds user by id")
     @Get(value = "/{id}", produces = MediaType.APPLICATION_JSON)
-    public HttpResponse<UserDTO> findById(@PathVariable Long id) throws RecordNotFoundException {
+    public HttpResponse<UserDTO> findById(@PathVariable Long id) {
 
         User user = userService.getById(id);
         UserDTO responseDto = userMapper.toDto(user);
@@ -49,7 +36,7 @@ public class UserController {
 
     @Operation(method = "find", description = "Finds user")
     @Get(processes = MediaType.APPLICATION_JSON)
-    public HttpResponse<UserDTO> find(Authentication authentication) throws RecordNotFoundException {
+    public HttpResponse<UserDTO> find(Authentication authentication) {
 
         String email = authentication.getName();
         User user = userService.getByEmail(email);
@@ -60,8 +47,7 @@ public class UserController {
     @Secured(SecurityRule.IS_ANONYMOUS)
     @Operation(method = "register", description = "Registers new user")
     @Post(uri = "/register", processes = MediaType.APPLICATION_JSON)
-    public HttpResponse<UserDTO> register(@Body RegisterUserDTO dto)
-            throws UserAlreadyExistsException {
+    public HttpResponse<UserDTO> register(@Body RegisterUserDTO dto) {
 
         User user = userService.register(
                 dto.email(),
@@ -76,7 +62,7 @@ public class UserController {
     @Operation(method = "update", description = "Updates information about user")
     @Patch(processes = MediaType.APPLICATION_JSON)
     public HttpResponse<UserDTO> update(@Body UpdateUserDTO requestDto,
-                                        Authentication authentication) throws RecordNotFoundException {
+                                        Authentication authentication) {
 
         User user = userService.update(
                 authentication.getName(),
@@ -98,10 +84,4 @@ public class UserController {
         userService.softDelete(email);
     }
 
-    @Operation(method = "delete", description = "Deletes users by id. For simplification working with DB.")
-    @Delete("/hard-delete/{id}")
-    public void delete(@PathVariable Long id) {
-
-        userService.delete(id);
-    }
 }

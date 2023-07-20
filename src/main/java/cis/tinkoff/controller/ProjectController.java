@@ -4,8 +4,6 @@ import cis.tinkoff.controller.model.ProjectDTO;
 import cis.tinkoff.controller.model.custom.ProjectCreateDTO;
 import cis.tinkoff.model.enumerated.Direction;
 import cis.tinkoff.service.ProjectService;
-import cis.tinkoff.support.exceptions.InaccessibleActionException;
-import cis.tinkoff.support.exceptions.RecordNotFoundException;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.MediaType;
@@ -44,7 +42,8 @@ public class ProjectController {
     @Get(value = "/{id}", produces = MediaType.APPLICATION_JSON)
     public HttpResponse<ProjectDTO> getProjectById(
             Authentication authentication,
-            @PathVariable(value = "id") Long id) {
+            @PathVariable(value = "id") Long id
+    ) {
         ProjectDTO projectDTO = projectService.getProjectById(id, authentication.getName());
 
         return HttpResponse.ok(projectDTO);
@@ -54,7 +53,8 @@ public class ProjectController {
     @Delete(value = "/{id}", produces = MediaType.APPLICATION_JSON)
     public HttpResponse<?> deleteProjectById(
             Authentication authentication,
-            @PathVariable(value = "id") Long id) throws InaccessibleActionException, RecordNotFoundException {
+            @PathVariable(value = "id") Long id
+    ) {
         projectService.deleteProjectById(id, authentication.getName());
 
         return HttpResponse.ok();
@@ -78,7 +78,7 @@ public class ProjectController {
             @PathVariable(name = "id") Long id,
             @QueryValue(value = "userId") Long userId,
             @QueryValue(value = "direction") Direction direction
-    ) throws RecordNotFoundException, InaccessibleActionException {
+    ) {
         ProjectDTO projectDTO = projectService.deleteUserFromProject(id, authentication.getName(), userId, direction);
 
         return HttpResponse.ok(projectDTO);
@@ -89,7 +89,7 @@ public class ProjectController {
     public HttpResponse<ProjectDTO> createProject(
             Authentication authentication,
             @Body ProjectCreateDTO projectCreateDTO
-    ) throws RecordNotFoundException {
+    ) {
         ProjectDTO projectDTO = projectService.createProject(authentication.getName(), projectCreateDTO);
 
         return HttpResponse.ok(projectDTO);
@@ -101,7 +101,7 @@ public class ProjectController {
             Authentication authentication,
             @PathVariable(name = "id") Long id,
             @Body ProjectCreateDTO projectForUpdate
-    ) throws RecordNotFoundException, InaccessibleActionException {
+    ) {
         ProjectDTO project = projectService.updateProject(id, authentication.getName(), projectForUpdate);
 
         return HttpResponse.ok(project);

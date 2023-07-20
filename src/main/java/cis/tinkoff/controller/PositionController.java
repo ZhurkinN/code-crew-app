@@ -4,7 +4,6 @@ import cis.tinkoff.controller.model.VacancyDTO;
 import cis.tinkoff.controller.model.custom.ProjectMemberDTO;
 import cis.tinkoff.controller.model.custom.SearchDTO;
 import cis.tinkoff.controller.model.custom.VacancyCreateDTO;
-import cis.tinkoff.model.Position;
 import cis.tinkoff.model.enumerated.SortDirection;
 import cis.tinkoff.service.PositionService;
 import io.micronaut.core.annotation.Nullable;
@@ -27,12 +26,6 @@ import java.util.List;
 public class PositionController {
 
     private final PositionService positionService;
-
-    @Operation(method = "findAll", description = "Finds all positions")
-    @Get(produces = MediaType.APPLICATION_JSON)
-    public HttpResponse<List<Position>> findAll() {
-        return HttpResponse.ok(positionService.getAll());
-    }
 
     @Operation(method = "searchVacancies", description = "Finds all vacancies by searched parameters")
     @Get(uri = "/search", produces = MediaType.APPLICATION_JSON)

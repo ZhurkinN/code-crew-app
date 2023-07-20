@@ -5,7 +5,6 @@ import cis.tinkoff.model.ProjectStatusDictionary;
 import cis.tinkoff.model.RequestStatusDictionary;
 import cis.tinkoff.model.enumerated.Direction;
 import cis.tinkoff.model.enumerated.ProjectStatus;
-import cis.tinkoff.support.exceptions.RecordNotFoundException;
 
 import java.util.List;
 
@@ -17,7 +16,7 @@ public interface DictionaryService {
 
     List<RequestStatusDictionary> getAllRequestStatuses();
 
-    List<DirectionDictionary> getAllAvailableDirections(String email) throws RecordNotFoundException;
+    List<DirectionDictionary> getAllAvailableDirections(String email);
 
     DirectionDictionary getDirectionDictionaryById(Direction direction);
 

@@ -96,11 +96,6 @@ public class PositionServiceImpl implements PositionService {
     }
 
     @Override
-    public List<Position> getAll() {
-        return (List<Position>) positionRepository.findAll();
-    }
-
-    @Override
     public VacancyDTO getVacancyById(Long id) {
         List<Position> positions = findPositionsByIdsOrElseThrow(List.of(id));
 

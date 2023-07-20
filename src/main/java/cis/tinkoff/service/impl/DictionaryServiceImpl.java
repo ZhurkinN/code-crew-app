@@ -44,7 +44,7 @@ public class DictionaryServiceImpl implements DictionaryService {
     }
 
     @Override
-    public List<DirectionDictionary> getAllAvailableDirections(String email) throws RecordNotFoundException {
+    public List<DirectionDictionary> getAllAvailableDirections(String email) {
 
         List<DirectionDictionary> allDirections = (List<DirectionDictionary>) directionRepository.findAll();
         User resumeAuthor = userRepository.findByEmailAndIsDeletedFalse(email)
@@ -59,23 +59,21 @@ public class DictionaryServiceImpl implements DictionaryService {
 
     @Override
     public DirectionDictionary getDirectionDictionaryById(Direction direction) {
-        DirectionDictionary directionDictionary = directionRepository
+
+        return directionRepository
                 .findById(direction)
                 .orElseThrow(() -> new RecordNotFoundException("Direction with id=" +
                         direction
                         + " not found"));
-
-        return directionDictionary;
     }
 
     @Override
     public ProjectStatusDictionary getProjectStatusDictionaryById(ProjectStatus status) {
-        ProjectStatusDictionary projectStatusDictionary = projectStatusRepository
+
+        return projectStatusRepository
                 .findById(status)
                 .orElseThrow(() -> new RecordNotFoundException("Project status with id=" +
                         status
                         + " not found"));
-
-        return projectStatusDictionary;
     }
 }

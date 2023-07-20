@@ -7,8 +7,6 @@ import java.util.List;
 
 public interface PositionRequestService {
 
-    List<PositionRequest> getAll();
-
     PositionRequest createPositionRequest(String authorEmail,
                                           Long positionId,
                                           Long resumeId,

@@ -24,15 +24,7 @@ public class UserServiceImpl implements UserService {
     private final ResumeRepository resumeRepository;
 
     @Override
-    public List<User> getAll() {
-
-        List<User> users = (List<User>) userRepository.findAll();
-        users.forEach(this::setOtherModelsData);
-        return users;
-    }
-
-    @Override
-    public User getById(Long id) throws RecordNotFoundException {
+    public User getById(Long id) {
 
         User user = userRepository.findByIdAndIsDeletedFalse(id)
                 .orElseThrow(() -> new RecordNotFoundException(USER_NOT_FOUND));
@@ -41,7 +33,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getByEmail(String email) throws RecordNotFoundException {
+    public User getByEmail(String email) {
 
         User user = userRepository.findByEmailAndIsDeletedFalse(email)
                 .orElseThrow(() -> new RecordNotFoundException(USER_NOT_FOUND));
@@ -53,7 +45,7 @@ public class UserServiceImpl implements UserService {
     public User register(String email,
                          String password,
                          String name,
-                         String surname) throws UserAlreadyExistsException {
+                         String surname) {
 
         if (userRepository.existsByEmail(email)) {
             throw new UserAlreadyExistsException(email);
@@ -73,7 +65,7 @@ public class UserServiceImpl implements UserService {
                        String surname,
                        List<String> contacts,
                        String pictureLink,
-                       String mainInformation) throws RecordNotFoundException {
+                       String mainInformation) {
 
         User user = userRepository.findByEmailAndIsDeletedFalse(email)
                 .orElseThrow(() -> new RecordNotFoundException(USER_NOT_FOUND));
@@ -89,11 +81,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public void softDelete(String email) {
         userRepository.updateByEmail(email, true);
-    }
-
-    @Override
-    public void delete(Long id) {
-        userRepository.deleteById(id);
     }
 
     private User setOtherModelsData(User user) {

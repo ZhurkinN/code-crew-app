@@ -30,11 +30,6 @@ public class PositionRequestServiceImpl implements PositionRequestService {
     private final UserRepository userRepository;
 
     @Override
-    public List<PositionRequest> getAll() {
-        return positionRequestRepository.list();
-    }
-
-    @Override
     public PositionRequest createPositionRequest(String authorEmail,
                                                  Long positionId,
                                                  Long resumeId,

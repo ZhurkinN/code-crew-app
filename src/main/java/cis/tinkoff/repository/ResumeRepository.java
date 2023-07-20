@@ -21,6 +21,7 @@ import java.util.Optional;
 public interface ResumeRepository extends CrudRepository<Resume, Long> {
 
     @Join(value = "direction", type = Join.Type.FETCH)
+    @Join(value = "user", type = Join.Type.FETCH)
     List<Resume> findByUserAndIsDeletedFalse(User user);
 
     @Join(value = "direction", type = Join.Type.FETCH)

@@ -4,28 +4,24 @@ import cis.tinkoff.controller.model.ProjectDTO;
 import cis.tinkoff.controller.model.custom.ProjectCreateDTO;
 import cis.tinkoff.model.Project;
 import cis.tinkoff.model.enumerated.Direction;
-import cis.tinkoff.support.exceptions.InaccessibleActionException;
-import cis.tinkoff.support.exceptions.RecordNotFoundException;
 
 import java.util.List;
 
 public interface ProjectService {
 
-    List<Project> getAll();
-
     List<ProjectDTO> getAllUserProjects(String login, Boolean isLead);
 
     ProjectDTO getProjectById(Long id, String login);
 
-    void deleteProjectById(Long id, String login) throws InaccessibleActionException, RecordNotFoundException;
+    void deleteProjectById(Long id, String login);
 
-    void leaveUserFromProject(Long id, String login, Long newLeaderId) throws Exception;
+    void leaveUserFromProject(Long id, String login, Long newLeaderId);
 
-    ProjectDTO deleteUserFromProject(Long id, String login, Long userId, Direction direction) throws RecordNotFoundException, InaccessibleActionException;
+    ProjectDTO deleteUserFromProject(Long id, String login, Long userId, Direction direction);
 
-    ProjectDTO createProject(String login, ProjectCreateDTO projectCreateDTO) throws RecordNotFoundException;
+    ProjectDTO createProject(String login, ProjectCreateDTO projectCreateDTO);
 
-    ProjectDTO updateProject(Long id, String login, ProjectCreateDTO projectForUpdate) throws RecordNotFoundException, InaccessibleActionException;
+    ProjectDTO updateProject(Long id, String login, ProjectCreateDTO projectForUpdate);
 
     boolean isUserProjectLeader(String login, Long projectId);
 

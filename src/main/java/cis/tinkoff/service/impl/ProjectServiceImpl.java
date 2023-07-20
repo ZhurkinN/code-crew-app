@@ -43,11 +43,6 @@ public class ProjectServiceImpl implements ProjectService {
     private Provider<PositionService> positionService;
 
     @Override
-    public List<Project> getAll() {
-        return projectRepository.list();
-    }
-
-    @Override
     public List<ProjectDTO> getAllUserProjects(String login, Boolean isLead) {
         List<Project> projects;
         if (isLead) {
@@ -99,7 +94,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public void deleteProjectById(Long projectId,
-                                  String email) throws RecordNotFoundException, InaccessibleActionException {
+                                  String email) {
         Project project = getAllProjectsByIdsOrElseThrow(List.of(projectId)).get(0);
 
         if (!isUserProjectLeader(email, project.getId())) {
@@ -150,7 +145,7 @@ public class ProjectServiceImpl implements ProjectService {
     public ProjectDTO deleteUserFromProject(Long projectId,
                                             String email,
                                             Long userId,
-                                            Direction direction) throws RecordNotFoundException, InaccessibleActionException {
+                                            Direction direction) {
         Project project = getAllProjectsByIdsOrElseThrow(List.of(projectId)).get(0);
 
         if (!isUserProjectLeader(email, project.getId())) {
@@ -191,7 +186,7 @@ public class ProjectServiceImpl implements ProjectService {
     @Transactional
     @Override
     public ProjectDTO createProject(String login,
-                                    ProjectCreateDTO projectCreateDTO) throws RecordNotFoundException {
+                                    ProjectCreateDTO projectCreateDTO) {
         User leader = userService.getByEmail(login);
         ProjectStatusDictionary status = dictionaryService
                 .getProjectStatusDictionaryById(projectCreateDTO.getStatus());
@@ -254,7 +249,7 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public ProjectDTO updateProject(Long projectId,
                                     String email,
-                                    ProjectCreateDTO projectForUpdate) throws RecordNotFoundException, InaccessibleActionException {
+                                    ProjectCreateDTO projectForUpdate) {
         Project updatedProject = getAllProjectsByIdsOrElseThrow(List.of(projectId)).get(0);
 
         if (!isUserProjectLeader(email, updatedProject.getId())) {

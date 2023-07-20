@@ -30,12 +30,6 @@ public class PositionRequestController {
     private final PositionRequestMapper positionRequestMapper;
     private final ResumeInviteMapper resumeInviteMapper;
 
-    @Operation(method = "findAll", description = "Finds all position' requests")
-    @Get(value = "/all", produces = MediaType.APPLICATION_JSON)
-    public HttpResponse<List<PositionRequest>> findAll() {
-        return HttpResponse.ok(positionRequestService.getAll());
-    }
-
     @Operation(method = "createPositionRequest", description = "Creates request for joining position (for interested users)")
     @Post(value = "/vacancies", processes = MediaType.APPLICATION_JSON)
     public HttpResponse<PositionRequestDTO> createPositionRequest(@Body CreateRequestDTO requestDto,
