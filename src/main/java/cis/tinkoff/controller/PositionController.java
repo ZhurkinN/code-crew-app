@@ -1,41 +1,131 @@
 package cis.tinkoff.controller;
 
-import cis.tinkoff.model.Position;
+import cis.tinkoff.controller.model.VacancyDTO;
+import cis.tinkoff.controller.model.custom.ProjectMemberDTO;
+import cis.tinkoff.controller.model.custom.SearchDTO;
+import cis.tinkoff.controller.model.custom.VacancyCreateDTO;
+import cis.tinkoff.model.enumerated.SortDirection;
 import cis.tinkoff.service.PositionService;
+import io.micronaut.core.annotation.Nullable;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.MediaType;
-import io.micronaut.http.annotation.Controller;
-import io.micronaut.http.annotation.Get;
-import io.micronaut.http.annotation.QueryValue;
+import io.micronaut.http.annotation.*;
+import io.micronaut.security.annotation.Secured;
+import io.micronaut.security.authentication.Authentication;
+import io.micronaut.security.rules.SecurityRule;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.inject.Inject;
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
 @Tag(name = "Positions/Vacancies", description = "All actions with positions of project including vacancies.")
-@Controller("/positions")
+@Controller("/api/v1/positions")
+@Secured(SecurityRule.IS_AUTHENTICATED)
+@RequiredArgsConstructor
 public class PositionController {
 
-    @Inject
-    private PositionService positionService;
+    private final PositionService positionService;
 
-    @Operation(method = "findAll", description = "Finds all positions")
-    @Get(produces = MediaType.APPLICATION_JSON)
-    public HttpResponse<List<Position>> findAll() {
-        return HttpResponse.ok(positionService.getAll());
+    @Operation(method = "searchVacancies", description = "Finds all vacancies by searched parameters")
+    @Get(uri = "/search", produces = MediaType.APPLICATION_JSON)
+    public HttpResponse<SearchDTO> searchVacancies(
+            @QueryValue(value = "page", defaultValue = "0") Integer page,
+            @QueryValue(value = "size", defaultValue = "1") Integer sizeLimit,
+            @Nullable @QueryValue(value = "dateSort") SortDirection dateSort,
+            @Nullable @QueryValue(value = "status") String status,
+            @Nullable @QueryValue(value = "direction") String direction,
+            @Nullable @QueryValue("skills") String skills
+    ) {
+        SearchDTO searchDTO = positionService.searchVacancyList(
+                page,
+                sizeLimit,
+                dateSort,
+                status,
+                direction,
+                skills
+        );
+
+        return HttpResponse.ok(searchDTO);
     }
 
-    @Operation(method = "findAll", description = "Finds all vacancies by searched parameters")
-    @Get(uri = "/vacancies", produces = MediaType.APPLICATION_JSON)
-    public HttpResponse<?> searchVacancies(
-            @QueryValue(value = "date", defaultValue = "0") Long date,
-            @QueryValue(value = "status", defaultValue = "PREPARING") String status,
-            @QueryValue(value = "direction") String direction,
-            @QueryValue("skills") String skills
+    @Operation(method = "getVacancyById", description = "Get vacancy by id")
+    @Get(uri = "/{id}", produces = MediaType.APPLICATION_JSON)
+    public HttpResponse<VacancyDTO> getVacancyById(
+            @PathVariable Long id,
+            Authentication authentication
     ) {
-        List<Position> vacancies = positionService.searchVacancyList(date, status, direction, skills);
+        String userEmail = authentication.getName();
+        VacancyDTO vacancyDTO = positionService.getVacancyById(id, userEmail);
 
-        return HttpResponse.ok(vacancies);
+        return HttpResponse.ok(vacancyDTO);
+    }
+
+    @Operation(method = "getProjectVacancies", description = "Get vacancies of the project by project id")
+    @Get(uri = "/projects", produces = MediaType.APPLICATION_JSON)
+    public HttpResponse<List<VacancyDTO>> getProjectVacancies(
+            @QueryValue Long projectId,
+            @QueryValue Boolean isVisible
+    ) {
+        List<VacancyDTO> vacancyDTOList = positionService.getProjectVacancies(projectId, isVisible);
+
+        return HttpResponse.ok(vacancyDTOList);
+    }
+
+    @Operation(method = "getProjectMembers", description = "Get members of the project by project id")
+    @Get(uri = "/projects/members", produces = MediaType.APPLICATION_JSON)
+    public HttpResponse<List<ProjectMemberDTO>> getProjectMembers(
+            Authentication authentication,
+            @QueryValue Long projectId
+    ) {
+        List<ProjectMemberDTO> projectMembers = positionService.getProjectMembers(authentication.getName(), projectId);
+
+        return HttpResponse.ok(projectMembers);
+    }
+
+    @Operation(method = "createVacancy", description = "Create vacancy")
+    @Post(produces = MediaType.APPLICATION_JSON)
+    public HttpResponse<VacancyDTO> createVacancy(
+            Authentication authentication,
+            @QueryValue Long projectId,
+            @Body VacancyCreateDTO vacancyCreateDTO
+    ) {
+        VacancyDTO vacancyDTO = positionService.createVacancy(authentication.getName(), projectId, vacancyCreateDTO);
+
+        return HttpResponse.ok(vacancyDTO);
+    }
+
+    @Operation(method = "updateVacancy", description = "Update vacancy")
+    @Patch(uri = "/{id}", produces = MediaType.APPLICATION_JSON)
+    public HttpResponse<VacancyDTO> updateVacancy(
+            Authentication authentication,
+            @PathVariable Long id,
+            @Body VacancyCreateDTO updateVacancyDTO
+    ) {
+        VacancyDTO vacancyDTO = positionService.updateVacancy(id, authentication.getName(), updateVacancyDTO);
+
+        return HttpResponse.ok(vacancyDTO);
+    }
+
+    @Operation(method = "changeVisibility", description = "Change vacancy visibility")
+    @Post(uri = "/visible/{id}", produces = MediaType.APPLICATION_JSON)
+    public HttpResponse<VacancyDTO> changeVisibility(
+            Authentication authentication,
+            @PathVariable Long id
+    ) {
+        VacancyDTO vacancyDTO = positionService.changeVisibility(id, authentication.getName());
+
+        return HttpResponse.ok(vacancyDTO);
+    }
+
+    @Operation(method = "deleteVacancy", description = "Soft delete vacancy")
+    @Delete(uri = "/{id}", produces = MediaType.APPLICATION_JSON)
+    public HttpResponse<?> deleteVacancy(
+            Authentication authentication,
+            @PathVariable Long id
+    ) {
+        positionService.deleteVacancy(id, authentication.getName());
+
+        return HttpResponse.ok();
     }
 }

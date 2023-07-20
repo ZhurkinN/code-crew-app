@@ -1,11 +1,17 @@
 package cis.tinkoff.support.exceptions;
 
-public class UserAlreadyExistsException extends Exception {
+import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.USER_ALREADY_EXISTS;
+
+public class UserAlreadyExistsException extends RuntimeException {
 
     public UserAlreadyExistsException() {
+        super();
     }
 
-    public UserAlreadyExistsException(String message) {
-        super(message);
+    public UserAlreadyExistsException(String email) {
+        super(String.format(
+                USER_ALREADY_EXISTS,
+                email
+        ));
     }
 }

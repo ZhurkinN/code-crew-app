@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: changeset-project_information-table
+      author: AlexeyTimofeevRzn
+      changes:
+        - sqlFile:
+            relativeToChangelogFile: true
+            stripComments: true
+            path: create/create-project_information-table.sql
+      rollback:
+        - sqlFile:
+            relativeToChangelogFile: true
+            stripComments: true
+            path: drop/drop-project_information-table.sql

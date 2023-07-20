@@ -1,7 +1,7 @@
 package cis.tinkoff.model.generic;
 
+import cis.tinkoff.support.helper.TimestampAttributeConverter;
 import io.micronaut.core.annotation.Introspected;
-import io.micronaut.data.annotation.DateCreated;
 import io.micronaut.data.annotation.GeneratedValue;
 import io.micronaut.data.annotation.Id;
 import io.micronaut.data.annotation.TypeDef;
@@ -10,8 +10,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-
-import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -24,13 +22,12 @@ public class GenericModel {
     @GeneratedValue
     private Long id;
 
-    @DateCreated
-    @TypeDef(type = DataType.TIMESTAMP)
-    private LocalDateTime createdWhen = LocalDateTime.now();
+    @TypeDef(type = DataType.TIMESTAMP, converter = TimestampAttributeConverter.class)
+    private Long createdWhen = System.currentTimeMillis();
     private Boolean isDeleted = false;
 
     public GenericModel(Long id,
-                        LocalDateTime createdWhen,
+                        Long createdWhen,
                         Boolean isDeleted) {
         this.id = id;
         this.createdWhen = createdWhen;

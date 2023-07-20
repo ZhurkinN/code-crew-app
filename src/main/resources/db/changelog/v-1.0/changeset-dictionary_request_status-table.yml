@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: changeset-dictionary_request_status-table
+      author: AlexeyTimofeevRzn
+      changes:
+        - sqlFile:
+            relativeToChangelogFile: true
+            stripComments: true
+            path: create/create-dictionary_request_status-table.sql
+      rollback:
+        - sqlFile:
+            relativeToChangelogFile: true
+            stripComments: true
+            path: drop/drop-dictionary_request_status-table.sql

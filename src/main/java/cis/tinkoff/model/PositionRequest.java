@@ -10,8 +10,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-import java.time.LocalDateTime;
-
 @Getter
 @Setter
 @Accessors(chain = true)
@@ -21,12 +19,14 @@ public class PositionRequest extends GenericModel {
 
     @Nullable
     private String coverLetter;
+    private Boolean isInvite;
 
     @Relation(
             value = Relation.Kind.MANY_TO_ONE,
             cascade = Relation.Cascade.NONE
     )
     @MappedProperty(value = "status")
+    @Nullable
     private RequestStatusDictionary status;
 
     @Relation(
@@ -34,6 +34,7 @@ public class PositionRequest extends GenericModel {
             cascade = Relation.Cascade.NONE
     )
     @MappedProperty(value = "resume_id")
+    @Nullable
     private Resume resume;
 
     @Relation(
@@ -41,17 +42,20 @@ public class PositionRequest extends GenericModel {
             cascade = Relation.Cascade.NONE
     )
     @MappedProperty(value = "position_id")
+    @Nullable
     private Position position;
 
     public PositionRequest(Long id,
-                           LocalDateTime createdWhen,
+                           Long createdWhen,
                            Boolean isDeleted,
                            @Nullable String coverLetter,
-                           RequestStatusDictionary status,
-                           Resume resume,
-                           Position position) {
+                           Boolean isInvite,
+                           @Nullable RequestStatusDictionary status,
+                           @Nullable Resume resume,
+                           @Nullable Position position) {
         super(id, createdWhen, isDeleted);
         this.coverLetter = coverLetter;
+        this.isInvite = isInvite;
         this.status = status;
         this.resume = resume;
         this.position = position;

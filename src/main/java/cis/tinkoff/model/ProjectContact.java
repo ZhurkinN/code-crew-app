@@ -1,22 +1,22 @@
 package cis.tinkoff.model;
 
-import io.micronaut.data.annotation.Id;
-import io.micronaut.data.annotation.MappedEntity;
-import io.micronaut.data.annotation.MappedProperty;
-import io.micronaut.data.annotation.Relation;
+import io.micronaut.data.annotation.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+@AllArgsConstructor
 @Getter
 @Setter
 @Accessors(chain = true)
 @NoArgsConstructor
-@MappedEntity(value = "project_contact")
+@MappedEntity(value = "project_information")
 public class ProjectContact {
 
     @Id
+    @GeneratedValue
     private Long id;
     private String link;
     private String description;

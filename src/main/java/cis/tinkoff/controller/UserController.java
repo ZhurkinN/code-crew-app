@@ -1,56 +1,87 @@
 package cis.tinkoff.controller;
 
+import cis.tinkoff.controller.model.UserDTO;
+import cis.tinkoff.controller.model.custom.RegisterUserDTO;
+import cis.tinkoff.controller.model.custom.UpdateUserDTO;
 import cis.tinkoff.model.User;
 import cis.tinkoff.service.UserService;
-import cis.tinkoff.support.exceptions.RecordNotFoundException;
+import cis.tinkoff.support.mapper.UserMapper;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.MediaType;
 import io.micronaut.http.annotation.*;
+import io.micronaut.security.annotation.Secured;
+import io.micronaut.security.authentication.Authentication;
+import io.micronaut.security.rules.SecurityRule;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.inject.Inject;
+import lombok.RequiredArgsConstructor;
 
 @Tag(name = "Users", description = "All actions with users.")
-@Controller("/users")
+@Controller("/api/v1/users")
+@Secured(SecurityRule.IS_AUTHENTICATED)
+@RequiredArgsConstructor
 public class UserController {
 
-    @Inject
-    private UserService userService;
-
-    @Operation(method = "findAll", description = "Finds all users")
-    @Get(produces = MediaType.APPLICATION_JSON)
-    public HttpResponse<Iterable<User>> findAll() {
-        return HttpResponse.ok(userService.getAll());
-    }
+    private final UserService userService;
+    private final UserMapper userMapper;
 
     @Operation(method = "findById", description = "Finds user by id")
     @Get(value = "/{id}", produces = MediaType.APPLICATION_JSON)
-    public HttpResponse<User> findById(@PathVariable Long id) throws RecordNotFoundException {
-        return HttpResponse.ok(userService.getById(id));
+    public HttpResponse<UserDTO> findById(@PathVariable Long id) {
+
+        User user = userService.getById(id);
+        UserDTO responseDto = userMapper.toDto(user);
+        return HttpResponse.ok(responseDto);
     }
 
-    @Operation(method = "create", description = "Creates new user")
-    @Post(processes = MediaType.APPLICATION_JSON)
-    public HttpResponse<User> create(User user) {
-        return HttpResponse.ok(userService.save(user));
+    @Operation(method = "find", description = "Finds user")
+    @Get(processes = MediaType.APPLICATION_JSON)
+    public HttpResponse<UserDTO> find(Authentication authentication) {
+
+        String email = authentication.getName();
+        User user = userService.getByEmail(email);
+        UserDTO responseDto = userMapper.toDto(user);
+        return HttpResponse.ok(responseDto);
     }
 
-    @Operation(method = "delete", description = "Deletes users by id")
-    @Delete("/{id}")
-    public void delete(@PathVariable Long id) {
-        userService.delete(id);
+    @Secured(SecurityRule.IS_ANONYMOUS)
+    @Operation(method = "register", description = "Registers new user")
+    @Post(uri = "/register", processes = MediaType.APPLICATION_JSON)
+    public HttpResponse<UserDTO> register(@Body RegisterUserDTO dto) {
+
+        User user = userService.register(
+                dto.email(),
+                dto.password(),
+                dto.name(),
+                dto.surname()
+        );
+        UserDTO responseDto = userMapper.toDto(user);
+        return HttpResponse.ok(responseDto);
     }
 
-    @Operation(method = "update", description = "Updates users by id")
-    @Post(value = "/{id}", processes = MediaType.APPLICATION_JSON)
-    public HttpResponse<User> update(@PathVariable Long id,
-                                     User user) {
-        return HttpResponse.ok(userService.update(id, user));
+    @Operation(method = "update", description = "Updates information about user")
+    @Patch(processes = MediaType.APPLICATION_JSON)
+    public HttpResponse<UserDTO> update(@Body UpdateUserDTO requestDto,
+                                        Authentication authentication) {
+
+        User user = userService.update(
+                authentication.getName(),
+                requestDto.name(),
+                requestDto.surname(),
+                requestDto.contacts(),
+                requestDto.pictureLink(),
+                requestDto.mainInformation()
+        );
+        UserDTO responseDto = userMapper.toDto(user);
+        return HttpResponse.ok(responseDto);
     }
 
-    @Operation(method = "findByEmail", description = "Finds user by email")
-    @Get(value = "/email", processes = MediaType.APPLICATION_JSON)
-    public HttpResponse<User> findByEmail(@QueryValue String email) throws RecordNotFoundException {
-        return HttpResponse.ok(userService.getByEmail(email));
+    @Operation(method = "softDelete", description = "Sets 'deleted' flag true")
+    @Delete
+    public void softDelete(Authentication authentication) {
+
+        String email = authentication.getName();
+        userService.softDelete(email);
     }
+
 }

@@ -14,12 +14,22 @@ micronaut:
       swagger-ui:
         paths: classpath:META-INF/swagger/views/swagger-ui
         mapping: /swagger-ui/**
-
+      pictures:
+        path: /images/
+  metrics:
+    enabled: true
+    export:
+      statsd:
+        enabled: false
+      prometheus:
+        enabled: true
+        step: PT1M
+        descriptions: true
 
   # Micronaut Security configuration
   security:
     enabled: true
-    authentication: bearer # LoginHandler: cookie, session, bearer, idtoken
+    authentication: bearer
     endpoints:
       login:
         enabled: true
@@ -30,10 +40,13 @@ micronaut:
         get-allowed: false
       logout:
         enabled: true
-        path: '/auth/logout'
-    intercept-url-map: # Anonymous for specific paths (e.g. index, static resources, ...)
-      - pattern: /register
-        http-method: POST
+    intercept-url-map:
+      - pattern: /metrics/**
+        http-method: GET
+        access:
+          - isAnonymous()
+      - pattern: /prometheus/**
+        http-method: GET
         access:
           - isAnonymous()
       - pattern: /swagger/**
@@ -56,16 +69,16 @@ micronaut:
       jwt:
         generator:
           access-token:
-            expiration: 60  # one hour
+            expiration: 1_80000  # 30 minutes
           refresh-token:
             enabled: true
             jws-algorithm: HS512
-            secret: 'edShUTQIjFA/3+Ai0lUGcv0RmnN7Kh5ufgDd3ypXebN+B2+cuUZ446w99nUt0XBmvWaEbTsGStESonwFAVa4DsO2+yvbR1qYymbQsBFGwDHP70WjYs/tALe4fmiQy/c7h/uvkfndFLot136QOPo0jzibcreOV/1BxuQTyMgGTRRc7wHzPwGfvxujnd0myTyz2pI+FoPI4xhaOl1ZbR/GuOdeSeMDBiCtAqbDsA=='
+            secret: ${JWT_REFRESH_SECRET}
             base64: true
         signatures:
           secret:
             generator:
-              secret: 'UaaOlcsrG2w7+rl/FN7O5GMEsviHy3bOIYq3V/PhtlYci1c4U5ITzmIos84/Ypq3Gqkcqm46q04/YMDXgCjCkDCtCqbB/EYGcCAadxWWt7nD2SLkmghiKQ99L6iP/HM4xyZqV3lD0PpN5Xq4SRBR/DwLRcbgRV17imK3pxvF8yeZMgovAg39qCsKXSGwIDWTd+imk8zPQ8cge70iCCWIa4o9PGrZTri6/PaveA=='
+              secret: ${JWT_SIGNATURE_GENERATOR_SECRET}
               jws-algorithm: HS512
   server:
     cors:
@@ -75,25 +88,48 @@ micronaut:
           allowed-origins:
             - http://localhost:3000
             - http://localhost:8080
+    authentication: cookie
+    enabled: false
+    multipart:
+      enabled: true
+      max-file-size: 5_242_880 # 5 MB
+      common-file-extension: png
 
 datasources:
   default:
-    url: jdbc:postgresql://localhost:5432/postgres
-    username: postgres
-    password: g12nokona
+    url: jdbc:postgresql://postgres:5432/${MICRONAUT_DB}
+    username: ${MICRONAUT_USER}
+    password: ${MICRONAUT_PASSWORD}
     driver-class-name: org.postgresql.Driver
     db-type: postgres
-    dialect: POSTGRES
+
 netty:
   default:
     allocator:
       max-order: 3
 liquibase:
+  enabled: true
   datasources:
     default:
-      change-log: classpath:db/changelog/liquibase-changelog.yml
+      change-log: classpath:db/changelog/changelog.yaml
 
 logger:
   levels:
     cis.tinkoff.micronaut.jwt: DEBUG
     io.micronaut.security: DEBUG
+endpoints:
+  all:
+    enabled: true
+    sensitive: false
+  health:
+    details-visible: anonymous
+  refresh:
+    sensitive: true
+  loggers:
+    sensitive: true
+  stop:
+    sensitive: true
+info:
+  welcome:
+    title: 'CodeCrew - WEB service for finding development teams'
+    description: 'The service allows you to create and find a dream team for you! For more information - visit - https://github.com/ZhurkinN/code-crew-app'

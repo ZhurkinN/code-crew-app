@@ -4,14 +4,18 @@ import cis.tinkoff.model.generic.GenericModel;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.data.annotation.MappedEntity;
 import io.micronaut.data.annotation.Relation;
+import io.micronaut.data.annotation.TypeDef;
+import io.micronaut.data.jdbc.annotation.JoinColumn;
+import io.micronaut.data.jdbc.annotation.JoinTable;
+import io.micronaut.data.model.DataType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -27,7 +31,11 @@ public class User extends GenericModel {
     @Nullable
     private String mainInformation;
     @Nullable
-    private List<String> contacts;
+    private String pictureLink;
+
+    @Nullable
+    @TypeDef(type = DataType.STRING_ARRAY)
+    private List<String> contacts = new ArrayList<>();
 
     @Relation(
             value = Relation.Kind.ONE_TO_MANY,
@@ -40,10 +48,10 @@ public class User extends GenericModel {
     @Relation(
             value = Relation.Kind.ONE_TO_MANY,
             cascade = Relation.Cascade.ALL,
-            mappedBy = "user"
+            mappedBy = "leader"
     )
     @Nullable
-    private List<Project> projects = new ArrayList<>();
+    private List<Project> leadProjects = new ArrayList<>();
 
     @Relation(
             value = Relation.Kind.ONE_TO_MANY,
@@ -53,28 +61,56 @@ public class User extends GenericModel {
     @Nullable
     private List<Position> positions = new ArrayList<>();
 
+    @Relation(
+            value = Relation.Kind.MANY_TO_MANY,
+            cascade = Relation.Cascade.ALL
+    )
+    @JoinTable(
+            name = "project_members",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "project_id")
+    )
+    @Nullable
+    private List<Project> projects = new ArrayList<>();
+
     public User(Long id,
-                LocalDateTime createdWhen,
+                Long createdWhen,
                 Boolean isDeleted,
                 String email,
                 String password,
                 String name,
                 String surname,
                 @Nullable String mainInformation,
+                @Nullable String pictureLink,
                 @Nullable List<String> contacts,
                 @Nullable List<Resume> resumes,
-                @Nullable List<Project> projects,
-                @Nullable List<Position> positions) {
+                @Nullable List<Project> leadProjects,
+                @Nullable List<Position> positions,
+                @Nullable List<Project> projects) {
         super(id, createdWhen, isDeleted);
         this.email = email;
         this.password = password;
         this.name = name;
         this.surname = surname;
         this.mainInformation = mainInformation;
+        this.pictureLink = pictureLink;
         this.contacts = contacts;
         this.resumes = resumes;
-        this.projects = projects;
+        this.leadProjects = leadProjects;
         this.positions = positions;
+        this.projects = projects;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User user)) return false;
+        return Objects.equals(getEmail(), user.getEmail()) && Objects.equals(getPassword(), user.getPassword()) && Objects.equals(getName(), user.getName()) && Objects.equals(getSurname(), user.getSurname()) && Objects.equals(getMainInformation(), user.getMainInformation()) && Objects.equals(getPictureLink(), user.getPictureLink()) && Objects.equals(getContacts(), user.getContacts()) && Objects.equals(getResumes(), user.getResumes()) && Objects.equals(getLeadProjects(), user.getLeadProjects()) && Objects.equals(getPositions(), user.getPositions()) && Objects.equals(getProjects(), user.getProjects());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getEmail(), getPassword(), getName(), getSurname(), getMainInformation(), getPictureLink(), getContacts(), getResumes(), getLeadProjects(), getPositions(), getProjects());
     }
 }
 

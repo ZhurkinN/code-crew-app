@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,6 +33,7 @@ public class Project extends GenericModel {
             cascade = Relation.Cascade.NONE
     )
     @MappedProperty(value = "status")
+    @Nullable
     private ProjectStatusDictionary status;
 
     private String title;
@@ -58,11 +58,19 @@ public class Project extends GenericModel {
     @Nullable
     private List<ProjectContact> contacts = new ArrayList<>();
 
+    @Relation(
+            value = Relation.Kind.MANY_TO_MANY,
+            cascade = Relation.Cascade.ALL,
+            mappedBy = "projects"
+    )
+    @Nullable
+    private List<User> members = new ArrayList<>();
+
     public Project(Long id,
-                   LocalDateTime createdWhen,
+                   Long createdWhen,
                    Boolean isDeleted,
                    @Nullable User leader,
-                   ProjectStatusDictionary status,
+                   @Nullable ProjectStatusDictionary status,
                    String title,
                    @Nullable String theme,
                    @Nullable String description,

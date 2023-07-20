@@ -1,16 +1,18 @@
 package cis.tinkoff.model;
 
 import cis.tinkoff.model.generic.GenericModel;
+import cis.tinkoff.support.helper.TimestampAttributeConverter;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.data.annotation.MappedEntity;
 import io.micronaut.data.annotation.MappedProperty;
 import io.micronaut.data.annotation.Relation;
+import io.micronaut.data.annotation.TypeDef;
+import io.micronaut.data.model.DataType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,8 +26,13 @@ public class Position extends GenericModel {
     @Nullable
     private String description;
     @Nullable
+    @TypeDef(type = DataType.STRING_ARRAY)
     private List<String> skills;
     private Boolean isVisible;
+
+    @Nullable
+    @TypeDef(type = DataType.TIMESTAMP, converter = TimestampAttributeConverter.class)
+    private Long joinDate;
 
     @Relation(
             value = Relation.Kind.MANY_TO_ONE,
@@ -60,7 +67,7 @@ public class Position extends GenericModel {
     private List<PositionRequest> requests = new ArrayList<>();
 
     public Position(Long id,
-                    LocalDateTime createdWhen,
+                    Long createdWhen,
                     Boolean isDeleted,
                     @Nullable String description,
                     @Nullable List<String> skills,

@@ -1,26 +1,28 @@
 package cis.tinkoff.service;
 
 import cis.tinkoff.model.User;
-import cis.tinkoff.support.exceptions.RecordNotFoundException;
-import cis.tinkoff.support.exceptions.UserAlreadyExistsException;
+
+import java.util.List;
 
 public interface UserService {
 
-    User save(User user);
+    User getById(Long id);
 
-    Iterable<User> getAll();
-
-    User getById(Long id) throws RecordNotFoundException;
-
-    void delete(Long id);
-
-    User update(Long id,
-                User user);
+    User getByEmail(String email);
 
     User register(String email,
                   String password,
                   String name,
-                  String surname) throws UserAlreadyExistsException;
+                  String surname);
 
-    User getByEmail(String email) throws RecordNotFoundException;
+    User update(String email,
+                String name,
+                String surname,
+                List<String> contacts,
+                String pictureLink,
+                String mainInformation);
+
+    void softDelete(String email);
+
+    List<User> findUsersByIdsOrElseThrow(List<Long> ids);
 }

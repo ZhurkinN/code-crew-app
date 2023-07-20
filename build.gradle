@@ -1,5 +1,5 @@
 plugins {
-    id("com.github.johnrengelman.shadow") version "7.1.2"
+    id("com.github.johnrengelman.shadow") version "7.0.0"
     id("io.micronaut.application") version "3.7.10"
 }
 
@@ -11,20 +11,23 @@ repositories {
 }
 
 dependencies {
-    //JDBC and UTILS for Database
+
+    //Liquibase
     implementation("io.micronaut.liquibase:micronaut-liquibase")
+
+    //Data utils
+    annotationProcessor("io.micronaut.data:micronaut-data-processor")
+    runtimeOnly("io.micronaut.sql:micronaut-jdbc-hikari")
+    runtimeOnly("org.postgresql:postgresql")
     implementation("io.micronaut.data:micronaut-data-jdbc")
     implementation("io.micronaut.sql:micronaut-jdbc-hikari")
     implementation("jakarta.annotation:jakarta.annotation-api")
-
     implementation("jakarta.persistence:jakarta.persistence-api:3.0.0")
-    runtimeOnly("io.micronaut.sql:micronaut-jdbc-hikari")
-    runtimeOnly("ch.qos.logback:logback-classic")
-    runtimeOnly("org.postgresql:postgresql")
 
-    //SECURITY
+    //Security
     annotationProcessor("io.micronaut:micronaut-http-validation")
     annotationProcessor("io.micronaut.security:micronaut-security-annotations")
+    implementation("io.micronaut.security:micronaut-security-jwt")
 
     //SWAGGER
     implementation("io.swagger.core.v3:swagger-annotations")
@@ -33,6 +36,7 @@ dependencies {
     //TEST
     testImplementation("org.mockito:mockito-core")
     testImplementation("org.testcontainers:junit-jupiter")
+    testImplementation("io.micronaut.test:micronaut-test-rest-assured")
     testImplementation("org.testcontainers:postgresql")
     testImplementation("org.testcontainers:testcontainers")
 
@@ -40,20 +44,23 @@ dependencies {
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
 
-    //UTILS
+    //REST utils
     implementation("io.micronaut:micronaut-http-client")
     implementation("io.micronaut:micronaut-jackson-databind")
-    implementation("io.micronaut.kafka:micronaut-kafka")
-    
-    compileOnly("org.projectlombok:lombok")
-    annotationProcessor("org.projectlombok:lombok")
-    annotationProcessor("io.micronaut.data:micronaut-data-processor")
 
     //TMP (from auth guide, will be refactor after testing)
+    compileOnly("org.graalvm.nativeimage:svm")
     implementation("io.micronaut.reactor:micronaut-reactor")
     implementation("io.micronaut.reactor:micronaut-reactor-http-client")
-    implementation("io.micronaut.security:micronaut-security-jwt")
-    compileOnly("org.graalvm.nativeimage:svm")
+
+    //Metrics
+    implementation("io.micronaut.micrometer:micronaut-micrometer-core")
+    implementation("io.micronaut.micrometer:micronaut-micrometer-registry-statsd")
+    implementation("io.micronaut:micronaut-management")
+    implementation("io.micronaut.micrometer:micronaut-micrometer-registry-prometheus")
+
+    //Logging
+    runtimeOnly("ch.qos.logback:logback-classic")
 
 }
 
@@ -73,9 +80,6 @@ micronaut {
         incremental(true)
         annotations("cis.tinkoff.*")
     }
-//    testResources {
-//        sharedServer = true
-//    }
 }
 
 jar {
