@@ -4,7 +4,7 @@
 ___
 <br>
 
-![cover](https://github.com/grishuchkov/RestTranslatorService/blob/master/gitsrc/logo.png)
+![cover](https://github.com/ZhurkinN/code-crew-app/blob/endpoints-branch/gitsrc/code-hru.jpg)
 #### <center> Данный репозиторий является Backend частью проекта CodeCrew. </center>
 
 ___
