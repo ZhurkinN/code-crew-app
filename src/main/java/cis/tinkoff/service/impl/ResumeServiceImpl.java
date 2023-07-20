@@ -36,21 +36,27 @@ public class ResumeServiceImpl implements ResumeService {
     private final ResumeMapper resumeMapper;
 
     @Override
-    public Resume getById(Long id) {
+    public Resume getById(Long resumeId,
+                          String userEmail) {
 
-        Resume resume = resumeRepository.findByIdAndIsDeletedFalseAndIsActiveTrue(id)
+        Resume resume = resumeRepository.findByIdAndIsDeletedFalse(resumeId)
                 .orElseThrow(() -> new RecordNotFoundException(RESUME_NOT_FOUND));
         resume.getUser().setPassword(null);
+
+        if (!resume.getIsActive() && !resume.getUser().getEmail().equals(userEmail)) {
+            throw new RecordNotFoundException(RESUME_NOT_FOUND);
+        }
 
         return resume;
     }
 
     @Override
-    public List<Resume> getAllUsersResumes(String authorEmail) {
+    public List<Resume> getUsersResumes(String authorEmail,
+                                        Boolean isActive) {
 
         User author = userRepository.findByEmailAndIsDeletedFalse(authorEmail)
                 .orElseThrow(() -> new RecordNotFoundException(USER_NOT_FOUND));
-        List<Resume> resumes = resumeRepository.findByUserAndIsDeletedFalse(author);
+        List<Resume> resumes = resumeRepository.findByUserAndIsDeletedFalseAndIsActive(author, isActive);
         resumes.forEach(e -> e.getUser().setPassword(null));
 
         return resumes;
@@ -94,15 +100,14 @@ public class ResumeServiceImpl implements ResumeService {
 
         Resume resume = resumeRepository.findByIdAndIsDeletedFalse(resumeId)
                 .orElseThrow(() -> new RecordNotFoundException(RESUME_NOT_FOUND));
-        User author = resumeRepository.getUserById(resumeId);
         Direction directionId = Direction.valueOf(directionName);
         DirectionDictionary direction = directionRepository.findById(directionId)
                 .orElseThrow(() -> new RecordNotFoundException(DIRECTION_NOT_FOUND));
 
-        if (!authorEmail.equals(author.getEmail())) {
+        if (!authorEmail.equals(resume.getUser().getEmail())) {
             throw new InaccessibleActionException(
                     INACCESSIBLE_RESUME_ACTION,
-                    author.getId(),
+                    authorEmail,
                     resumeId
             );
         }
@@ -110,7 +115,7 @@ public class ResumeServiceImpl implements ResumeService {
         resume.setDescription(description)
                 .setSkills(skills)
                 .setDirection(direction)
-                .setUser(author);
+                .setUser(resume.getUser());
 
         return resumeRepository.update(resume);
     }
@@ -123,14 +128,14 @@ public class ResumeServiceImpl implements ResumeService {
         if (!authorEmail.equals(author.getEmail())) {
             throw new InaccessibleActionException(
                     INACCESSIBLE_RESUME_ACTION,
-                    author.getId(),
+                    authorEmail,
                     resumeId
             );
         }
         boolean newActivity = !resumeRepository.getIsActiveById(resumeId);
         resumeRepository.updateIsActiveById(resumeId, newActivity);
 
-        return resumeRepository.findByIdAndIsDeletedFalse(resumeId)
+        return resumeRepository.getByIdAndIsDeletedFalse(resumeId)
                 .orElseThrow(() -> new RecordNotFoundException(RESUME_NOT_FOUND));
     }
 
@@ -142,7 +147,7 @@ public class ResumeServiceImpl implements ResumeService {
         if (!authorEmail.equals(author.getEmail())) {
             throw new InaccessibleActionException(
                     INACCESSIBLE_RESUME_ACTION,
-                    author.getId(),
+                    authorEmail,
                     resumeId
             );
         }

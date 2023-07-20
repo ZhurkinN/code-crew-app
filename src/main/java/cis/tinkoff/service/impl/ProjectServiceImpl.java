@@ -11,7 +11,6 @@ import cis.tinkoff.model.generic.GenericModel;
 import cis.tinkoff.repository.PositionRepository;
 import cis.tinkoff.repository.ProjectContactRepository;
 import cis.tinkoff.repository.ProjectRepository;
-import cis.tinkoff.repository.UserRepository;
 import cis.tinkoff.service.DictionaryService;
 import cis.tinkoff.service.PositionService;
 import cis.tinkoff.service.ProjectService;
@@ -37,7 +36,6 @@ public class ProjectServiceImpl implements ProjectService {
     private final PositionRepository positionRepository;
     private final ProjectContactRepository projectContactRepository;
     private final UserService userService;
-    private final UserRepository userRepository;
     private final DictionaryService dictionaryService;
     @Inject
     private Provider<PositionService> positionService;
@@ -100,7 +98,7 @@ public class ProjectServiceImpl implements ProjectService {
         if (!isUserProjectLeader(email, project.getId())) {
             throw new InaccessibleActionException(
                     INACCESSIBLE_PROJECT_ACTION,
-                    userRepository.findIdByEmail(email),
+                    email,
                     projectId
             );
         }
@@ -151,7 +149,7 @@ public class ProjectServiceImpl implements ProjectService {
         if (!isUserProjectLeader(email, project.getId())) {
             throw new InaccessibleActionException(
                     INACCESSIBLE_PROJECT_ACTION,
-                    userRepository.findIdByEmail(email),
+                    email,
                     projectId
             );
         }
@@ -255,7 +253,7 @@ public class ProjectServiceImpl implements ProjectService {
         if (!isUserProjectLeader(email, updatedProject.getId())) {
             throw new InaccessibleActionException(
                     INACCESSIBLE_PROJECT_ACTION,
-                    userRepository.findIdByEmail(email),
+                    email,
                     projectId
             );
         }

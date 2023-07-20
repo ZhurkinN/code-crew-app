@@ -25,6 +25,11 @@ public interface ResumeRepository extends CrudRepository<Resume, Long> {
     List<Resume> findByUserAndIsDeletedFalse(User user);
 
     @Join(value = "direction", type = Join.Type.FETCH)
+    @Join(value = "user", type = Join.Type.FETCH)
+    List<Resume> findByUserAndIsDeletedFalseAndIsActive(User user,
+                                                        boolean isActive);
+
+    @Join(value = "direction", type = Join.Type.FETCH)
     List<Resume> findByUserAndIsDeletedFalseAndIsActiveTrue(User user);
 
     void updateById(@Id Long id,
@@ -38,7 +43,11 @@ public interface ResumeRepository extends CrudRepository<Resume, Long> {
     User getUserById(Long id);
 
     @Join(value = "direction", type = Join.Type.FETCH)
+    @Join(value = "user", type = Join.Type.FETCH)
     Optional<Resume> findByIdAndIsDeletedFalse(@Id Long id);
+
+    @Join(value = "direction", type = Join.Type.FETCH)
+    Optional<Resume> getByIdAndIsDeletedFalse(@Id Long id);
 
     @Join(value = "direction", type = Join.Type.FETCH)
     @Join(value = "user", type = Join.Type.FETCH)

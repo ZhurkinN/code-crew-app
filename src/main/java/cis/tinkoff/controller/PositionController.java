@@ -52,9 +52,11 @@ public class PositionController {
     @Operation(method = "getVacancyById", description = "Get vacancy by id")
     @Get(uri = "/{id}", produces = MediaType.APPLICATION_JSON)
     public HttpResponse<VacancyDTO> getVacancyById(
-            @PathVariable(name = "id") Long id
+            @PathVariable Long id,
+            Authentication authentication
     ) {
-        VacancyDTO vacancyDTO = positionService.getVacancyById(id);
+        String userEmail = authentication.getName();
+        VacancyDTO vacancyDTO = positionService.getVacancyById(id, userEmail);
 
         return HttpResponse.ok(vacancyDTO);
     }
@@ -62,8 +64,8 @@ public class PositionController {
     @Operation(method = "getProjectVacancies", description = "Get vacancies of the project by project id")
     @Get(uri = "/projects", produces = MediaType.APPLICATION_JSON)
     public HttpResponse<List<VacancyDTO>> getProjectVacancies(
-            @QueryValue(value = "projectId") Long projectId,
-            @QueryValue(value = "isVisible") Boolean isVisible
+            @QueryValue Long projectId,
+            @QueryValue Boolean isVisible
     ) {
         List<VacancyDTO> vacancyDTOList = positionService.getProjectVacancies(projectId, isVisible);
 
@@ -74,7 +76,7 @@ public class PositionController {
     @Get(uri = "/projects/members", produces = MediaType.APPLICATION_JSON)
     public HttpResponse<List<ProjectMemberDTO>> getProjectMembers(
             Authentication authentication,
-            @QueryValue(value = "projectId") Long projectId
+            @QueryValue Long projectId
     ) {
         List<ProjectMemberDTO> projectMembers = positionService.getProjectMembers(authentication.getName(), projectId);
 
@@ -85,7 +87,7 @@ public class PositionController {
     @Post(produces = MediaType.APPLICATION_JSON)
     public HttpResponse<VacancyDTO> createVacancy(
             Authentication authentication,
-            @QueryValue(value = "projectId") Long projectId,
+            @QueryValue Long projectId,
             @Body VacancyCreateDTO vacancyCreateDTO
     ) {
         VacancyDTO vacancyDTO = positionService.createVacancy(authentication.getName(), projectId, vacancyCreateDTO);
@@ -97,7 +99,7 @@ public class PositionController {
     @Patch(uri = "/{id}", produces = MediaType.APPLICATION_JSON)
     public HttpResponse<VacancyDTO> updateVacancy(
             Authentication authentication,
-            @PathVariable(name = "id") Long id,
+            @PathVariable Long id,
             @Body VacancyCreateDTO updateVacancyDTO
     ) {
         VacancyDTO vacancyDTO = positionService.updateVacancy(id, authentication.getName(), updateVacancyDTO);
@@ -109,7 +111,7 @@ public class PositionController {
     @Post(uri = "/visible/{id}", produces = MediaType.APPLICATION_JSON)
     public HttpResponse<VacancyDTO> changeVisibility(
             Authentication authentication,
-            @PathVariable(value = "id") Long id
+            @PathVariable Long id
     ) {
         VacancyDTO vacancyDTO = positionService.changeVisibility(id, authentication.getName());
 
@@ -120,7 +122,7 @@ public class PositionController {
     @Delete(uri = "/{id}", produces = MediaType.APPLICATION_JSON)
     public HttpResponse<?> deleteVacancy(
             Authentication authentication,
-            @PathVariable(name = "id") Long id
+            @PathVariable Long id
     ) {
         positionService.deleteVacancy(id, authentication.getName());
 

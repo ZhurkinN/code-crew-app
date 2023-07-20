@@ -32,19 +32,22 @@ public class ResumeController {
 
     @Operation(method = "findById", description = "Finds resume by it's id")
     @Get(value = "/{id}", produces = MediaType.APPLICATION_JSON)
-    public HttpResponse<ResumeDTO> findById(@PathVariable Long id) {
+    public HttpResponse<ResumeDTO> findById(@PathVariable Long id,
+                                            Authentication authentication) {
 
-        Resume resume = resumeService.getById(id);
+        String userEmail = authentication.getName();
+        Resume resume = resumeService.getById(id, userEmail);
         ResumeDTO responseDto = resumeMapper.toDto(resume);
         return HttpResponse.ok(responseDto);
     }
 
     @Operation(method = "findUsersResumes", description = "Finds all user's resumes")
     @Get(produces = MediaType.APPLICATION_JSON)
-    public HttpResponse<List<ResumeDTO>> findUsersResumes(Authentication authentication) {
+    public HttpResponse<List<ResumeDTO>> findUsersResumes(@QueryValue Boolean isActive,
+                                                          Authentication authentication) {
 
         String authorEmail = authentication.getName();
-        List<Resume> resumes = resumeService.getAllUsersResumes(authorEmail);
+        List<Resume> resumes = resumeService.getUsersResumes(authorEmail, isActive);
         List<ResumeDTO> responseDtos = resumeMapper.toDtos(resumes);
         return HttpResponse.ok(responseDtos);
     }

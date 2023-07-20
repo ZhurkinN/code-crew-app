@@ -215,7 +215,7 @@ public class PositionRequestServiceImpl implements PositionRequestService {
         if (!userEmail.equals(author.getEmail())) {
             throw new InaccessibleActionException(
                     INACCESSIBLE_RESUME_ACTION,
-                    author.getId(),
+                    userEmail,
                     resumeId
             );
         }
@@ -232,7 +232,7 @@ public class PositionRequestServiceImpl implements PositionRequestService {
         if (emails.contains(userEmail)) {
             throw new InaccessibleActionException(
                     USER_ALREADY_IN_PROJECT,
-                    userRepository.findIdByEmail(userEmail),
+                    userEmail,
                     positionId
             );
         }
@@ -260,7 +260,7 @@ public class PositionRequestServiceImpl implements PositionRequestService {
         if (!leaderEmail.equals(authorEmail)) {
             throw new InaccessibleActionException(
                     INACCESSIBLE_POSITION_ACTION,
-                    userRepository.findIdByEmail(authorEmail),
+                    authorEmail,
                     positionId
             );
         }

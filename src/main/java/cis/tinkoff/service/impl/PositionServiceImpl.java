@@ -13,7 +13,6 @@ import cis.tinkoff.model.enumerated.ProjectStatus;
 import cis.tinkoff.model.enumerated.SortDirection;
 import cis.tinkoff.model.generic.GenericModel;
 import cis.tinkoff.repository.PositionRepository;
-import cis.tinkoff.repository.UserRepository;
 import cis.tinkoff.service.DictionaryService;
 import cis.tinkoff.service.PositionService;
 import cis.tinkoff.service.ProjectService;
@@ -32,13 +31,13 @@ import java.util.List;
 import java.util.Objects;
 
 import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.INACCESSIBLE_PROJECT_ACTION;
+import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.POSITION_NOT_FOUND;
 
 @Singleton
 @RequiredArgsConstructor
 public class PositionServiceImpl implements PositionService {
 
     private final PositionRepository positionRepository;
-    private final UserRepository userRepository;
     private final ProjectService projectService;
     private final DictionaryService dictionaryService;
 
@@ -96,18 +95,18 @@ public class PositionServiceImpl implements PositionService {
     }
 
     @Override
-    public VacancyDTO getVacancyById(Long id) {
-        List<Position> positions = findPositionsByIdsOrElseThrow(List.of(id));
+    public VacancyDTO getVacancyById(Long positionId,
+                                     String userEmail) {
 
-        Position position = positions.get(0);
+        Position vacancy = positionRepository.findByIdAndIsDeletedFalse(positionId)
+                .orElseThrow(() -> new RecordNotFoundException(POSITION_NOT_FOUND));
 
-        if (!position.getIsVisible() || position.getUser() != null) {
-            throw new RecordNotFoundException(
-                    "Vacancy with id=" + id + " is inaccessible"
-            );
+        if ((!vacancy.getIsVisible() || Objects.nonNull(vacancy.getUser()))
+                && !projectService.isUserProjectLeader(userEmail, vacancy.getProject().getId())) {
+            throw new RecordNotFoundException(POSITION_NOT_FOUND);
         }
 
-        return VacancyDTO.toVacancyDTO(position);
+        return VacancyDTO.toVacancyDTO(vacancy);
     }
 
     @Override
@@ -127,7 +126,7 @@ public class PositionServiceImpl implements PositionService {
         if (!projectService.isUserProjectLeader(email, projectId)) {
             throw new InaccessibleActionException(
                     INACCESSIBLE_PROJECT_ACTION,
-                    userRepository.findIdByEmail(email),
+                    email,
                     projectId
             );
         }
@@ -168,7 +167,7 @@ public class PositionServiceImpl implements PositionService {
         if (!projectService.isUserProjectLeader(email, projects.get(0).getId())) {
             throw new InaccessibleActionException(
                     INACCESSIBLE_PROJECT_ACTION,
-                    userRepository.findIdByEmail(email),
+                    email,
                     projects.get(0).getId()
             );
         }
@@ -194,7 +193,7 @@ public class PositionServiceImpl implements PositionService {
         if (!projectService.isUserProjectLeader(email, projects.get(0).getId())) {
             throw new InaccessibleActionException(
                     INACCESSIBLE_PROJECT_ACTION,
-                    userRepository.findIdByEmail(email),
+                    email,
                     projects.get(0).getId()
             );
         }
@@ -218,7 +217,7 @@ public class PositionServiceImpl implements PositionService {
         if (!projectService.isUserProjectLeader(email, projects.get(0).getId())) {
             throw new InaccessibleActionException(
                     INACCESSIBLE_PROJECT_ACTION,
-                    userRepository.findIdByEmail(email),
+                    email,
                     projects.get(0).getId()
             );
         }
@@ -233,7 +232,7 @@ public class PositionServiceImpl implements PositionService {
         if (!isUserProjectMember(email, projectId)) {
             throw new InaccessibleActionException(
                     INACCESSIBLE_PROJECT_ACTION,
-                    userRepository.findIdByEmail(email),
+                    email,
                     projectId
             );
         }

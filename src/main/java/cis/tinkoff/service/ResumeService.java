@@ -14,9 +14,11 @@ public interface ResumeService {
                             String direction,
                             String skills);
 
-    Resume getById(Long id);
+    Resume getById(Long resumeId,
+                   String userEmail);
 
-    List<Resume> getAllUsersResumes(String authorEmail);
+    List<Resume> getUsersResumes(String authorEmail,
+                                 Boolean isActive);
 
     List<Resume> getAllActiveResumesByUser(String authorEmail);
 

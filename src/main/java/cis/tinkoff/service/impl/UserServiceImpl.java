@@ -85,7 +85,7 @@ public class UserServiceImpl implements UserService {
 
     private User setOtherModelsData(User user) {
 
-        List<Resume> userResumes = resumeRepository.findByUserAndIsDeletedFalse(user);
+        List<Resume> userResumes = resumeRepository.findByUserAndIsDeletedFalseAndIsActiveTrue(user);
         List<Project> userProjects = userRepository.findProjectsById(user.getId());
         userProjects.removeIf(GenericModel::getIsDeleted);
         user.setResumes(userResumes);

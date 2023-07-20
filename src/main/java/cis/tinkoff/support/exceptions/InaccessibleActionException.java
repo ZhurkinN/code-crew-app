@@ -11,11 +11,11 @@ public class InaccessibleActionException extends RuntimeException {
     }
 
     public InaccessibleActionException(String formattedMessage,
-                                       Long userId,
+                                       String userEmail,
                                        Long inaccessibleRecordId) {
         super(String.format(
                 formattedMessage,
-                userId,
+                userEmail,
                 inaccessibleRecordId
         ));
     }
