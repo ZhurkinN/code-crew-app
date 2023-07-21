@@ -23,7 +23,7 @@ public interface ProjectService {
 
     ProjectDTO updateProject(Long id, String login, ProjectCreateDTO projectForUpdate);
 
-    boolean isUserProjectLeader(String login, Long projectId);
-
-    Project getProjectByIdsOrElseThrow(Long id);
+//    boolean isUserProjectLeader(String login, Long projectId);
+//
+//    Project getProjectByIdsOrElseThrow(Long id);
 }

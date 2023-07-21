@@ -6,18 +6,12 @@ import cis.tinkoff.controller.model.custom.ProjectCreateDTO;
 import cis.tinkoff.controller.model.custom.ProjectMemberDTO;
 import cis.tinkoff.model.*;
 import cis.tinkoff.model.enumerated.Direction;
-import cis.tinkoff.model.enumerated.ProjectStatus;
 import cis.tinkoff.repository.PositionRepository;
 import cis.tinkoff.repository.ProjectContactRepository;
 import cis.tinkoff.repository.ProjectRepository;
-import cis.tinkoff.service.DictionaryService;
-import cis.tinkoff.service.PositionService;
-import cis.tinkoff.service.ProjectService;
-import cis.tinkoff.service.UserService;
+import cis.tinkoff.service.*;
 import cis.tinkoff.support.exceptions.InaccessibleActionException;
 import cis.tinkoff.support.exceptions.RecordNotFoundException;
-import jakarta.inject.Inject;
-import jakarta.inject.Provider;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 
@@ -31,14 +25,13 @@ import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper
 @Singleton
 @RequiredArgsConstructor
 public class ProjectServiceImpl implements ProjectService {
-
     private final ProjectRepository projectRepository;
     private final PositionRepository positionRepository;
     private final ProjectContactRepository projectContactRepository;
     private final UserService userService;
     private final DictionaryService dictionaryService;
-    @Inject
-    private Provider<PositionService> positionService;
+    private final PositionSupportService positionSupportService;
+    private final ProjectSupportService projectSupportService;
 
     @Override
     public List<ProjectDTO> getAllUserProjects(String login, Boolean isLead) {
@@ -50,8 +43,9 @@ public class ProjectServiceImpl implements ProjectService {
         }
 
         List<ProjectDTO> projectDTOList = ProjectDTO.toProjectDTO(projects);
+
         projectDTOList.forEach(projectDTO -> projectDTO.setIsLeader(
-                isUserProjectLeader(login, projectDTO.getId())
+                projectSupportService.isUserProjectLeader(login, projectDTO.getId())
         ));
 
         return projectDTOList;
@@ -59,13 +53,8 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public ProjectDTO getProjectById(Long id, String login) {
-        Project project = projectRepository.findById(id)
-                .orElseThrow(() -> new RecordNotFoundException(
-                        PROJECT_NOT_FOUND,
-                        id
-                ));
+        Project project = projectSupportService.getProjectByIdOrElseThrow(id);
         List<Position> positions = project.getPositions();
-
         List<User> users =positions.stream()
                 .filter(position -> position.getUser() != null)
                 .map(position -> position.getUser())
@@ -76,8 +65,7 @@ public class ProjectServiceImpl implements ProjectService {
         projectDTO.setVacanciesCount((int) project.getPositions().stream()
                 .filter(position -> position.getUser() == null).count()
         );
-
-        projectDTO.setIsLeader(isUserProjectLeader(login, project.getId()));
+        projectDTO.setIsLeader(projectSupportService.isUserProjectLeader(login, project.getId()));
         projectDTO.setMembersCount((int) projectDTO.getMembers().stream()
                 .filter(Objects::nonNull)
                 .count());
@@ -88,13 +76,9 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public void deleteProjectById(Long projectId,
                                   String email) {
-        Project project = projectRepository.findById(projectId)
-                .orElseThrow(() -> new RecordNotFoundException(
-                        PROJECT_NOT_FOUND,
-                        projectId
-                ));
+        Project project = projectSupportService.getProjectByIdOrElseThrow(projectId);
 
-        if (!isUserProjectLeader(email, project.getId())) {
+        if (!projectSupportService.isUserProjectLeader(email, project.getId())) {
             throw new InaccessibleActionException(
                     INACCESSIBLE_PROJECT_ACTION,
                     email,
@@ -111,22 +95,18 @@ public class ProjectServiceImpl implements ProjectService {
     public void leaveUserFromProject(Long id,
                                      String login,
                                      Long newLeaderId) {
-        Project project = projectRepository.findById(id)
-                .orElseThrow(() -> new RecordNotFoundException(
-                        PROJECT_NOT_FOUND,
-                        id
-                ));
-
+        Project project = projectSupportService.getProjectByIdOrElseThrow(id);
         User oldUser = userService.getByEmail(login);
-        List<Position> positions = positionService.get()
+
+        positionSupportService
                 .findPositionsByUserAndProjectOrElseThrow(
                         oldUser.getId(),
                         project.getId()
                 );
         positionRepository.softDeletePositionByUserIdAndProjectId(oldUser.getId(), project.getId());
 
-        if (isUserProjectLeader(login, project.getId())) {
-            positionService.get()
+        if (projectSupportService.isUserProjectLeader(login, project.getId())) {
+            positionSupportService
                     .findPositionsByUserAndProjectOrElseThrow(
                             newLeaderId,
                             project.getId()
@@ -143,13 +123,9 @@ public class ProjectServiceImpl implements ProjectService {
                                             String email,
                                             Long userId,
                                             Direction direction) {
-        Project project = projectRepository.findById(projectId)
-                .orElseThrow(() -> new RecordNotFoundException(
-                        PROJECT_NOT_FOUND,
-                        projectId
-                ));
+        Project project = projectSupportService.getProjectByIdOrElseThrow(projectId);
 
-        if (!isUserProjectLeader(email, project.getId())) {
+        if (!projectSupportService.isUserProjectLeader(email, project.getId())) {
             throw new InaccessibleActionException(
                     INACCESSIBLE_PROJECT_ACTION,
                     email,
@@ -157,7 +133,7 @@ public class ProjectServiceImpl implements ProjectService {
             );
         }
 
-        positionService.get()
+        positionSupportService
                 .findPositionsByUserAndProjectOrElseThrow(
                         userId,
                         projectId
@@ -165,14 +141,10 @@ public class ProjectServiceImpl implements ProjectService {
 
         positionRepository.softDeletePositionByUserIdAndProjectId(userId, projectId);
 
-        project = projectRepository.findById(projectId)
-                .orElseThrow(() -> new RecordNotFoundException(
-                        PROJECT_NOT_FOUND,
-                        projectId
-                ));
+        project = projectSupportService.getProjectByIdOrElseThrow(projectId);
 
         ProjectDTO projectDTO = getProjectDTO(project);
-        projectDTO.setIsLeader(isUserProjectLeader(email, project.getId()));
+        projectDTO.setIsLeader(projectSupportService.isUserProjectLeader(email, project.getId()));
 
         return projectDTO;
     }
@@ -184,16 +156,15 @@ public class ProjectServiceImpl implements ProjectService {
         User leader = userService.getByEmail(login);
         ProjectStatusDictionary status = dictionaryService
                 .getProjectStatusDictionaryById(projectCreateDTO.getStatus());
+        DirectionDictionary directionDictionary = dictionaryService
+                .getDirectionDictionaryById(projectCreateDTO.getDirection());
 
-        Position newPosition = positionService.get()
-                .createPosition(
-                        leader,
-                        projectCreateDTO.getDirection(),
-                        "leader of the project",
-                        null,
-                        System.currentTimeMillis(),
-                        false
-                );
+        Position newPosition = new Position().setUser(leader)
+                .setDirection(directionDictionary)
+                .setDescription(projectCreateDTO.getDescription())
+                .setSkills(null)
+                .setJoinDate(System.currentTimeMillis())
+                .setIsVisible(false);
 
         Project newProject = new Project()
                 .setLeader(leader)
@@ -223,13 +194,9 @@ public class ProjectServiceImpl implements ProjectService {
     public ProjectDTO updateProject(Long projectId,
                                     String email,
                                     ProjectCreateDTO projectForUpdate) {
-        Project updatedProject = projectRepository.findById(projectId)
-                .orElseThrow(() -> new RecordNotFoundException(
-                        PROJECT_NOT_FOUND,
-                        projectId
-                ));
+        Project updatedProject = projectSupportService.getProjectByIdOrElseThrow(projectId);
 
-        if (!isUserProjectLeader(email, updatedProject.getId())) {
+        if (!projectSupportService.isUserProjectLeader(email, updatedProject.getId())) {
             throw new InaccessibleActionException(
                     INACCESSIBLE_PROJECT_ACTION,
                     email,
@@ -253,11 +220,7 @@ public class ProjectServiceImpl implements ProjectService {
         projectContactRepository.deleteByProjectId(updatedProject.getId());
         projectRepository.update(updatedProject);
 
-        updatedProject = projectRepository.findById(projectId)
-                .orElseThrow(() -> new RecordNotFoundException(
-                        PROJECT_NOT_FOUND,
-                        projectId
-                ));
+        updatedProject = projectSupportService.getProjectByIdOrElseThrow(projectId);
 
         ProjectDTO projectDTO = getProjectDTO(updatedProject);
         projectDTO.setIsLeader(true);
@@ -280,26 +243,22 @@ public class ProjectServiceImpl implements ProjectService {
         return projectDTO;
     }
 
-    @Override
-    public boolean isUserProjectLeader(String login, Long projectId) {
-        Project project = getProjectByIdsOrElseThrow(projectId);
-
-        return project.getLeader().getEmail().equals(login);
-    }
-
-    @Override
-    public Project getProjectByIdsOrElseThrow(Long id) {
-
-        return projectRepository.findById(id)
-                .orElseThrow(() -> new RecordNotFoundException(
-                        PROJECT_NOT_FOUND,
-                        id
-                ));
-    }
-
-    public Project createProject(User leader, ProjectStatus status, String title, String theme, String description) {
-        return null;
-    }
+//    @Override
+//    public boolean isUserProjectLeader(String login, Long projectId) {
+//        Project project = getProjectByIdsOrElseThrow(projectId);
+//
+//        return project.getLeader().getEmail().equals(login);
+//    }
+//
+//    @Override
+//    public Project getProjectByIdsOrElseThrow(Long id) {
+//
+//        return projectRepository.findById(id)
+//                .orElseThrow(() -> new RecordNotFoundException(
+//                        PROJECT_NOT_FOUND,
+//                        id
+//                ));
+//    }
 
     private ProjectContact mapToProjectContactEntity(ContactDTO contactDTO) {
         return new ProjectContact(null, contactDTO.getLink(), contactDTO.getDescription(), null);

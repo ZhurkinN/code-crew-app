@@ -35,12 +35,12 @@ public interface PositionService {
 
     List<ProjectMemberDTO> getProjectMembers(String name, Long projectId);
 
-    boolean isUserProjectMember(String login, Long projectId);
-
-    Position findPositionByIdOrElseThrow(Long id);
-
-    List<Position> findPositionsByUserAndProjectOrElseThrow(Long userId, Long projectId);
-
-    Position createPosition(User user, Direction direction, String description, List<String> skills, Long joinDate, Boolean isVisible);
+//    boolean isUserProjectMember(String login, Long projectId);
+//
+//    Position findPositionByIdOrElseThrow(Long id);
+//
+//    List<Position> findPositionsByUserAndProjectOrElseThrow(Long userId, Long projectId);
+//
+//    Position createPosition(User user, Direction direction, String description, List<String> skills, Long joinDate, Boolean isVisible);
 
 }
