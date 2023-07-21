@@ -2,10 +2,10 @@ package cis.tinkoff.service.impl;
 
 import cis.tinkoff.model.*;
 import cis.tinkoff.model.enumerated.RequestStatus;
-import cis.tinkoff.model.enumerated.RequestType;
 import cis.tinkoff.repository.*;
 import cis.tinkoff.repository.dictionary.RequestStatusRepository;
 import cis.tinkoff.service.PositionRequestService;
+import cis.tinkoff.service.enumerated.RequestType;
 import cis.tinkoff.support.exceptions.InaccessibleActionException;
 import cis.tinkoff.support.exceptions.RecordNotFoundException;
 import cis.tinkoff.support.exceptions.RequestAlreadyExistsException;

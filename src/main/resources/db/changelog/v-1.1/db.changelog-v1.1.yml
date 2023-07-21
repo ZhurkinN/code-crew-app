@@ -1,0 +1,10 @@
+databaseChangeLog:
+  - include:
+      relativeToChangelogFile: true
+      file: changeset-dictionary_notification_type-table.yml
+  - include:
+      relativeToChangelogFile: true
+      file: changeset-notification-table.yml
+  - include:
+      relativeToChangelogFile: true
+      file: changeset-insert-data.yml

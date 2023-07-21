@@ -1,0 +1,8 @@
+databaseChangeLog:
+  - changeSet:
+      id: changeset-insert-data
+      author: ZhurkinN
+      changes:
+        - sqlFile:
+            relativeToChangelogFile: true
+            path: insert/insert-data.sql

@@ -1,7 +1,7 @@
 package cis.tinkoff.service;
 
 import cis.tinkoff.model.PositionRequest;
-import cis.tinkoff.model.enumerated.RequestType;
+import cis.tinkoff.service.enumerated.RequestType;
 
 import java.util.List;
 

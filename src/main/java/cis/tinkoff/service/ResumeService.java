@@ -2,7 +2,7 @@ package cis.tinkoff.service;
 
 import cis.tinkoff.controller.model.custom.SearchDTO;
 import cis.tinkoff.model.Resume;
-import cis.tinkoff.model.enumerated.SortDirection;
+import cis.tinkoff.service.enumerated.SortDirection;
 
 import java.util.List;
 

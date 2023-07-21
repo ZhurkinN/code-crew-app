@@ -8,7 +8,7 @@ import cis.tinkoff.model.Position;
 import cis.tinkoff.model.Project;
 import cis.tinkoff.model.User;
 import cis.tinkoff.model.enumerated.Direction;
-import cis.tinkoff.model.enumerated.SortDirection;
+import cis.tinkoff.service.enumerated.SortDirection;
 
 import java.util.List;
 
