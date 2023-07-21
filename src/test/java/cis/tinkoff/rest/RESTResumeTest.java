@@ -1,8 +1,8 @@
 package cis.tinkoff.rest;
 
-import cis.tinkoff.controller.model.ProjectDTO;
 import cis.tinkoff.controller.model.ResumeDTO;
 import cis.tinkoff.controller.model.custom.InteractResumeDTO;
+import cis.tinkoff.controller.model.custom.RequestsChoiceResumeDTO;
 import cis.tinkoff.model.DirectionDictionary;
 import cis.tinkoff.model.User;
 import cis.tinkoff.model.enumerated.Direction;
@@ -33,18 +33,33 @@ public class RESTResumeTest {
     @Container
     public static TestSQLContainer container = TestSQLContainer.getInstance();
 
-    private static String TOKEN = "";
+    private static String TOKEN_1 = "";
+
+    private static String TOKEN_2 = "";
 
     @BeforeAll
     static void setUp() {
         RestAssured.defaultParser = Parser.JSON;
-        UserLoginDTO dto = new UserLoginDTO("alex@mail.ru", "123");
+        UserLoginDTO dto1 = new UserLoginDTO("alex@mail.ru", "123");
 
         Specifications.installSpecification(Specifications.requestSpec("/auth/login"), Specifications.responseSpec(200));
 
-        TOKEN = given()
+        TOKEN_1 = given()
                 .urlEncodingEnabled(false)
-                .body(dto)
+                .body(dto1)
+                .when()
+                .post("/auth/login")
+                .then()
+                .extract()
+                .path("access_token");
+
+        UserLoginDTO dto2 = new UserLoginDTO("weiber@mail.ru", "123");
+
+        Specifications.installSpecification(Specifications.requestSpec("/auth/login"), Specifications.responseSpec(200));
+
+        TOKEN_2 = given()
+                .urlEncodingEnabled(false)
+                .body(dto2)
                 .when()
                 .post("/auth/login")
                 .then()
@@ -52,15 +67,15 @@ public class RESTResumeTest {
                 .path("access_token");
     }
 
-    @BeforeEach
-    void startContainer() {
-        container.start();
-    }
-
-    @AfterEach
-    void stopContainer() {
-        container.stop();
-    }
+//    @BeforeEach
+//    void startContainer() {
+//        container.start();
+//    }
+//
+//    @AfterEach
+//    void stopContainer() {
+//        container.stop();
+//    }
 
     @Test
     public void testFindById() {
@@ -68,7 +83,7 @@ public class RESTResumeTest {
 
         ResumeDTO dto = given()
                 .when()
-                .header("Authorization", "Bearer " + TOKEN)
+                .header("Authorization", "Bearer " + TOKEN_1)
                 .header("Content-Type", ContentType.JSON)
                 .get("/api/v1/resumes/1")
                 .then()
@@ -91,13 +106,13 @@ public class RESTResumeTest {
 
     @Test
     public void testFindUsersResumes() {
-        Specifications.installSpecification(Specifications.requestSpec("/api/v1/resumes"), Specifications.responseSpec(200));
+        Specifications.installSpecification(Specifications.requestSpec("/api/v1/resumes?isActive=true"), Specifications.responseSpec(200));
 
         List<ResumeDTO> resumes = given()
                 .when()
-                .header("Authorization", "Bearer " + TOKEN)
+                .header("Authorization", "Bearer " + TOKEN_1)
                 .header("Content-Type", ContentType.JSON)
-                .get("/api/v1/resumes")
+                .get("/api/v1/resumes?isActive=true")
                 .then()
                 .extract()
                 .body().jsonPath().getList(".", ResumeDTO.class);
@@ -122,7 +137,7 @@ public class RESTResumeTest {
 
         Response response = given()
                 .when()
-                .header("Authorization", "Bearer " + TOKEN)
+                .header("Authorization", "Bearer " + TOKEN_1)
                 .header("Content-Type", ContentType.JSON)
                 .get("/api/v1/users/" + 1)
                 .then()
@@ -175,7 +190,7 @@ public class RESTResumeTest {
         ResumeDTO dto = given()
                 .body(updateDTO)
                 .when()
-                .header("Authorization", "Bearer " + TOKEN)
+                .header("Authorization", "Bearer " + TOKEN_1)
                 .header("Content-Type", ContentType.JSON)
                 .patch("/api/v1/resumes/1")
                 .then()
@@ -200,9 +215,29 @@ public class RESTResumeTest {
         Response response = given()
                 .body(updateDTO)
                 .when()
-                .header("Authorization", "Bearer " + TOKEN)
+                .header("Authorization", "Bearer " + TOKEN_1)
                 .header("Content-Type", ContentType.JSON)
                 .patch("/api/v1/resumes/3")
+                .then()
+                .extract()
+                .response();
+    }
+
+    @Test
+    public void testUpdateWithInvalidDirection() {
+        Specifications.installSpecification(Specifications.requestSpec("/api/v1/resumes/3"), Specifications.responseSpec(409));
+
+        String expectedDescription = "New description";
+        List<String> expectedSkills = List.of("Skill 1", "Skill 2", "Skill 3");
+        String direction = "BAD_DIRECTION";
+        InteractResumeDTO updateDTO = new InteractResumeDTO(expectedDescription, expectedSkills, direction);
+
+        Response response = given()
+                .body(updateDTO)
+                .when()
+                .header("Authorization", "Bearer " + TOKEN_1)
+                .header("Content-Type", ContentType.JSON)
+                .patch("/api/v1/resumes/1")
                 .then()
                 .extract()
                 .response();
@@ -214,7 +249,7 @@ public class RESTResumeTest {
 
         ResumeDTO dto = given()
                 .when()
-                .header("Authorization", "Bearer " + TOKEN)
+                .header("Authorization", "Bearer " + TOKEN_1)
                 .header("Content-Type", ContentType.JSON)
                 .get("/api/v1/resumes/1")
                 .then()
@@ -232,7 +267,7 @@ public class RESTResumeTest {
 
         dto = given()
                 .when()
-                .header("Authorization", "Bearer " + TOKEN)
+                .header("Authorization", "Bearer " + TOKEN_1)
                 .header("Content-Type", ContentType.JSON)
                 .post("/api/v1/resumes/active/1")
                 .then()
@@ -246,18 +281,86 @@ public class RESTResumeTest {
         Assertions.assertEquals(expectedCreatedWhen, dto.getCreatedWhen());
         Assertions.assertEquals(expectedIsActive, dto.getIsActive());
 
+        Specifications.installSpecification(Specifications.requestSpec("/api/v1/resumes/active/1"), Specifications.responseSpec(200));
+
+        given()
+                .when()
+                .header("Authorization", "Bearer " + TOKEN_1)
+                .header("Content-Type", ContentType.JSON)
+                .post("/api/v1/resumes/active/1")
+                .then()
+                .extract()
+                .body().as(ResumeDTO.class);
+    }
+
+    @Test
+    public void testCreateResume() {
+        Specifications.installSpecification(Specifications.requestSpec("/api/v1/resumes"), Specifications.responseSpec(200));
+
+        String expectedDescription = "New description";
+        List<String> expectedSkills = List.of("Skill 1", "Skill 2", "Skill 3");
+        String direction = "ML";
+        DirectionDictionary expectedDirection = new DirectionDictionary(Direction.ML, "Machine Learning Engineer");
+        InteractResumeDTO updateDTO = new InteractResumeDTO(expectedDescription, expectedSkills, direction);
+        boolean expectedIsActive = true;
+
+        ResumeDTO dto = given()
+                .body(updateDTO)
+                .when()
+                .header("Authorization", "Bearer " + TOKEN_2)
+                .header("Content-Type", ContentType.JSON)
+                .post("/api/v1/resumes")
+                .then()
+                .extract()
+                .body().as(ResumeDTO.class);
+
+        Assertions.assertEquals(expectedDirection, dto.getDirection());
+        Assertions.assertEquals(expectedDescription, dto.getDescription());
+        Assertions.assertEquals(expectedSkills, dto.getSkills());
+        Assertions.assertEquals(expectedIsActive, dto.getIsActive());
+        Assertions.assertNotNull(dto.getCreatedWhen());
+    }
+
+    @Test
+    public void testFindUsersRequestsChoiceResumes() {
+        Specifications.installSpecification(Specifications.requestSpec("/api/v1/resumes/active"), Specifications.responseSpec(200));
+
+        DirectionDictionary expectedDirection1 = new DirectionDictionary(Direction.BACKEND, "Backend-developer");
+        DirectionDictionary expectedDirection2 = new DirectionDictionary(Direction.ML, "Machine Learning Engineer");
+        List<DirectionDictionary> directions = List.of(expectedDirection1, expectedDirection2);
+
+
+        List<RequestsChoiceResumeDTO> resumes = given()
+                .when()
+                .header("Authorization", "Bearer " + TOKEN_1)
+                .header("Content-Type", ContentType.JSON)
+                .get("/api/v1/resumes/active")
+                .then()
+                .extract()
+                .body().jsonPath().getList(".", RequestsChoiceResumeDTO.class);
+
+        Assertions.assertEquals(directions.size(), resumes.size());
+
+        for (int i = 0; i < directions.size(); i++) {
+            Assertions.assertEquals(directions.get(i), resumes.get(i).direction());
+        }
+    }
+
+    @Test
+    public void testSearch() {
+
     }
 
     @Test
     @AfterAll
     public static void testSoftDelete() {
-        Specifications.installSpecification(Specifications.requestSpec("/api/v1/resumes"), Specifications.responseSpec(200));
+        Specifications.installSpecification(Specifications.requestSpec("/api/v1/resumes?isActive=true"), Specifications.responseSpec(200));
 
         List<ResumeDTO> resumes = given()
                 .when()
-                .header("Authorization", "Bearer " + TOKEN)
+                .header("Authorization", "Bearer " + TOKEN_1)
                 .header("Content-Type", ContentType.JSON)
-                .get("/api/v1/resumes")
+                .get("/api/v1/resumes?isActive=true")
                 .then()
                 .extract()
                 .body().jsonPath().getList(".", ResumeDTO.class);
@@ -268,20 +371,20 @@ public class RESTResumeTest {
 
         given()
                 .when()
-                .header("Authorization", "Bearer " + TOKEN)
+                .header("Authorization", "Bearer " + TOKEN_1)
                 .header("Content-Type", ContentType.JSON)
                 .delete("/api/v1/resumes/1")
                 .then()
                 .log()
                 .all();
 
-        Specifications.installSpecification(Specifications.requestSpec("/api/v1/resumes"), Specifications.responseSpec(200));
+        Specifications.installSpecification(Specifications.requestSpec("/api/v1/resumes?isActive=true"), Specifications.responseSpec(200));
 
         resumes = given()
                 .when()
-                .header("Authorization", "Bearer " + TOKEN)
+                .header("Authorization", "Bearer " + TOKEN_1)
                 .header("Content-Type", ContentType.JSON)
-                .get("/api/v1/resumes")
+                .get("/api/v1/resumes?isActive=true")
                 .then()
                 .extract()
                 .body().jsonPath().getList(".", ResumeDTO.class);
