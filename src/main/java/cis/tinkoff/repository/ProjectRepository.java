@@ -22,7 +22,7 @@ public interface ProjectRepository extends CrudRepository<Project, Long> {
     @Join(value = "contacts", type = Join.Type.FETCH)
     @Join(value = "positions.direction", type = Join.Type.FETCH)
     @Join(value = "positions.user", type = Join.Type.LEFT_FETCH)
-    @Join(value = "members", type = Join.Type.FETCH)
+    @Join(value = "members", type = Join.Type.LEFT_FETCH)
     Optional<Project> findById(@NotNull Long aLong);
 
     @Join(value = "positions.direction", type = Join.Type.FETCH)

@@ -90,7 +90,7 @@ public interface PositionRepository extends PageableRepository<Position, Long>, 
     List<Position> retrieveByProjectId(Long project_id);
 
     @Query(value = """
-            UPDATE position SET is_deleted = true\040
+            UPDATE position SET is_deleted = true, user_id = null\040
             WHERE position.user_id = :userId\040
             AND position.project_id = :projectId
             """,
