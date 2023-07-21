@@ -129,9 +129,7 @@ public class PositionServiceImpl implements PositionService {
             );
         }
 
-        List<Project> projects = projectService.getAllProjectsByIdsOrElseThrow(List.of(projectId));
-
-        Project project = projects.get(0);
+        Project project = projectService.getProjectByIdsOrElseThrow(projectId);
 
         Position newPosition = new Position();
 
@@ -160,13 +158,13 @@ public class PositionServiceImpl implements PositionService {
 
         Position updatedPosition = positions.get(0);
 
-        List<Project> projects = projectService.getAllProjectsByIdsOrElseThrow(List.of(updatedPosition.getProject().getId()));
+        Project project = projectService.getProjectByIdsOrElseThrow(updatedPosition.getProject().getId());
 
-        if (!projectService.isUserProjectLeader(email, projects.get(0).getId())) {
+        if (!projectService.isUserProjectLeader(email, project.getId())) {
             throw new InaccessibleActionException(
                     INACCESSIBLE_PROJECT_ACTION,
                     email,
-                    projects.get(0).getId()
+                    project.getId()
             );
         }
 
@@ -186,13 +184,13 @@ public class PositionServiceImpl implements PositionService {
 
         Position updatedPosition = positions.get(0);
 
-        List<Project> projects = projectService.getAllProjectsByIdsOrElseThrow(List.of(updatedPosition.getProject().getId()));
+        Project project = projectService.getProjectByIdsOrElseThrow(updatedPosition.getProject().getId());
 
-        if (!projectService.isUserProjectLeader(email, projects.get(0).getId())) {
+        if (!projectService.isUserProjectLeader(email, project.getId())) {
             throw new InaccessibleActionException(
                     INACCESSIBLE_PROJECT_ACTION,
                     email,
-                    projects.get(0).getId()
+                    project.getId()
             );
         }
 
@@ -210,13 +208,13 @@ public class PositionServiceImpl implements PositionService {
 
         Position updatedPosition = positions.get(0);
 
-        List<Project> projects = projectService.getAllProjectsByIdsOrElseThrow(List.of(updatedPosition.getProject().getId()));
+        Project project = projectService.getProjectByIdsOrElseThrow(updatedPosition.getProject().getId());
 
-        if (!projectService.isUserProjectLeader(email, projects.get(0).getId())) {
+        if (!projectService.isUserProjectLeader(email, project.getId())) {
             throw new InaccessibleActionException(
                     INACCESSIBLE_PROJECT_ACTION,
                     email,
-                    projects.get(0).getId()
+                    project.getId()
             );
         }
 
@@ -264,13 +262,8 @@ public class PositionServiceImpl implements PositionService {
     }
 
     @Override
-    public List<Position> findPositionsByUserAndProjectAndDirectionOrElseThrow(Long userId, Long projectId, Direction direction) {
-        List<Position> positions;
-        if (Objects.nonNull(direction)) {
-            positions = positionRepository.findByUserIdAndProjectIdAndDirectionDirectionName(userId, projectId, direction);
-        } else {
-            positions = positionRepository.findByUserIdAndProjectId(userId, projectId);
-        }
+    public List<Position> findPositionsByUserAndProjectOrElseThrow(Long userId, Long projectId) {
+        List<Position> positions = positionRepository.findByUserIdAndProjectId(userId, projectId);
 
         if (positions.size() == 0) {
             throw new RecordNotFoundException(POSITION_NOT_FOUND_BY_USER, userId);
@@ -280,13 +273,20 @@ public class PositionServiceImpl implements PositionService {
     }
 
     @Override
-    public Position createPosition(@NonNull User user, @NonNull Project project, @NonNull Direction direction, String description, List<String> skills, Long joinDate, Boolean isVisible) {
+    public Position createPosition(
+            @NonNull User user,
+            @NonNull Direction direction,
+            String description,
+            List<String> skills,
+            Long joinDate,
+            Boolean isVisible
+    ) {
         DirectionDictionary directionDictionary = dictionaryService
                 .getDirectionDictionaryById(direction);
         Position newPosition = new Position();
 
         newPosition.setUser(user);
-        newPosition.setProject(project);
+//        newPosition.setProject(project);
         newPosition.setDirection(directionDictionary);
         newPosition.setDescription(description);
         newPosition.setJoinDate(joinDate);

@@ -5,7 +5,6 @@ import cis.tinkoff.controller.model.custom.ProjectMemberDTO;
 import cis.tinkoff.controller.model.custom.SearchDTO;
 import cis.tinkoff.controller.model.custom.VacancyCreateDTO;
 import cis.tinkoff.model.Position;
-import cis.tinkoff.model.Project;
 import cis.tinkoff.model.User;
 import cis.tinkoff.model.enumerated.Direction;
 import cis.tinkoff.model.enumerated.SortDirection;
@@ -40,9 +39,9 @@ public interface PositionService {
 
     List<Position> findPositionsByIdsOrElseThrow(List<Long> ids);
 
-    List<Position> findPositionsByUserAndProjectAndDirectionOrElseThrow(Long userId, Long projectId, Direction direction);
+    List<Position> findPositionsByUserAndProjectOrElseThrow(Long userId, Long projectId);
 
-    Position createPosition(User user, Project project, Direction direction, String description, List<String> skills, Long joinDate, Boolean isVisible);
+    Position createPosition(User user, Direction direction, String description, List<String> skills, Long joinDate, Boolean isVisible);
 
     List<Position> saveAllPositions(List<Position> positions);
 }

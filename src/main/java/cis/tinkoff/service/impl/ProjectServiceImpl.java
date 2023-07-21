@@ -7,7 +7,6 @@ import cis.tinkoff.controller.model.custom.ProjectMemberDTO;
 import cis.tinkoff.model.*;
 import cis.tinkoff.model.enumerated.Direction;
 import cis.tinkoff.model.enumerated.ProjectStatus;
-import cis.tinkoff.model.generic.GenericModel;
 import cis.tinkoff.repository.PositionRepository;
 import cis.tinkoff.repository.ProjectContactRepository;
 import cis.tinkoff.repository.ProjectRepository;
@@ -60,22 +59,17 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public ProjectDTO getProjectById(Long id, String login) {
-        Project project = getAllProjectsByIdsOrElseThrow(List.of(id)).get(0);
+        Project project = projectRepository.findById(id)
+                .orElseThrow(() -> new RecordNotFoundException(
+                        PROJECT_NOT_FOUND,
+                        id
+                ));
+        List<Position> positions = project.getPositions();
 
-        List<Long> positionIds = project.getPositions().stream()
-                .map(GenericModel::getId)
-                .toList();
-        List<Position> positions = positionService.get().findPositionsByIdsOrElseThrow(positionIds);
-
-        if (positions.size() == 0) {
-            throw new RecordNotFoundException(PROJECT_NOT_FOUND, id);
-        }
-
-        List<Long> userIds = positions.stream()
+        List<User> users =positions.stream()
                 .filter(position -> position.getUser() != null)
-                .map(position -> position.getUser().getId())
+                .map(position -> position.getUser())
                 .toList();
-        List<User> users = userService.findUsersByIdsOrElseThrow(userIds);
 
         ProjectDTO projectDTO = ProjectDTO.toProjectDTO(project);
         projectDTO.setMembers(ProjectMemberDTO.toProjectMemberDTO(users, positions, project.getLeader().getId()));
@@ -94,7 +88,11 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public void deleteProjectById(Long projectId,
                                   String email) {
-        Project project = getAllProjectsByIdsOrElseThrow(List.of(projectId)).get(0);
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new RecordNotFoundException(
+                        PROJECT_NOT_FOUND,
+                        projectId
+                ));
 
         if (!isUserProjectLeader(email, project.getId())) {
             throw new InaccessibleActionException(
@@ -113,25 +111,25 @@ public class ProjectServiceImpl implements ProjectService {
     public void leaveUserFromProject(Long id,
                                      String login,
                                      Long newLeaderId) {
-        Project project = getAllProjectsByIdsOrElseThrow(List.of(id)).get(0);
+        Project project = projectRepository.findById(id)
+                .orElseThrow(() -> new RecordNotFoundException(
+                        PROJECT_NOT_FOUND,
+                        id
+                ));
 
         User oldUser = userService.getByEmail(login);
         List<Position> positions = positionService.get()
-                .findPositionsByUserAndProjectAndDirectionOrElseThrow(
+                .findPositionsByUserAndProjectOrElseThrow(
                         oldUser.getId(),
-                        project.getId(),
-                        null
+                        project.getId()
                 );
-
-        positions.forEach(position -> position.setUser(null).setIsDeleted(true));
-        positionRepository.updateAll(positions);
+        positionRepository.softDeletePositionByUserIdAndProjectId(oldUser.getId(), project.getId());
 
         if (isUserProjectLeader(login, project.getId())) {
             positionService.get()
-                    .findPositionsByUserAndProjectAndDirectionOrElseThrow(
+                    .findPositionsByUserAndProjectOrElseThrow(
                             newLeaderId,
-                            project.getId(),
-                            null
+                            project.getId()
                     );
             User newLeader = userService.getById(newLeaderId);
 
@@ -145,7 +143,11 @@ public class ProjectServiceImpl implements ProjectService {
                                             String email,
                                             Long userId,
                                             Direction direction) {
-        Project project = getAllProjectsByIdsOrElseThrow(List.of(projectId)).get(0);
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new RecordNotFoundException(
+                        PROJECT_NOT_FOUND,
+                        projectId
+                ));
 
         if (!isUserProjectLeader(email, project.getId())) {
             throw new InaccessibleActionException(
@@ -155,28 +157,21 @@ public class ProjectServiceImpl implements ProjectService {
             );
         }
 
-        List<Position> positions = positionService.get()
-                .findPositionsByUserAndProjectAndDirectionOrElseThrow(
+        positionService.get()
+                .findPositionsByUserAndProjectOrElseThrow(
                         userId,
-                        projectId,
-                        direction
+                        projectId
                 );
-        positions.forEach(position -> position.setUser(null).setIsDeleted(true));
 
-        positionRepository.updateAll(positions);
+        positionRepository.softDeletePositionByUserIdAndProjectId(userId, projectId);
 
-        List<User> members = project.getPositions()
-                .stream()
-                .map(Position::getUser)
-                .toList();
-        ProjectDTO projectDTO = ProjectDTO.toProjectDTO(project);
-        projectDTO.setMembers(ProjectMemberDTO.toProjectMemberDTO(
-                members,
-                project.getPositions(),
-                project.getLeader().getId()
-        ));
+        project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new RecordNotFoundException(
+                        PROJECT_NOT_FOUND,
+                        projectId
+                ));
 
-        projectDTO = getProjectDTO(project);
+        ProjectDTO projectDTO = getProjectDTO(project);
         projectDTO.setIsLeader(isUserProjectLeader(email, project.getId()));
 
         return projectDTO;
@@ -190,54 +185,33 @@ public class ProjectServiceImpl implements ProjectService {
         ProjectStatusDictionary status = dictionaryService
                 .getProjectStatusDictionaryById(projectCreateDTO.getStatus());
 
-        Project newProject = new Project();
-
-        newProject.setLeader(leader);
-        newProject.setStatus(status);
-        newProject.setTitle(projectCreateDTO.getTitle());
-        newProject.setTheme(projectCreateDTO.getTheme());
-        newProject.setDescription(projectCreateDTO.getDescription());
-
-        newProject = projectRepository.save(newProject);
-
         Position newPosition = positionService.get()
                 .createPosition(
                         leader,
-                        newProject,
                         projectCreateDTO.getDirection(),
                         "leader of the project",
                         null,
                         System.currentTimeMillis(),
                         false
                 );
-        List<Position> newPositions = positionService.get().saveAllPositions(List.of(newPosition));
 
-//        Position newPosition = new Position();
-//
-//        newPosition.setUser(leader);
-//        newPosition.setProject(newProject);
-//        newPosition.setDirection(direction);
-//        newPosition.setDescription("leader of the project");
-//        newPosition.setJoinDate(System.currentTimeMillis());
-//        newPosition.setIsVisible(false);
-//
-//        newPosition = positionRepository.save(newPosition);
-
-        newProject.setPositions(newPositions);
+        Project newProject = new Project()
+                .setLeader(leader)
+                .setStatus(status)
+                .setTitle(projectCreateDTO.getTitle())
+                .setTheme(projectCreateDTO.getTheme())
+                .setDescription(projectCreateDTO.getDescription())
+                .setPositions(List.of(newPosition));
 
         if (projectCreateDTO.getContacts() != null || projectCreateDTO.getContacts().size() != 0) {
             List<ProjectContact> projectContactList = projectCreateDTO.getContacts().stream()
                     .map(contactDTO -> new ProjectContact().setLink(contactDTO.getLink()).setDescription(contactDTO.getDescription()))
                     .toList();
 
-            for (ProjectContact projectContact : projectContactList) {
-                projectContact.setProject(newProject);
-            }
-
             newProject.setContacts(projectContactList);
         }
 
-        projectRepository.update(newProject);
+        newProject = projectRepository.save(newProject);
 
         ProjectDTO projectDTO = getProjectDTO(newProject);
         projectDTO.setIsLeader(true);
@@ -249,7 +223,11 @@ public class ProjectServiceImpl implements ProjectService {
     public ProjectDTO updateProject(Long projectId,
                                     String email,
                                     ProjectCreateDTO projectForUpdate) {
-        Project updatedProject = getAllProjectsByIdsOrElseThrow(List.of(projectId)).get(0);
+        Project updatedProject = projectRepository.findById(projectId)
+                .orElseThrow(() -> new RecordNotFoundException(
+                        PROJECT_NOT_FOUND,
+                        projectId
+                ));
 
         if (!isUserProjectLeader(email, updatedProject.getId())) {
             throw new InaccessibleActionException(
@@ -266,16 +244,20 @@ public class ProjectServiceImpl implements ProjectService {
         ProjectStatusDictionary status = dictionaryService
                 .getProjectStatusDictionaryById(projectForUpdate.getStatus());
 
-        updatedProject.setTitle(projectForUpdate.getTitle());
-        updatedProject.setTheme(projectForUpdate.getTheme());
-        updatedProject.setDescription(projectForUpdate.getDescription());
-        updatedProject.setContacts(contacts);
-        updatedProject.setStatus(status);
+        updatedProject.setTitle(projectForUpdate.getTitle())
+                .setTheme(projectForUpdate.getTheme())
+                .setDescription(projectForUpdate.getDescription())
+                .setContacts(contacts)
+                .setStatus(status);
 
         projectContactRepository.deleteByProjectId(updatedProject.getId());
         projectRepository.update(updatedProject);
 
-        updatedProject = projectRepository.findByIdInList(List.of(projectId)).get(0);
+        updatedProject = projectRepository.findById(projectId)
+                .orElseThrow(() -> new RecordNotFoundException(
+                        PROJECT_NOT_FOUND,
+                        projectId
+                ));
 
         ProjectDTO projectDTO = getProjectDTO(updatedProject);
         projectDTO.setIsLeader(true);
@@ -300,22 +282,19 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public boolean isUserProjectLeader(String login, Long projectId) {
-        List<Project> projects = getAllProjectsByIdsOrElseThrow(List.of(projectId));
-
-        Project project = projects.get(0);
+        Project project = getProjectByIdsOrElseThrow(projectId);
 
         return project.getLeader().getEmail().equals(login);
     }
 
     @Override
-    public List<Project> getAllProjectsByIdsOrElseThrow(List<Long> ids) {
-        List<Project> projects = projectRepository.findByIdInList(ids);
+    public Project getProjectByIdsOrElseThrow(Long id) {
 
-        if (projects.size() == 0) {
-            throw new RecordNotFoundException(PROJECT_NOT_FOUND, ids.get(0));
-        }
-
-        return projects;
+        return projectRepository.findById(id)
+                .orElseThrow(() -> new RecordNotFoundException(
+                        PROJECT_NOT_FOUND,
+                        id
+                ));
     }
 
     public Project createProject(User leader, ProjectStatus status, String title, String theme, String description) {

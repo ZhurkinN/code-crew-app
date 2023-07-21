@@ -89,6 +89,14 @@ public interface PositionRepository extends PageableRepository<Position, Long>, 
     @Join(value = "user", type = Join.Type.LEFT_FETCH)
     List<Position> retrieveByProjectId(Long project_id);
 
+    @Query(value = """
+            UPDATE position SET is_deleted = true\040
+            WHERE position.user_id = :userId\040
+            AND position.project_id = :projectId
+            """,
+            nativeQuery = true)
+    void softDeletePositionByUserIdAndProjectId(Long userId, Long projectId);
+
     @Join(value = "direction", type = Join.Type.FETCH)
     Optional<Position> findByIdAndIsDeletedFalseAndIsVisibleTrue(@Id Long id);
 

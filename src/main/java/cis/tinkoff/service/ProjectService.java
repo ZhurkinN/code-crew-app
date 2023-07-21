@@ -25,5 +25,5 @@ public interface ProjectService {
 
     boolean isUserProjectLeader(String login, Long projectId);
 
-    List<Project> getAllProjectsByIdsOrElseThrow(List<Long> ids);
+    Project getProjectByIdsOrElseThrow(Long id);
 }
