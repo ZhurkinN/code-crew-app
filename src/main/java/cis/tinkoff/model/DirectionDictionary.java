@@ -5,6 +5,7 @@ import io.micronaut.data.annotation.Id;
 import io.micronaut.data.annotation.MappedEntity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,6 +16,7 @@ import java.util.Objects;
 @Getter
 @Setter
 @Accessors(chain = true)
+@AllArgsConstructor
 @NoArgsConstructor
 @MappedEntity(value = "dictionary_direction")
 public class DirectionDictionary {
