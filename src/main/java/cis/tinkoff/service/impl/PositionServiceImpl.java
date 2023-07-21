@@ -131,16 +131,13 @@ public class PositionServiceImpl implements PositionService {
 
         Project project = projectService.getProjectByIdsOrElseThrow(projectId);
 
-        Position newPosition = new Position();
-
-        newPosition.setDirection(directionDictionary);
-        newPosition.setDescription(vacancyCreateDTO.getDescription());
-        newPosition.setSkills(vacancyCreateDTO.getSkills());
-        newPosition.setUser(null);
-        newPosition.setCreatedWhen(System.currentTimeMillis());
-        newPosition.setIsDeleted(false);
-        newPosition.setIsVisible(true);
-        newPosition.setProject(project);
+        Position newPosition = new Position()
+                .setDirection(directionDictionary)
+                .setDescription(vacancyCreateDTO.getDescription())
+                .setSkills(vacancyCreateDTO.getSkills())
+                .setUser(null)
+                .setIsVisible(true)
+                .setProject(project);
 
         newPosition = positionRepository.save(newPosition);
 
@@ -154,23 +151,21 @@ public class PositionServiceImpl implements PositionService {
         DirectionDictionary directionDictionary = dictionaryService
                 .getDirectionDictionaryById(updateVacancyDTO.getDirection());
 
-        List<Position> positions = findPositionsByIdsOrElseThrow(List.of(id));
+        Position updatedPosition = findPositionByIdOrElseThrow(id);
 
-        Position updatedPosition = positions.get(0);
+        Long projectId = updatedPosition.getProject().getId();
 
-        Project project = projectService.getProjectByIdsOrElseThrow(updatedPosition.getProject().getId());
-
-        if (!projectService.isUserProjectLeader(email, project.getId())) {
+        if (!projectService.isUserProjectLeader(email, projectId)) {
             throw new InaccessibleActionException(
                     INACCESSIBLE_PROJECT_ACTION,
                     email,
-                    project.getId()
+                    projectId
             );
         }
 
-        updatedPosition.setDirection(directionDictionary);
-        updatedPosition.setDescription(updateVacancyDTO.getDescription());
-        updatedPosition.setSkills(updateVacancyDTO.getSkills());
+        updatedPosition.setDirection(directionDictionary)
+                .setDescription(updateVacancyDTO.getDescription())
+                .setSkills(updateVacancyDTO.getSkills());
 
         updatedPosition = positionRepository.update(updatedPosition);
 
@@ -180,17 +175,15 @@ public class PositionServiceImpl implements PositionService {
     @Override
     public VacancyDTO changeVisibility(Long id,
                                        String email) {
-        List<Position> positions = findPositionsByIdsOrElseThrow(List.of(id));
+        Position updatedPosition = findPositionByIdOrElseThrow(id);
 
-        Position updatedPosition = positions.get(0);
+        Long projectId = updatedPosition.getProject().getId();
 
-        Project project = projectService.getProjectByIdsOrElseThrow(updatedPosition.getProject().getId());
-
-        if (!projectService.isUserProjectLeader(email, project.getId())) {
+        if (!projectService.isUserProjectLeader(email, projectId)) {
             throw new InaccessibleActionException(
                     INACCESSIBLE_PROJECT_ACTION,
                     email,
-                    project.getId()
+                    projectId
             );
         }
 
@@ -204,21 +197,20 @@ public class PositionServiceImpl implements PositionService {
     @Override
     public void deleteVacancy(Long id,
                               String email) {
-        List<Position> positions = findPositionsByIdsOrElseThrow(List.of(id));
+        Position updatedPosition = findPositionByIdOrElseThrow(id);
 
-        Position updatedPosition = positions.get(0);
+        Long projectId = updatedPosition.getProject().getId();
 
-        Project project = projectService.getProjectByIdsOrElseThrow(updatedPosition.getProject().getId());
-
-        if (!projectService.isUserProjectLeader(email, project.getId())) {
+        if (!projectService.isUserProjectLeader(email, projectId)) {
             throw new InaccessibleActionException(
                     INACCESSIBLE_PROJECT_ACTION,
                     email,
-                    project.getId()
+                    projectId
             );
         }
 
         updatedPosition.setIsDeleted(true);
+        updatedPosition.setIsVisible(false);
         positionRepository.update(updatedPosition);
     }
 
@@ -251,14 +243,10 @@ public class PositionServiceImpl implements PositionService {
     }
 
     @Override
-    public List<Position> findPositionsByIdsOrElseThrow(List<Long> ids) {
-        List<Position> positions = positionRepository.findByIdInList(ids, Sort.UNSORTED);
+    public Position findPositionByIdOrElseThrow(Long id) {
 
-        if (positions.size() == 0) {
-            throw new RecordNotFoundException(POSITION_NOT_FOUND, ids.get(0));
-        }
-
-        return positions;
+        return positionRepository.findById(id)
+                .orElseThrow(() -> new RecordNotFoundException(POSITION_NOT_FOUND, id));
     }
 
     @Override
@@ -295,10 +283,5 @@ public class PositionServiceImpl implements PositionService {
 //        newPosition = positionRepository.save(newPosition);
 
         return newPosition;
-    }
-
-    @Override
-    public List<Position> saveAllPositions(List<Position> positions) {
-        return (List<Position>) positionRepository.saveAll(positions);
     }
 }

@@ -37,11 +37,10 @@ public interface PositionService {
 
     boolean isUserProjectMember(String login, Long projectId);
 
-    List<Position> findPositionsByIdsOrElseThrow(List<Long> ids);
+    Position findPositionByIdOrElseThrow(Long id);
 
     List<Position> findPositionsByUserAndProjectOrElseThrow(Long userId, Long projectId);
 
     Position createPosition(User user, Direction direction, String description, List<String> skills, Long joinDate, Boolean isVisible);
 
-    List<Position> saveAllPositions(List<Position> positions);
 }

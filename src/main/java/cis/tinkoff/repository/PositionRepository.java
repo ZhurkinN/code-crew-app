@@ -18,6 +18,7 @@ import io.micronaut.data.model.query.builder.sql.Dialect;
 import io.micronaut.data.repository.PageableRepository;
 import io.micronaut.data.repository.jpa.JpaSpecificationExecutor;
 
+import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -47,11 +48,12 @@ public interface PositionRepository extends PageableRepository<Position, Long>, 
                                AND position_.skills @> coalesce(:skills, position_.skills)""")
     Page<Position> searchAllVacancies(@Nullable String direction, @Nullable String status, @Nullable List<String> skills, Pageable pageable);
 
+    @Override
     @Join(value = "project", type = Join.Type.FETCH)
     @Join(value = "project.status", type = Join.Type.FETCH)
     @Join(value = "direction", type = Join.Type.FETCH)
     @Join(value = "user", type = Join.Type.LEFT_FETCH)
-    Iterable<Position> findByIdInList(Collection<Long> id);
+    Optional<Position> findById(@NotNull Long aLong);
 
     @Join(value = "project", type = Join.Type.FETCH)
     @Join(value = "project.status", type = Join.Type.FETCH)
@@ -79,14 +81,17 @@ public interface PositionRepository extends PageableRepository<Position, Long>, 
 
     @Where("@.user_id is null")
     @Where("@.is_visible = :isVisible")
+    @Join(value = "project", type = Join.Type.FETCH)
+    @Join(value = "project.status", type = Join.Type.FETCH)
     @Join(value = "direction", type = Join.Type.FETCH)
+    @Join(value = "user", type = Join.Type.LEFT_FETCH)
     List<Position> findByProjectIdAndIsDeletedFalse(Long project_id,
                                                     Boolean isVisible);
 
     @Join(value = "project.leader", type = Join.Type.FETCH)
     @Join(value = "project.status", type = Join.Type.FETCH)
     @Join(value = "direction", type = Join.Type.FETCH)
-    @Join(value = "user", type = Join.Type.LEFT_FETCH)
+    @Join(value = "user", type = Join.Type.FETCH)
     List<Position> retrieveByProjectId(Long project_id);
 
     @Query(value = """
