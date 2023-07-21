@@ -3,6 +3,7 @@ package cis.tinkoff.rest;
 import cis.tinkoff.controller.model.ResumeDTO;
 import cis.tinkoff.controller.model.custom.InteractResumeDTO;
 import cis.tinkoff.controller.model.custom.RequestsChoiceResumeDTO;
+import cis.tinkoff.controller.model.custom.SearchDTO;
 import cis.tinkoff.model.DirectionDictionary;
 import cis.tinkoff.model.User;
 import cis.tinkoff.model.enumerated.Direction;
@@ -346,9 +347,38 @@ public class RESTResumeTest {
         }
     }
 
-    @Test
-    public void testSearch() {
+//    @Test
+//    public void testSearchBySkills() {
+//
+//    }
+//
+//    @Test
+//    public void testSearchByDirection() {
+//
+//    }
 
+    @Test
+    public void testSearchByDate() {
+        Specifications.installSpecification(Specifications.requestSpec("api/v1/resumes/search?size=10&dateSort=ASC"), Specifications.responseSpec(200));
+
+        SearchDTO dto = given()
+                .when()
+                .header("Authorization", "Bearer " + TOKEN_2)
+                .header("Content-Type", ContentType.JSON)
+                .get("api/v1/resumes/search?size=10&dateSort=ASC")
+                .then()
+                .extract()
+                .as(SearchDTO.class);
+
+        int expectedSize = 10;
+        int resumeListSize = dto.getContent().size();
+
+        Assertions.assertEquals(expectedSize, resumeListSize);
+        // TODO: подумать, как достать из дтошки резюме
+//        ResumeDTO penultimateResume = (ResumeDTO) dto.getContent().get(resumeListSize - 2);
+//        ResumeDTO lastResume = (ResumeDTO) dto.getContent().get(resumeListSize - 1);
+//
+//        Assertions.assertTrue(penultimateResume.getCreatedWhen() < lastResume.getCreatedWhen());
     }
 
     @Test
