@@ -32,7 +32,7 @@ public class ProjectDTO {
     private List<ProjectMemberDTO> members;
     private Long createdWhen;
 
-    public static ProjectDTO toProjectDTO(Project project) {
+    public static ProjectDTO toProjectDTO(Project project, String userLogin) {
         if (project == null) {
             return null;
         }
@@ -45,6 +45,7 @@ public class ProjectDTO {
                 .status(project.getStatus())
                 .contacts(ContactDTO.toContactDto(project.getContacts()))
                 .createdWhen(project.getCreatedWhen())
+                .isLeader(project.getLeader().getEmail().equals(userLogin))
                 .build();
 
         List<Position> positions = project.getPositions();
@@ -59,13 +60,13 @@ public class ProjectDTO {
         return projectDTO;
     }
 
-    public static List<ProjectDTO> toProjectDTO(Collection<Project> projects) {
+    public static List<ProjectDTO> toProjectDTO(Collection<Project> projects, String userLogin) {
         if (projects == null) {
             return null;
         }
 
         List<ProjectDTO> projectDTOList = projects.stream()
-                .map(ProjectDTO::toProjectDTO)
+                .map(project -> ProjectDTO.toProjectDTO(project, userLogin))
                 .toList();
 
         return projectDTOList;

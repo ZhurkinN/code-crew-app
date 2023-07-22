@@ -29,7 +29,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.*;
+import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.INACCESSIBLE_PROJECT_ACTION;
+import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.POSITION_NOT_FOUND;
 
 @Singleton
 @RequiredArgsConstructor
@@ -216,7 +217,7 @@ public class PositionServiceImpl implements PositionService {
     }
 
     @Override
-    public List<ProjectMemberDTO> getProjectMembers(String email,
+    public List<ProjectMemberDTO> getProjectMembers(String login,
                                                     Long projectId) {
         List<Position> positions = positionRepository.retrieveByProjectId(projectId);
         List<User> members = positions.stream()
@@ -227,54 +228,4 @@ public class PositionServiceImpl implements PositionService {
 
         return ProjectMemberDTO.toProjectMemberDTO(members, positions, leader.getId());
     }
-
-//    @Override
-//    public boolean isUserProjectMember(String login, Long projectId) {
-//        List<Position> members = positionRepository.findByProjectIdAndUserEmail(projectId, login);
-//
-//        return members.size() != 0;
-//    }
-//
-//    @Override
-//    public Position findPositionByIdOrElseThrow(Long id) {
-//
-//        return positionRepository.findById(id)
-//                .orElseThrow(() -> new RecordNotFoundException(POSITION_NOT_FOUND, id));
-//    }
-//
-//    @Override
-//    public List<Position> findPositionsByUserAndProjectOrElseThrow(Long userId, Long projectId) {
-//        List<Position> positions = positionRepository.findByUserIdAndProjectId(userId, projectId);
-//
-//        if (positions.size() == 0) {
-//            throw new RecordNotFoundException(POSITION_NOT_FOUND_BY_USER, userId);
-//        }
-//
-//        return positions;
-//    }
-//
-//    @Override
-//    public Position createPosition(
-//            @NonNull User user,
-//            @NonNull Direction direction,
-//            String description,
-//            List<String> skills,
-//            Long joinDate,
-//            Boolean isVisible
-//    ) {
-//        DirectionDictionary directionDictionary = dictionaryService
-//                .getDirectionDictionaryById(direction);
-//        Position newPosition = new Position();
-//
-//        newPosition.setUser(user);
-////        newPosition.setProject(project);
-//        newPosition.setDirection(directionDictionary);
-//        newPosition.setDescription(description);
-//        newPosition.setJoinDate(joinDate);
-//        newPosition.setIsVisible(isVisible);
-//
-////        newPosition = positionRepository.save(newPosition);
-//
-//        return newPosition;
-//    }
 }

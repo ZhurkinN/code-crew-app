@@ -4,9 +4,6 @@ import cis.tinkoff.controller.model.VacancyDTO;
 import cis.tinkoff.controller.model.custom.ProjectMemberDTO;
 import cis.tinkoff.controller.model.custom.SearchDTO;
 import cis.tinkoff.controller.model.custom.VacancyCreateDTO;
-import cis.tinkoff.model.Position;
-import cis.tinkoff.model.User;
-import cis.tinkoff.model.enumerated.Direction;
 import cis.tinkoff.model.enumerated.SortDirection;
 
 import java.util.List;
@@ -33,14 +30,5 @@ public interface PositionService {
 
     void deleteVacancy(Long id, String login);
 
-    List<ProjectMemberDTO> getProjectMembers(String name, Long projectId);
-
-//    boolean isUserProjectMember(String login, Long projectId);
-//
-//    Position findPositionByIdOrElseThrow(Long id);
-//
-//    List<Position> findPositionsByUserAndProjectOrElseThrow(Long userId, Long projectId);
-//
-//    Position createPosition(User user, Direction direction, String description, List<String> skills, Long joinDate, Boolean isVisible);
-
+    List<ProjectMemberDTO> getProjectMembers(String login, Long projectId);
 }

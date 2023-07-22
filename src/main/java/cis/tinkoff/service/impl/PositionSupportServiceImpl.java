@@ -49,6 +49,11 @@ public class PositionSupportServiceImpl implements PositionSupportService {
     }
 
     @Override
+    public void softDeletePositionByUserIdAndProjectId(Long userId, Long projectId) {
+        positionRepository.softDeletePositionByUserIdAndProjectId(userId, projectId);
+    }
+
+    @Override
     public Position createPosition(
             @NonNull User user,
             @NonNull Direction direction,
@@ -62,13 +67,10 @@ public class PositionSupportServiceImpl implements PositionSupportService {
         Position newPosition = new Position();
 
         newPosition.setUser(user);
-//        newPosition.setProject(project);
         newPosition.setDirection(directionDictionary);
         newPosition.setDescription(description);
         newPosition.setJoinDate(joinDate);
         newPosition.setIsVisible(isVisible);
-
-//        newPosition = positionRepository.save(newPosition);
 
         return newPosition;
     }

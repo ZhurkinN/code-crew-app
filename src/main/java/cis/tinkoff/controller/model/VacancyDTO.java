@@ -37,7 +37,7 @@ public class VacancyDTO {
                 .skills(position.getSkills())
                 .createdWhen(position.getCreatedWhen())
                 .isVisible(position.getIsVisible())
-                .project(ProjectDTO.toProjectDTO(position.getProject())) //TODO use method from ProjectMapper class
+                .project(ProjectDTO.toProjectDTO(position.getProject(), ""))
                 .build();
     }
 
@@ -52,14 +52,9 @@ public class VacancyDTO {
     }
 
     public static void updateEntityByDTO(Position position, VacancyDTO vacancyDTO) {
-//        position.setId(vacancyDTO.getId() == null ? position.getId() : vacancyDTO.getId());
-//        position.setIsDeleted(vacancyDTO.get() == null ? position.getId() : vacancyDTO.getId());
         position.setIsVisible(vacancyDTO.getIsVisible() == null ? position.getIsVisible() : vacancyDTO.getIsVisible());
         position.setDirection(vacancyDTO.getDirection() == null ? position.getDirection() : vacancyDTO.getDirection());
         position.setDescription(vacancyDTO.getDescription() == null ? position.getDescription() : vacancyDTO.getDescription());
         position.setSkills(vacancyDTO.getSkills() == null ? position.getSkills() : vacancyDTO.getSkills());
-//        position.setUser(vacancyDTO.get() == null ? position.getId() : vacancyDTO.getId());
-//        position.setProject(vacancyDTO.getProject() == null ? position.getProject() : vacancyDTO.getProject());
-//        position.setCreatedWhen(vacancyDTO.getCreatedWhen() == null ? position.getCreatedWhen() : vacancyDTO.getCreatedWhen()); //TODO waiting for cast time to long
     }
 }

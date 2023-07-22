@@ -2,7 +2,6 @@ package cis.tinkoff.service;
 
 import cis.tinkoff.controller.model.ProjectDTO;
 import cis.tinkoff.controller.model.custom.ProjectCreateDTO;
-import cis.tinkoff.model.Project;
 import cis.tinkoff.model.enumerated.Direction;
 
 import java.util.List;
@@ -22,8 +21,4 @@ public interface ProjectService {
     ProjectDTO createProject(String login, ProjectCreateDTO projectCreateDTO);
 
     ProjectDTO updateProject(Long id, String login, ProjectCreateDTO projectForUpdate);
-
-//    boolean isUserProjectLeader(String login, Long projectId);
-//
-//    Project getProjectByIdsOrElseThrow(Long id);
 }
