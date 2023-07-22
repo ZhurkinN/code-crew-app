@@ -49,18 +49,21 @@ public interface PositionRepository extends PageableRepository<Position, Long>, 
 
     @Override
     @Join(value = "project", type = Join.Type.FETCH)
+    @Join(value = "project.leader", type = Join.Type.FETCH)
     @Join(value = "project.status", type = Join.Type.FETCH)
     @Join(value = "direction", type = Join.Type.FETCH)
     @Join(value = "user", type = Join.Type.LEFT_FETCH)
     Optional<Position> findById(@NotNull Long aLong);
 
     @Join(value = "project", type = Join.Type.FETCH)
+    @Join(value = "project.leader", type = Join.Type.FETCH)
     @Join(value = "project.status", type = Join.Type.FETCH)
     @Join(value = "direction", type = Join.Type.FETCH)
     @Join(value = "user", type = Join.Type.LEFT_FETCH)
     List<Position> findByIdInList(List<Long> ids, Sort sort);
 
     @Join(value = "project", type = Join.Type.FETCH)
+    @Join(value = "project.leader", type = Join.Type.FETCH)
     @Join(value = "project.status", type = Join.Type.FETCH)
     @Join(value = "direction", type = Join.Type.FETCH)
     @Join(value = "user", type = Join.Type.FETCH)
@@ -139,6 +142,7 @@ public interface PositionRepository extends PageableRepository<Position, Long>, 
                                                User user);
 
     @Join(value = "project", type = Join.Type.FETCH)
+    @Join(value = "project.leader", type = Join.Type.FETCH)
     @Join(value = "project.status", type = Join.Type.FETCH)
     @Join(value = "direction", type = Join.Type.FETCH)
     @Join(value = "user", type = Join.Type.LEFT_FETCH)
