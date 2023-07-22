@@ -4,7 +4,7 @@ import cis.tinkoff.controller.model.VacancyDTO;
 import cis.tinkoff.controller.model.custom.ProjectMemberDTO;
 import cis.tinkoff.controller.model.custom.SearchDTO;
 import cis.tinkoff.controller.model.custom.VacancyCreateDTO;
-import cis.tinkoff.model.enumerated.SortDirection;
+import cis.tinkoff.service.enumerated.SortDirection;
 
 import java.util.List;
 
