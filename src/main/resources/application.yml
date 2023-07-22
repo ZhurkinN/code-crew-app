@@ -88,6 +88,7 @@ micronaut:
           allowed-origins:
             - http://localhost:3000
             - http://localhost:8080
+            - http://кодхрю.рф
     authentication: cookie
     enabled: false
     multipart:
