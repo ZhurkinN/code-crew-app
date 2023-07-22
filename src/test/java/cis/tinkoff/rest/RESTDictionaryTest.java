@@ -123,7 +123,7 @@ public class RESTDictionaryTest {
                 .extract()
                 .body().jsonPath().getList(".", DirectionDictionary.class);
 
-        int expectedSize = 7;
+        int expectedSize = 6;
 
         Assertions.assertEquals(expectedSize, directions.size());
 

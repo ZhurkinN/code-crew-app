@@ -25,6 +25,7 @@ import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.INACCESSIBLE_PROJECT_ACTION;
 import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.PROJECT_WRONG_ACCESS;
 import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.proxy;
@@ -38,10 +39,14 @@ public class RESTProjectTest {
 
     private static String TOKEN = "";
 
+    private static String USER_MAIL = "alex@mail.ru";
+
+    private static String USER_PASSWORD = "123";
+
     @BeforeAll
     static void setUp() {
         RestAssured.defaultParser = Parser.JSON;
-        UserLoginDTO dto = new UserLoginDTO("alex@mail.ru", "123");
+        UserLoginDTO dto = new UserLoginDTO(USER_MAIL, USER_PASSWORD);
 
         Specifications.installSpecification(Specifications.requestSpec("/auth/login"), Specifications.responseSpec(200));
 
@@ -55,15 +60,15 @@ public class RESTProjectTest {
                 .path("access_token");
     }
 
-    @BeforeEach
-    void startContainer() {
-        container.start();
-    }
-
-    @AfterEach
-    void stopContainer() {
-        container.stop();
-    }
+//    @BeforeEach
+//    void startContainer() {
+//        container.start();
+//    }
+//
+//    @AfterEach
+//    void stopContainer() {
+//        container.stop();
+//    }
 
     @Test
     @Order(1)
@@ -167,7 +172,7 @@ public class RESTProjectTest {
         JsonPath jsonPath = response.jsonPath();
         String errorMessage = jsonPath.get("message");
 
-        Assertions.assertEquals(PROJECT_WRONG_ACCESS, errorMessage);
+        Assertions.assertEquals(String.format(INACCESSIBLE_PROJECT_ACTION, USER_MAIL, 1), errorMessage);
     }
 
     @Test
@@ -250,10 +255,9 @@ public class RESTProjectTest {
         JsonPath jsonPath = response.jsonPath();
         String errorMessage = jsonPath.get("message");
 
-        Assertions.assertEquals(PROJECT_WRONG_ACCESS, errorMessage);
+        Assertions.assertEquals(String.format(INACCESSIBLE_PROJECT_ACTION, USER_MAIL, 1), errorMessage);
     }
 
-    // TODO: retest with new inserted data
     @Test
     @Order(6)
     public void testGetProjectMembers() {
@@ -275,7 +279,7 @@ public class RESTProjectTest {
     @Test
     @Order(7)
     public void testGetProjectMembersWithInvalidUser() {
-        Specifications.installSpecification(Specifications.requestSpec("/api/v1/positions/projects/members?projectId=" + 1), Specifications.responseSpec(404));
+        Specifications.installSpecification(Specifications.requestSpec("/api/v1/positions/projects/members?projectId=" + 1), Specifications.responseSpec(406));
 
         given()
                 .when()

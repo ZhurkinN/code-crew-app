@@ -1,4 +1,4 @@
-package cis.tinkoff.model.enumerated;
+package cis.tinkoff.service.enumerated;
 
 public enum RequestType {
 

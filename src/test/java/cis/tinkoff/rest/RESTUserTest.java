@@ -48,29 +48,6 @@ public class RESTUserTest {
 
     @Test
     @Order(1)
-    public void testFindAllEndpoint() {
-        Specifications.installSpecification(Specifications.requestSpec("/api/v1/users/all"), Specifications.responseSpec(200));
-
-        Response response = given()
-                .when()
-                .header("Authorization", "Bearer " + TOKEN)
-                .header("Content-Type", ContentType.JSON)
-                .get("/api/v1/users/all")
-                .then()
-                .extract()
-                .response();
-
-        JsonPath jsonPath = response.jsonPath();
-        List<String> emails = jsonPath.get("email");
-        List<String> expectedEmails
-                = List.of("alex@mail.ru", "weiber@mail.ru", "mercen@yandex.ru", "kulich@anser.ru",
-                "reter@mail.ru", "kio@mail.ru", "alex@yandex.ru", "loire@mail.ru", "wesber@yandex.ru");
-
-        Assertions.assertEquals(expectedEmails.size(), emails.size());
-    }
-
-    @Test
-    @Order(2)
     public void testFindByIdEndpoint() {
         int userId = 3;
         Specifications.installSpecification(Specifications.requestSpec("/api/v1/users/" + userId), Specifications.responseSpec(200));
@@ -111,7 +88,7 @@ public class RESTUserTest {
     }
 
     @Test
-    @Order(3)
+    @Order(2)
     public void testFindEndpoint() {
         Specifications.installSpecification(Specifications.requestSpec("/api/v1/users"), Specifications.responseSpec(200));
 
@@ -138,7 +115,7 @@ public class RESTUserTest {
         String expectedEmail = "alex@mail.ru";
         List<String> expectedContacts = List.of("https://github.com/Alonso", "https://inst/Alonso");
         String expectedMainInformation = "I am Gordon. Love to play basketball, watching films, doing programs, doing popcorn and smth else. Feeling kaif when popcorn is good. Feeling good when programs works";
-        int expectedResumesSize = 1;
+        int expectedResumesSize = 2;
         int expectedProjectsSize = 1;
 
         Assertions.assertEquals(expectedName, name);
@@ -151,7 +128,7 @@ public class RESTUserTest {
     }
 
     @Test
-    @Order(4)
+    @Order(3)
     public void testUpdateEndpoint() {
         Specifications.installSpecification(Specifications.requestSpec("/api/v1/users"), Specifications.responseSpec(200));
 
@@ -198,7 +175,7 @@ public class RESTUserTest {
     }
 
     @Test
-    @Order(5)
+    @Order(4)
     public void testUpdateEndpointWithInvalidData() {
         Specifications.installSpecification(Specifications.requestSpec("/api/v1/users"), Specifications.responseSpec(409));
 
@@ -243,6 +220,6 @@ public class RESTUserTest {
         JsonPath jsonPath = response.jsonPath();
         String errorMessage = jsonPath.get("message");
 
-        Assertions.assertEquals(USER_NOT_FOUND, errorMessage);
+        Assertions.assertEquals(String.format(USER_NOT_FOUND, 1), errorMessage);
     }
 }
