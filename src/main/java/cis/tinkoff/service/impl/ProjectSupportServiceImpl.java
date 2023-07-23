@@ -12,6 +12,7 @@ import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper
 @Singleton
 @RequiredArgsConstructor
 public class ProjectSupportServiceImpl implements ProjectSupportService {
+
     private final ProjectRepository projectRepository;
 
     @Override

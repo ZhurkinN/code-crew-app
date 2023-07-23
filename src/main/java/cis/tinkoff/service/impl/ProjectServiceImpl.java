@@ -1,6 +1,7 @@
 package cis.tinkoff.service.impl;
 
 import cis.tinkoff.controller.model.ProjectDTO;
+import cis.tinkoff.controller.model.UserDTO;
 import cis.tinkoff.controller.model.custom.ContactDTO;
 import cis.tinkoff.controller.model.custom.ProjectCreateDTO;
 import cis.tinkoff.controller.model.custom.ProjectMemberDTO;
@@ -22,6 +23,7 @@ import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper
 @Singleton
 @RequiredArgsConstructor
 public class ProjectServiceImpl implements ProjectService {
+
     private final ProjectRepository projectRepository;
     private final ProjectContactRepository projectContactRepository;
     private final UserService userService;
@@ -71,7 +73,7 @@ public class ProjectServiceImpl implements ProjectService {
                                      String login,
                                      Long newLeaderId) {
         Project project = projectSupportService.getProjectByIdOrElseThrow(id);
-        User oldUser = userService.getByEmail(login);
+        User oldUser = userService.getByEmailWithoutProjects(login);
 
         positionSupportService
                 .findPositionsByUserAndProjectOrElseThrow(
@@ -86,7 +88,7 @@ public class ProjectServiceImpl implements ProjectService {
                             newLeaderId,
                             project.getId()
                     );
-            User newLeader = userService.getById(newLeaderId);
+            User newLeader = userService.getByIdWithoutProjects(newLeaderId);
 
             projectRepository.updateLeaderByLeaderId(project.getId(), newLeader);
         }
@@ -125,7 +127,7 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public ProjectDTO createProject(String login,
                                     ProjectCreateDTO projectCreateDTO) {
-        User leader = userService.getByEmail(login);
+        User leader = userService.getByEmailWithoutProjects(login);
         ProjectStatusDictionary status = dictionaryService
                 .getProjectStatusDictionaryById(projectCreateDTO.getStatus());
         DirectionDictionary directionDictionary = dictionaryService

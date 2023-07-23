@@ -24,7 +24,6 @@ public interface ProjectRepository extends CrudRepository<Project, Long> {
     @Join(value = "contacts", type = Join.Type.LEFT_FETCH)
     @Join(value = "positions.direction", type = Join.Type.FETCH)
     @Join(value = "positions.user", type = Join.Type.LEFT_FETCH)
-    @Join(value = "members", type = Join.Type.LEFT_FETCH)
     Optional<Project> findById(@NotNull Long aLong);
 
     @Join(value = "leader", type = Join.Type.FETCH)
@@ -34,12 +33,15 @@ public interface ProjectRepository extends CrudRepository<Project, Long> {
     @Join(value = "positions.user", type = Join.Type.LEFT_FETCH)
     @Join(value = "status", type = Join.Type.FETCH)
     @Join(value = "leader", type = Join.Type.FETCH)
-    List<Project> findByPositionsUserEmailAndIsDeletedFalse(String positions_user_email);
+    List<Project> findByPositionsUserEmailAndIsDeletedFalse(String positionsUserEmail);
+
+    @Join(value = "status", type = Join.Type.FETCH)
+    List<Project> getByPositionsUserEmailAndIsDeletedFalse(String positionsUserEmail);
 
     @Join(value = "positions.user", type = Join.Type.LEFT_FETCH)
     @Join(value = "status", type = Join.Type.FETCH)
     @Join(value = "leader", type = Join.Type.FETCH)
-    List<Project> findByLeaderEmailAndIsDeletedFalse(String leader_email);
+    List<Project> findByLeaderEmailAndIsDeletedFalse(String leaderEmail);
 
     @Query(value = """
             UPDATE project SET is_deleted = true WHERE id = :id

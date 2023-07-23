@@ -139,7 +139,7 @@ public interface PositionRepository extends PageableRepository<Position, Long>, 
     String getProjectsLeadersEmailById(@Id Long id);
 
     @Join(value = "project.status", type = Join.Type.FETCH)
-    @Join(value = "project.members", type = Join.Type.FETCH)
+    @Join(value = "project.positions.user", type = Join.Type.FETCH)
     Project findProjectById(@Id Long id);
 
     void updateIsVisibleAndJoinDateAndUserById(@Id Long id,

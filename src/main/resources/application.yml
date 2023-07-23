@@ -94,6 +94,8 @@ micronaut:
       enabled: true
       max-file-size: 5_242_880 # 5 MB
       common-file-extension: png
+    netty:
+      max-header-size: 30_720
 
 datasources:
   default:
