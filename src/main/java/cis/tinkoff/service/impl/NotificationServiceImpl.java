@@ -5,11 +5,13 @@ import cis.tinkoff.controller.model.custom.NotificationCreateDTO;
 import cis.tinkoff.controller.model.custom.NotificationRequestDTO;
 import cis.tinkoff.model.Notification;
 import cis.tinkoff.repository.NotificationRepository;
+import cis.tinkoff.repository.PositionRequestRepository;
 import cis.tinkoff.service.DictionaryService;
 import cis.tinkoff.service.NotificationService;
 import cis.tinkoff.service.UserService;
 import cis.tinkoff.service.enumerated.SortDirection;
-import cis.tinkoff.service.event.*;
+import cis.tinkoff.service.event.NotificationEvent;
+import cis.tinkoff.support.exceptions.RecordNotFoundException;
 import io.micronaut.context.event.ApplicationEventPublisher;
 import io.micronaut.data.model.Page;
 import io.micronaut.data.model.Pageable;
@@ -19,6 +21,8 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
+import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.REQUEST_NOT_FOUND;
+
 @Singleton
 @RequiredArgsConstructor
 public class NotificationServiceImpl implements NotificationService {
@@ -27,6 +31,7 @@ public class NotificationServiceImpl implements NotificationService {
     private final NotificationRepository notificationRepository;
     private final UserService userService;
     private final DictionaryService dictionaryService;
+    private final PositionRequestRepository positionRequestRepository;
 
     @Override
     public List<Notification> getAll() {
@@ -39,22 +44,18 @@ public class NotificationServiceImpl implements NotificationService {
                 .setUser(userService.getById(notificationCreateDTO.getUserId()))
                 .setCreatedWhen(notificationCreateDTO.getCreatedWhen())
                 .setType(dictionaryService.getNotificationTypeDictionaryById(notificationCreateDTO.getType()))
-                .setRequest(notificationCreateDTO.getRequest());
+                .setRequest(
+                        positionRequestRepository
+                                .findByIdAndIsDeletedFalse(notificationCreateDTO.getRequestId())
+                                .orElseThrow(() -> new RecordNotFoundException(
+                                        REQUEST_NOT_FOUND,
+                                        notificationCreateDTO.getRequestId()
+                                ))
+                );
 
         newNotification = notificationRepository.save(newNotification);
 
-        NotificationEvent event;
-
-        switch (notificationCreateDTO.getType()) {
-            case INVITE -> event = new InviteCreatedEvent(newNotification);
-            case INVITE_APPROVED -> event = new InviteApprovedEvent(newNotification);
-            case INVITE_DECLINED -> event = new InviteDeclineEvent(newNotification);
-            case REQUEST_APPROVED -> event = new RequestApprovedEvent(newNotification);
-            case REQUEST_DECLINED -> event = new RequestDeclineEvent(newNotification);
-            default -> event = new RequestCreatedEvent(newNotification);
-        }
-
-        eventPublisher.publishEvent(event);
+        eventPublisher.publishEvent(new NotificationEvent(newNotification));
 
         return newNotification;
     }

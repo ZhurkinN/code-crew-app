@@ -57,18 +57,13 @@ public class PositionRequestServiceImpl implements PositionRequestService {
                 .setIsInvite(false)
                 .setStatus(defaultStatus);
 
+        positionRequest = positionRequestRepository.save(positionRequest);
+
         Project project = projectRepository.findById(position.getProject().getId()).get();
         Long leaderId = project.getLeader().getId();
-        notificationService.createNotification(
-                NotificationCreateDTO.builder()
-                        .type(NotificationType.REQUEST)
-                        .request(positionRequest)
-                        .userId(leaderId)
-                        .createdWhen(System.currentTimeMillis())
-                        .build()
-        );
+        assignNotification(leaderId, positionRequest.getId(), NotificationType.REQUEST);
 
-        return positionRequestRepository.save(positionRequest);
+        return positionRequest;
     }
 
     @Override
@@ -95,16 +90,11 @@ public class PositionRequestServiceImpl implements PositionRequestService {
                 .setIsInvite(true)
                 .setStatus(defaultStatus);
 
-        notificationService.createNotification(
-                NotificationCreateDTO.builder()
-                        .type(NotificationType.INVITE)
-                        .request(positionRequest)
-                        .userId(resume.getUser().getId())
-                        .createdWhen(System.currentTimeMillis())
-                        .build()
-        );
+        positionRequest = positionRequestRepository.save(positionRequest);
 
-        return positionRequestRepository.save(positionRequest);
+        assignNotification(resume.getUser().getId(), positionRequest.getId(), NotificationType.INVITE);
+
+        return positionRequest;
     }
 
     @Override
@@ -294,5 +284,20 @@ public class PositionRequestServiceImpl implements PositionRequestService {
                                                        Long positionId) {
         User invitedUser = resumeRepository.getUserById(resumeId);
         validateUsersProjectMembership(invitedUser.getEmail(), positionId);
+    }
+
+    private void assignNotification(
+            Long targetUserId,
+            Long targetRequestId,
+            NotificationType notificationType
+    ) {
+        notificationService.createNotification(
+                NotificationCreateDTO.builder()
+                        .type(notificationType)
+                        .requestId(targetRequestId)
+                        .userId(targetUserId)
+                        .createdWhen(System.currentTimeMillis())
+                        .build()
+        );
     }
 }

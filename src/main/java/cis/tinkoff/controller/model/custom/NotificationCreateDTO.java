@@ -1,6 +1,5 @@
 package cis.tinkoff.controller.model.custom;
 
-import cis.tinkoff.model.PositionRequest;
 import cis.tinkoff.model.enumerated.NotificationType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,7 +14,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class NotificationCreateDTO {
     private NotificationType type;
-    private PositionRequest request;
+    private Long requestId;
     private Long userId;
     private Long createdWhen;
 }
