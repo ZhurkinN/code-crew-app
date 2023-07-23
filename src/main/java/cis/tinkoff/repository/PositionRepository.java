@@ -34,7 +34,7 @@ public interface PositionRepository extends PageableRepository<Position, Long>, 
                        AND position_.user_id is null
                        AND position_.direction ilike coalesce(:direction, '%')
                        AND project_.status ilike coalesce(:status, '%')
-                       AND position_.skills @> coalesce(:skills, position_.skills)""",
+                       AND lower(position_.skills::text)::text[] @> coalesce(lower(:skills::text)::text[], lower(position_.skills::text)::text[])""",
             countQuery = """
                     SELECT count(position_.*) FROM position position_
                         JOIN project project_ ON position_.project_id = project_.id
@@ -44,7 +44,7 @@ public interface PositionRepository extends PageableRepository<Position, Long>, 
                                AND position_.user_id is null
                                AND position_.direction ilike coalesce(:direction, '%')
                                AND project_.status ilike coalesce(:status, '%')
-                               AND position_.skills @> coalesce(:skills, position_.skills)""")
+                               AND lower(position_.skills::text)::text[] @> coalesce(lower(:skills::text)::text[], lower(position_.skills::text)::text[])""")
     Page<Position> searchAllVacancies(@Nullable String direction, @Nullable String status, @Nullable List<String> skills, Pageable pageable);
 
     @Override
