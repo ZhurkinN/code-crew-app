@@ -221,6 +221,16 @@ public class PositionRequestServiceImpl implements PositionRequestService {
         positionRequestRepository.update(request);
     }
 
+    @Override
+    public PositionRequest findPositionRequestById(Long positionRequestId) {
+        return positionRequestRepository
+                .findByIdAndIsDeletedFalse(positionRequestId)
+                .orElseThrow(() -> new RecordNotFoundException(
+                        REQUEST_NOT_FOUND,
+                        positionRequestId
+                ));
+    }
+
 
     private void validateUsersResumeOwnership(String userEmail,
                                               Long resumeId) {
