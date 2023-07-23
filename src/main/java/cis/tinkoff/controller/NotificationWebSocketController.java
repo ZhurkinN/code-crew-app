@@ -29,19 +29,17 @@ public class NotificationWebSocketController implements ApplicationEventListener
 
     @Override
     public void onApplicationEvent(NotificationEvent event) {
-        String userLogin = extractUserLogin();
+        String userLogin = getUserLogin();
         List<NotificationDTO> message = notificationService.getLatestUserNotificationsByLogin(userLogin);
 
-        for (String webSocketSessionId : sessions.keySet()) {
-            publishMessage(message, sessions.get(webSocketSessionId));
-        }
+        publishMessage(message, sessions.get(userLogin));
     }
 
     @OnOpen
     public void onOpen(WebSocketSession session) {
-        sessions.put(session.getId(), session);
+        String userLogin = getUserLogin();
 
-        String userLogin = extractUserLogin();
+        sessions.put(userLogin, session);
         List<NotificationDTO> message = notificationService.getLatestUserNotificationsByLogin(userLogin);
 
         publishMessage(message, session);
@@ -49,7 +47,7 @@ public class NotificationWebSocketController implements ApplicationEventListener
 
     @OnMessage
     public void onMessage(NotificationRequestDTO requestDTO, WebSocketSession session) {
-        String userLogin = extractUserLogin();
+        String userLogin = getUserLogin();
 
         if (!requestDTO.getDelete()) {
             List<NotificationDTO> message = notificationService.getUserNotificationsByLogin(userLogin, requestDTO);
@@ -65,15 +63,18 @@ public class NotificationWebSocketController implements ApplicationEventListener
     }
 
     @OnError
-    public void onError(Throwable error) {
+    public void onError(Throwable error) throws Throwable {
+        throw error;
     }
 
     @OnClose
     public void onClose(CloseReason closeReason, WebSocketSession session) {
-        session.remove(session.getId());
+        String userLogin = getUserLogin();
+
+        session.remove(userLogin);
     }
 
-    private String extractUserLogin() {
+    private String getUserLogin() {
         Authentication authentication = securityService.getAuthentication().get();
         return authentication.getName();
     }

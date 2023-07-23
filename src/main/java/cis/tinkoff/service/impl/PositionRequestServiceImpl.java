@@ -1,6 +1,5 @@
 package cis.tinkoff.service.impl;
 
-import cis.tinkoff.controller.model.custom.NotificationCreateDTO;
 import cis.tinkoff.model.*;
 import cis.tinkoff.model.enumerated.NotificationType;
 import cis.tinkoff.model.enumerated.RequestStatus;
@@ -61,7 +60,7 @@ public class PositionRequestServiceImpl implements PositionRequestService {
 
         Project project = projectRepository.findById(position.getProject().getId()).get();
         Long leaderId = project.getLeader().getId();
-        assignNotification(leaderId, positionRequest.getId(), NotificationType.REQUEST);
+        notificationService.createNotification(leaderId, positionRequest.getId(), NotificationType.REQUEST);
 
         return positionRequest;
     }
@@ -92,7 +91,7 @@ public class PositionRequestServiceImpl implements PositionRequestService {
 
         positionRequest = positionRequestRepository.save(positionRequest);
 
-        assignNotification(resume.getUser().getId(), positionRequest.getId(), NotificationType.INVITE);
+        notificationService.createNotification(resume.getUser().getId(), positionRequest.getId(), NotificationType.INVITE);
 
         return positionRequest;
     }
@@ -294,20 +293,5 @@ public class PositionRequestServiceImpl implements PositionRequestService {
                                                        Long positionId) {
         User invitedUser = resumeRepository.getUserById(resumeId);
         validateUsersProjectMembership(invitedUser.getEmail(), positionId);
-    }
-
-    private void assignNotification(
-            Long targetUserId,
-            Long targetRequestId,
-            NotificationType notificationType
-    ) {
-        notificationService.createNotification(
-                NotificationCreateDTO.builder()
-                        .type(notificationType)
-                        .requestId(targetRequestId)
-                        .userId(targetUserId)
-                        .createdWhen(System.currentTimeMillis())
-                        .build()
-        );
     }
 }

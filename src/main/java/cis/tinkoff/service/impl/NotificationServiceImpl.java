@@ -1,9 +1,9 @@
 package cis.tinkoff.service.impl;
 
 import cis.tinkoff.controller.model.NotificationDTO;
-import cis.tinkoff.controller.model.custom.NotificationCreateDTO;
 import cis.tinkoff.controller.model.custom.NotificationRequestDTO;
 import cis.tinkoff.model.Notification;
+import cis.tinkoff.model.enumerated.NotificationType;
 import cis.tinkoff.repository.NotificationRepository;
 import cis.tinkoff.service.DictionaryService;
 import cis.tinkoff.service.NotificationService;
@@ -37,14 +37,18 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public Notification createNotification(NotificationCreateDTO notificationCreateDTO) {
+    public Notification createNotification(
+            Long targetUserId,
+            Long targetRequestId,
+            NotificationType notificationType
+    ) {
         Notification newNotification = new Notification()
-                .setUser(userService.getById(notificationCreateDTO.getUserId()))
-                .setCreatedWhen(notificationCreateDTO.getCreatedWhen())
-                .setType(dictionaryService.getNotificationTypeDictionaryById(notificationCreateDTO.getType()))
+                .setUser(userService.getById(targetUserId))
+                .setCreatedWhen(System.currentTimeMillis())
+                .setType(dictionaryService.getNotificationTypeDictionaryById(notificationType))
                 .setRequest(
                         positionRequestServiceProvider.get()
-                                .findPositionRequestById(notificationCreateDTO.getRequestId())
+                                .findPositionRequestById(targetRequestId)
                 );
 
         newNotification = notificationRepository.save(newNotification);
