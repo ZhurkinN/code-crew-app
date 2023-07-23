@@ -1,9 +1,12 @@
 package cis.tinkoff.service.impl;
 
+import cis.tinkoff.controller.model.custom.NotificationCreateDTO;
 import cis.tinkoff.model.*;
+import cis.tinkoff.model.enumerated.NotificationType;
 import cis.tinkoff.model.enumerated.RequestStatus;
 import cis.tinkoff.repository.*;
 import cis.tinkoff.repository.dictionary.RequestStatusRepository;
+import cis.tinkoff.service.NotificationService;
 import cis.tinkoff.service.PositionRequestService;
 import cis.tinkoff.service.enumerated.RequestType;
 import cis.tinkoff.support.exceptions.InaccessibleActionException;
@@ -27,6 +30,7 @@ public class PositionRequestServiceImpl implements PositionRequestService {
     private final PositionRepository positionRepository;
     private final RequestStatusRepository requestStatusRepository;
     private final ProjectRepository projectRepository;
+    private final NotificationService notificationService;
     private final UserRepository userRepository;
 
     @Override
@@ -52,6 +56,17 @@ public class PositionRequestServiceImpl implements PositionRequestService {
                 .setCoverLetter(coverLetter)
                 .setIsInvite(false)
                 .setStatus(defaultStatus);
+
+        Project project = projectRepository.findById(position.getProject().getId()).get();
+        Long leaderId = project.getLeader().getId();
+        notificationService.createNotification(
+                NotificationCreateDTO.builder()
+                        .type(NotificationType.REQUEST)
+                        .request(positionRequest)
+                        .userId(leaderId)
+                        .createdWhen(System.currentTimeMillis())
+                        .build()
+        );
 
         return positionRequestRepository.save(positionRequest);
     }
@@ -79,6 +94,15 @@ public class PositionRequestServiceImpl implements PositionRequestService {
                 .setCoverLetter(coverLetter)
                 .setIsInvite(true)
                 .setStatus(defaultStatus);
+
+        notificationService.createNotification(
+                NotificationCreateDTO.builder()
+                        .type(NotificationType.INVITE)
+                        .request(positionRequest)
+                        .userId(resume.getUser().getId())
+                        .createdWhen(System.currentTimeMillis())
+                        .build()
+        );
 
         return positionRequestRepository.save(positionRequest);
     }

@@ -2,10 +2,12 @@ package cis.tinkoff.service.impl;
 
 import cis.tinkoff.model.*;
 import cis.tinkoff.model.enumerated.Direction;
+import cis.tinkoff.model.enumerated.NotificationType;
 import cis.tinkoff.model.enumerated.ProjectStatus;
 import cis.tinkoff.repository.ResumeRepository;
 import cis.tinkoff.repository.UserRepository;
 import cis.tinkoff.repository.dictionary.DirectionRepository;
+import cis.tinkoff.repository.dictionary.NotificationTypeRepository;
 import cis.tinkoff.repository.dictionary.ProjectStatusRepository;
 import cis.tinkoff.repository.dictionary.RequestStatusRepository;
 import cis.tinkoff.service.DictionaryService;
@@ -25,6 +27,7 @@ public class DictionaryServiceImpl implements DictionaryService {
     private final DirectionRepository directionRepository;
     private final ProjectStatusRepository projectStatusRepository;
     private final RequestStatusRepository requestStatusRepository;
+    private final NotificationTypeRepository notificationTypeRepository;
     private final ResumeRepository resumeRepository;
     private final UserRepository userRepository;
 
@@ -71,5 +74,12 @@ public class DictionaryServiceImpl implements DictionaryService {
         return projectStatusRepository
                 .findById(statusId)
                 .orElseThrow(() -> new RecordNotFoundException(PROJECT_STATUS_NOT_FOUND, String.valueOf(statusId)));
+    }
+
+    @Override
+    public NotificationTypeDictionary getNotificationTypeDictionaryById(NotificationType type) {
+        return notificationTypeRepository
+                .findById(type)
+                .orElseThrow(() -> new RecordNotFoundException(NOTIFICATION_TYPE_NOT_FOUND, String.valueOf(type)));
     }
 }

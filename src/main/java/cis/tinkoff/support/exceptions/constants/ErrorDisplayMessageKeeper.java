@@ -35,6 +35,7 @@ public interface ErrorDisplayMessageKeeper {
     String REQUEST_NOT_FOUND = "Position request with id = %d is not found or deleted.";
     String DIRECTION_NOT_FOUND = "Direction with id = %s is not found.";
     String PROJECT_STATUS_NOT_FOUND = "Project status with id = %s is not found.";
+    String NOTIFICATION_TYPE_NOT_FOUND = "Notification type with id = %s is not found.";
 
 
 }
