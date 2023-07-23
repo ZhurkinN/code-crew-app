@@ -70,12 +70,6 @@ public interface PositionRepository extends PageableRepository<Position, Long>, 
     List<Position> findByUserIdAndProjectId(Long user_id, Long project_id);
 
     @Join(value = "project", type = Join.Type.FETCH)
-    @Join(value = "project.status", type = Join.Type.FETCH)
-    @Join(value = "direction", type = Join.Type.FETCH)
-    @Join(value = "user", type = Join.Type.FETCH)
-    List<Position> findByUserIdAndProjectIdAndDirectionDirectionName(Long user_id, Long project_id, Direction directionName);
-
-    @Join(value = "project", type = Join.Type.FETCH)
     @Join(value = "direction", type = Join.Type.FETCH)
     @Join(value = "user", type = Join.Type.FETCH)
     List<Position> findByProjectIdAndUserEmail(Long project_id,

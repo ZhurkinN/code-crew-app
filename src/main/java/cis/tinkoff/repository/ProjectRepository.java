@@ -27,40 +27,9 @@ public interface ProjectRepository extends CrudRepository<Project, Long> {
     @Join(value = "members", type = Join.Type.LEFT_FETCH)
     Optional<Project> findById(@NotNull Long aLong);
 
-    @Join(value = "positions.direction", type = Join.Type.FETCH)
-    @Join(value = "positions.user", type = Join.Type.LEFT_FETCH)
-    @Join(value = "status", type = Join.Type.FETCH)
-    @Join(value = "leader", type = Join.Type.FETCH)
-    @Join(value = "contacts", type = Join.Type.LEFT_FETCH)
-    List<Project> findByIdInList(List<Long> id);
-
     @Join(value = "leader", type = Join.Type.FETCH)
     @Join(value = "status", type = Join.Type.FETCH)
     List<Project> list();
-
-    @Query(value = """
-            SELECT * FROM project p
-            JOIN position ps on p.id = ps.project_id
-            JOIN users u2 on p.leader_id = u2.id
-            JOIN users u on ps.user_id = u.id
-            WHERE u.email = :login
-            OR u2.email = :login
-            """,
-            nativeQuery = true)
-    @Join(value = "positions", type = Join.Type.FETCH)
-    @Join(value = "status", type = Join.Type.FETCH)
-    List<Project> findAllByUserEmail(String login);
-
-    @Query(value = """
-            SELECT * FROM project p
-            JOIN position ps on p.id = ps.project_id
-            JOIN users u on p.leader_id = u.id
-            WHERE u.email = :login
-            """,
-            nativeQuery = true)
-    @Join(value = "positions", type = Join.Type.FETCH)
-    @Join(value = "status", type = Join.Type.FETCH)
-    List<Project> findAllProjectsByLeadEmail(String login);
 
     @Join(value = "positions.user", type = Join.Type.LEFT_FETCH)
     @Join(value = "status", type = Join.Type.FETCH)
