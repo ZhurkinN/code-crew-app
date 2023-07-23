@@ -54,6 +54,11 @@ public class PositionSupportServiceImpl implements PositionSupportService {
     }
 
     @Override
+    public void softDeletePositionsByProjectId(Long projectId) {
+        positionRepository.softDeletePositionsByProjectId(projectId);
+    }
+
+    @Override
     public Position createPosition(
             @NonNull User user,
             @NonNull Direction direction,
