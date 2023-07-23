@@ -6,6 +6,7 @@ import cis.tinkoff.controller.model.custom.UpdateUserDTO;
 import cis.tinkoff.model.User;
 import cis.tinkoff.service.UserService;
 import cis.tinkoff.support.mapper.UserMapper;
+import io.micrometer.core.annotation.Timed;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.MediaType;
 import io.micronaut.http.annotation.*;
@@ -25,6 +26,11 @@ public class UserController {
     private final UserService userService;
     private final UserMapper userMapper;
 
+    @Timed(
+            value = "cis.tinkoff.controller.userController.findById",
+            percentiles = {0.5, 0.95, 0.99},
+            description = "Finds user by id"
+    )
     @Operation(method = "findById", description = "Finds user by id")
     @Get(value = "/{id}", produces = MediaType.APPLICATION_JSON)
     public HttpResponse<UserDTO> findById(@PathVariable Long id) {

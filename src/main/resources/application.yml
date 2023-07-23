@@ -98,7 +98,7 @@ micronaut:
 
 datasources:
   default:
-    url: jdbc:postgresql://postgres:5432/${MICRONAUT_DB}
+    url: jdbc:postgresql://localhost:5432/${MICRONAUT_DB}
     username: ${MICRONAUT_USER}
     password: ${MICRONAUT_PASSWORD}
     driver-class-name: org.postgresql.Driver

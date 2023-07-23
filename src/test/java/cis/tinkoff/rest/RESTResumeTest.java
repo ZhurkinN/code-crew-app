@@ -347,38 +347,72 @@ public class RESTResumeTest {
         }
     }
 
-//    @Test
-//    public void testSearchBySkills() {
-//
-//    }
-//
-//    @Test
-//    public void testSearchByDirection() {
-//
-//    }
+    @Test
+    public void testSearchBySkills() {
+        Specifications.installSpecification(Specifications.requestSpec("/api/v1/resumes/search?size=10&skills=java"), Specifications.responseSpec(200));
+
+        List<ResumeDTO> dto = given()
+                .when()
+                .header("Authorization", "Bearer " + TOKEN_2)
+                .header("Content-Type", ContentType.JSON)
+                .get("/api/v1/resumes/search?size=10&skills=java")
+                .then()
+                .extract()
+                .body().jsonPath().getList("content.", ResumeDTO.class);
+
+        int expectedSize = 3;
+        Assertions.assertEquals(expectedSize, dto.size());
+
+        for (int i = 0; i < expectedSize; i++) {
+            Assertions.assertTrue(dto.get(i).getSkills().contains("java"));
+        }
+    }
+
+    @Test
+    public void testSearchByDirection() {
+        Specifications.installSpecification(Specifications.requestSpec("/api/v1/resumes/search?size=10&direction=FRONTEND"), Specifications.responseSpec(200));
+
+        int expectedSize = 2;
+        DirectionDictionary expectedDirection = new DirectionDictionary(Direction.FRONTEND, "Frontend-developer");
+
+        List<ResumeDTO> dto = given()
+                .when()
+                .header("Authorization", "Bearer " + TOKEN_2)
+                .header("Content-Type", ContentType.JSON)
+                .get("/api/v1/resumes/search?size=10&direction=FRONTEND")
+                .then()
+                .extract()
+                .body().jsonPath().getList("content.", ResumeDTO.class);
+
+        Assertions.assertEquals(expectedSize, dto.size());
+
+        for (int i = 0; i < expectedSize; i++) {
+            Assertions.assertEquals(expectedDirection, dto.get(i).getDirection());
+        }
+    }
 
     @Test
     public void testSearchByDate() {
-        Specifications.installSpecification(Specifications.requestSpec("api/v1/resumes/search?size=10&dateSort=ASC"), Specifications.responseSpec(200));
+        Specifications.installSpecification(Specifications.requestSpec("/api/v1/resumes/search?size=10&dateSort=ASC"), Specifications.responseSpec(200));
 
-        SearchDTO dto = given()
+        List<ResumeDTO> dto = given()
                 .when()
                 .header("Authorization", "Bearer " + TOKEN_2)
                 .header("Content-Type", ContentType.JSON)
                 .get("api/v1/resumes/search?size=10&dateSort=ASC")
                 .then()
                 .extract()
-                .as(SearchDTO.class);
+                .body().jsonPath().getList("content.", ResumeDTO.class);
 
         int expectedSize = 10;
-        int resumeListSize = dto.getContent().size();
+        int resumeListSize = dto.size();
 
         Assertions.assertEquals(expectedSize, resumeListSize);
-        // TODO: подумать, как достать из дтошки резюме
-//        ResumeDTO penultimateResume = (ResumeDTO) dto.getContent().get(resumeListSize - 2);
-//        ResumeDTO lastResume = (ResumeDTO) dto.getContent().get(resumeListSize - 1);
-//
-//        Assertions.assertTrue(penultimateResume.getCreatedWhen() < lastResume.getCreatedWhen());
+
+        ResumeDTO penultimateResume = dto.get(resumeListSize - 2);
+        ResumeDTO lastResume = dto.get(resumeListSize - 1);
+
+        Assertions.assertTrue(penultimateResume.getCreatedWhen() < lastResume.getCreatedWhen());
     }
 
     @Test

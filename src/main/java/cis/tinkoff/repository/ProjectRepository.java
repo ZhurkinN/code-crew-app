@@ -62,10 +62,12 @@ public interface ProjectRepository extends CrudRepository<Project, Long> {
 
     @Join(value = "positions.user", type = Join.Type.LEFT_FETCH)
     @Join(value = "status", type = Join.Type.FETCH)
+    @Join(value = "leader", type = Join.Type.FETCH)
     List<Project> findByPositionsUserEmailAndIsDeletedFalse(String positions_user_email);
 
     @Join(value = "positions.user", type = Join.Type.LEFT_FETCH)
     @Join(value = "status", type = Join.Type.FETCH)
+    @Join(value = "leader", type = Join.Type.FETCH)
     List<Project> findByLeaderEmailAndIsDeletedFalse(String leader_email);
 
     @Query(value = """

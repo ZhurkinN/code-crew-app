@@ -1,7 +1,10 @@
 package cis.tinkoff.rest;
 
 import cis.tinkoff.controller.model.ProjectDTO;
+import cis.tinkoff.controller.model.ResumeDTO;
 import cis.tinkoff.controller.model.VacancyDTO;
+import cis.tinkoff.controller.model.custom.SearchDTO;
+import cis.tinkoff.controller.model.custom.VacancyCreateDTO;
 import cis.tinkoff.model.DirectionDictionary;
 import cis.tinkoff.model.enumerated.Direction;
 import cis.tinkoff.rest.model.UserLoginDTO;
@@ -96,7 +99,7 @@ public class RESTPositionTest {
     }
 
     @Test
-    public void shouldReturnExceptionWhenFindingFilledVacancy() {
+    public void shouldReturn404WhenFindingFilledVacancy() {
         int id = 2;
         Specifications.installSpecification(Specifications.requestSpec("/api/v1/positions/" + id), Specifications.responseSpec(404));
 
@@ -166,6 +169,7 @@ public class RESTPositionTest {
         Specifications.installSpecification(Specifications.requestSpec("/api/v1/positions/visible/" + id), Specifications.responseSpec(200));
 
         boolean expectedIsVisible = false;
+
         VacancyDTO dto = given()
                 .when()
                 .header("Authorization", "Bearer " + TOKEN_1)
@@ -192,7 +196,7 @@ public class RESTPositionTest {
     }
 
     @Test
-    public void shouldReturnExceptionWhenChangingVisibilityByNotLead() {
+    public void shouldReturn406WhenChangingVisibilityByNotLead() {
         int id = 1;
         Specifications.installSpecification(Specifications.requestSpec("/api/v1/positions/visible/" + id), Specifications.responseSpec(406));
 
@@ -212,7 +216,7 @@ public class RESTPositionTest {
     }
 
     @Test
-    public void shouldReturnExceptionWhenDeletingByNotLead() {
+    public void shouldReturn406WhenDeletingVacancyByNotLead() {
         int id = 1;
         Specifications.installSpecification(Specifications.requestSpec("/api/v1/positions/" + id), Specifications.responseSpec(406));
 
@@ -229,6 +233,171 @@ public class RESTPositionTest {
         String errorMessage = jsonPath.get("message");
 
         Assertions.assertEquals(String.format(INACCESSIBLE_PROJECT_ACTION, USER_MAIL, 1), errorMessage);
+    }
+
+    @Test
+    public void shouldReturn406WhenUpdatingVacancyNotByLead() {
+        int id = 8;
+        Specifications.installSpecification(Specifications.requestSpec("/api/v1/positions/" + id), Specifications.responseSpec(406));
+
+        String expectedDescription = "New description";
+        List<String> expectedSkills = List.of("Skill 1", "Skill 2", "Skill 3");
+
+        VacancyCreateDTO updateDTO = VacancyCreateDTO.builder()
+                .description(expectedDescription)
+                .skills(expectedSkills)
+                .direction(Direction.ML)
+                .build();
+
+        Response response = given()
+                .body(updateDTO)
+                .when()
+                .header("Authorization", "Bearer " + TOKEN_1)
+                .header("Content-Type", ContentType.JSON)
+                .patch("/api/v1/positions/" + id)
+                .then()
+                .extract()
+                .response();
+
+        JsonPath jsonPath = response.jsonPath();
+        String errorMessage = jsonPath.get("message");
+
+        Assertions.assertEquals(String.format(INACCESSIBLE_PROJECT_ACTION, USER_MAIL, 3), errorMessage);
+    }
+
+    @Test
+    public void testCreateVacancy() {
+        int projectId = 2;
+        Specifications.installSpecification(Specifications.requestSpec("/api/v1/positions?projectId=" + projectId), Specifications.responseSpec(200));
+
+        String expectedDescription = "New description";
+        List<String> expectedSkills = List.of("Skill 1", "Skill 2", "Skill 3");
+        DirectionDictionary expectedDirection = new DirectionDictionary(Direction.ML, "Machine Learning Engineer");
+
+        VacancyCreateDTO createDTO = VacancyCreateDTO.builder()
+                .description(expectedDescription)
+                .skills(expectedSkills)
+                .direction(Direction.ML)
+                .build();
+
+        VacancyDTO dto = given()
+                .body(createDTO)
+                .when()
+                .header("Authorization", "Bearer " + TOKEN_1)
+                .header("Content-Type", ContentType.JSON)
+                .post("/api/v1/positions?projectId=" + projectId)
+                .then()
+                .extract()
+                .body().as(VacancyDTO.class);
+
+        Assertions.assertEquals(expectedDirection, dto.getDirection());
+        Assertions.assertEquals(expectedSkills, dto.getSkills());
+        Assertions.assertEquals(expectedDescription, dto.getDescription());
+        Assertions.assertEquals(true, dto.getIsVisible());
+        Assertions.assertNotNull(dto.getCreatedWhen());
+    }
+
+    @Test
+    public void shouldReturn406WhenCreatingVacancyNotByLead() {
+        int projectId = 1;
+        Specifications.installSpecification(Specifications.requestSpec("/api/v1/positions?projectId=" + projectId), Specifications.responseSpec(406));
+
+        String expectedDescription = "New description";
+        List<String> expectedSkills = List.of("Skill 1", "Skill 2", "Skill 3");
+        DirectionDictionary expectedDirection = new DirectionDictionary(Direction.ML, "Machine Learning Engineer");
+
+        VacancyCreateDTO createDTO = VacancyCreateDTO.builder()
+                .description(expectedDescription)
+                .skills(expectedSkills)
+                .direction(Direction.ML)
+                .build();
+
+        Response response = given()
+                .body(createDTO)
+                .when()
+                .header("Authorization", "Bearer " + TOKEN_1)
+                .header("Content-Type", ContentType.JSON)
+                .post("/api/v1/positions?projectId=" + projectId)
+                .then()
+                .extract()
+                .response();
+
+        JsonPath jsonPath = response.jsonPath();
+        String errorMessage = jsonPath.get("message");
+
+        Assertions.assertEquals(String.format(INACCESSIBLE_PROJECT_ACTION, USER_MAIL, 1), errorMessage);
+    }
+
+    @Test
+    public void testSearchVacancy() {
+        int expectedSize = 8;
+        Specifications.installSpecification(Specifications.requestSpec("/api/v1/positions/search?size=" + expectedSize), Specifications.responseSpec(200));
+
+        SearchDTO dto = given()
+                .when()
+                .header("Authorization", "Bearer " + TOKEN_2)
+                .header("Content-Type", ContentType.JSON)
+                .get("/api/v1/positions/search?size=" + expectedSize)
+                .then()
+                .extract()
+                .as(SearchDTO.class);
+
+        int resumeListSize = dto.getContent().size();
+
+        Assertions.assertEquals(expectedSize, resumeListSize);
+    }
+
+    @Test
+    public void testSearchVacancyBySkills() {
+        int size = 8;
+        Specifications.installSpecification(Specifications.requestSpec("/api/v1/positions/search?size=" + size + "&skills=java"), Specifications.responseSpec(200));
+
+        List<VacancyDTO> dto = given()
+                .when()
+                .header("Authorization", "Bearer " + TOKEN_2)
+                .header("Content-Type", ContentType.JSON)
+                .get("/api/v1/positions/search?size=" + size + "&skills=java")
+                .then()
+                .extract()
+                .body().jsonPath().getList("content.", VacancyDTO.class);
+
+        int resumeListSize = dto.size();
+
+        for (int i = 0; i < resumeListSize; i++) {
+            Assertions.assertTrue(dto.get(i).getSkills().contains("java"));
+        }
+    }
+
+    @Test
+    @AfterAll
+    public static void testUpdateVacancy() {
+        // тест для лида первого проекта (TOKEN_2)
+        int id = 3;
+        Specifications.installSpecification(Specifications.requestSpec("/api/v1/positions/" + id), Specifications.responseSpec(200));
+
+        String expectedDescription = "New description";
+        List<String> expectedSkills = List.of("Skill 1", "Skill 2", "Skill 3");
+        DirectionDictionary expectedDirection = new DirectionDictionary(Direction.ML, "Machine Learning Engineer");
+
+        VacancyCreateDTO updateDTO = VacancyCreateDTO.builder()
+                .description(expectedDescription)
+                .skills(expectedSkills)
+                .direction(Direction.ML)
+                .build();
+
+        VacancyDTO dto = given()
+                .body(updateDTO)
+                .when()
+                .header("Authorization", "Bearer " + TOKEN_2)
+                .header("Content-Type", ContentType.JSON)
+                .patch("/api/v1/positions/" + id)
+                .then()
+                .extract()
+                .body().as(VacancyDTO.class);
+
+        Assertions.assertEquals(expectedDirection, dto.getDirection());
+        Assertions.assertEquals(expectedSkills, dto.getSkills());
+        Assertions.assertEquals(expectedDescription, dto.getDescription());
     }
 
     @Test
