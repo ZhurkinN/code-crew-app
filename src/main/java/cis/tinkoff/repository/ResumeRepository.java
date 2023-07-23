@@ -60,7 +60,7 @@ public interface ResumeRepository extends CrudRepository<Resume, Long> {
             WHERE resume_.is_active = true
               AND resume_.is_deleted = false
               AND resume_.direction ilike coalesce(:direction, '%')
-              AND resume_.skills @> coalesce(:skills, resume_.skills)
+              AND lower(resume_.skills::text)::text[] @> coalesce(lower(:skills::text)::text[], lower(resume_.skills::text)::text[])
             """,
             nativeQuery = true,
             countQuery = """
@@ -70,7 +70,7 @@ public interface ResumeRepository extends CrudRepository<Resume, Long> {
                     WHERE resume_.is_active = true
                       AND resume_.is_deleted = false
                       AND resume_.direction ilike coalesce(:direction, '%')
-                      AND resume_.skills @> coalesce(:skills, resume_.skills)
+                      AND lower(resume_.skills::text)::text[] @> coalesce(lower(:skills::text)::text[], lower(resume_.skills::text)::text[])
                     """)
     Page<Resume> searchAllResumes(@Nullable String direction, @Nullable List<String> skills, Pageable from);
 
