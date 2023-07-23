@@ -44,11 +44,6 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public ProjectDTO getProjectById(Long id, String login) {
         Project project = projectSupportService.getProjectByIdOrElseThrow(id);
-        List<Position> positions = project.getPositions();
-        List<User> users = positions.stream()
-                .filter(position -> position.getUser() != null)
-                .map(position -> position.getUser())
-                .toList();
 
         return getProjectDTO(project, login);
     }
