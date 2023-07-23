@@ -127,7 +127,7 @@ public class RESTRequestTest {
         int expectedRequestsSize = 1;
         Long expectedResumeId = 2L;
         boolean expectedIsInvite = true;
-        RequestStatusDictionary expectedStatus = new RequestStatusDictionary(RequestStatus.ACCEPTED, "Request is accepted");
+        RequestStatusDictionary expectedStatus = new RequestStatusDictionary(RequestStatus.IN_CONSIDERATION, "Request is under consideration");
 
         PositionRequestDTO expectedDTO1 = new PositionRequestDTO()
                 .setStatus(expectedStatus)
@@ -146,5 +146,55 @@ public class RESTRequestTest {
             Assertions.assertEquals(expectedDTO.getIsInvite(), factDTO.getIsInvite());
             Assertions.assertEquals(expectedDTO.getResume().getId(), factDTO.getResume().getId());
         }
+    }
+
+    @Test
+    public void testGetResumeInvites() {
+        Specifications.installSpecification(Specifications.requestSpec("/api/v1/requests/resumes/2?requestType=INCOMING"), Specifications.responseSpec(200));
+
+        List<PositionRequestDTO> requests = given()
+                .when()
+                .header("Authorization", "Bearer " + TOKEN)
+                .header("Content-Type", ContentType.JSON)
+                .get("/api/v1/requests/resumes/2?requestType=INCOMING")
+                .then()
+                .extract()
+                .body().jsonPath().getList(".", PositionRequestDTO.class);
+
+        int expectedRequestsSize = 2;
+        Long expectedVacancyId = 2L;
+        boolean expectedIsInvite = true;
+        RequestStatusDictionary expectedStatus = new RequestStatusDictionary(RequestStatus.IN_CONSIDERATION, "Request is under consideration");
+
+        PositionRequestDTO expectedDTO1 = new PositionRequestDTO()
+                .setStatus(expectedStatus)
+                .setIsInvite(expectedIsInvite)
+                .setPosition((Position) new Position().setId(expectedVacancyId));
+
+        expectedVacancyId = 5L;
+        expectedStatus = new RequestStatusDictionary(RequestStatus.IN_CONSIDERATION, "Request is under consideration");
+
+        PositionRequestDTO expectedDTO2 = new PositionRequestDTO()
+                .setStatus(expectedStatus)
+                .setIsInvite(expectedIsInvite)
+                .setPosition((Position) new Position().setId(expectedVacancyId));
+
+        List<PositionRequestDTO> expectedDTOS = List.of(expectedDTO1, expectedDTO2);
+
+        Assertions.assertEquals(expectedRequestsSize, requests.size());
+
+        for(int i = 0; i < expectedRequestsSize; i++) {
+            PositionRequestDTO expectedDTO = expectedDTOS.get(i);
+            PositionRequestDTO factDTO = requests.get(i);
+            Assertions.assertNotNull(requests.get(i).getCoverLetter());
+            Assertions.assertEquals(expectedDTO.getStatus(), factDTO.getStatus());
+            Assertions.assertEquals(expectedDTO.getIsInvite(), factDTO.getIsInvite());
+            Assertions.assertEquals(expectedDTO.getPosition().getId(), factDTO.getPosition().getId());
+        }
+    }
+
+    @Test
+    public void testGetRequestsSentWithResume() {
+
     }
 }

@@ -369,7 +369,7 @@ public class RESTResumeTest {
     }
 
     @Test
-    public void shouldReturnResumesWhenPuttingSkillInDifferentCase() {
+    public void shouldReturnResumesWhenPassingSkillInDifferentCase() {
         Specifications.installSpecification(Specifications.requestSpec("/api/v1/resumes/search?size=10&skills=jaVA"), Specifications.responseSpec(200));
 
         List<ResumeDTO> dto = given()
