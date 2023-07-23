@@ -13,7 +13,6 @@ public interface NotificationService {
 
     Notification create(NotificationType type,
                         User user);
-    List<Notification> getAll();
 
     Notification createNotification(
             Long targetUserId,

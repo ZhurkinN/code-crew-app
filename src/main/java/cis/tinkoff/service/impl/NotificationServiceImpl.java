@@ -3,11 +3,9 @@ package cis.tinkoff.service.impl;
 import cis.tinkoff.controller.model.NotificationDTO;
 import cis.tinkoff.controller.model.custom.NotificationRequestDTO;
 import cis.tinkoff.model.Notification;
-import cis.tinkoff.model.enumerated.NotificationType;
-import cis.tinkoff.repository.NotificationRepository;
-import cis.tinkoff.service.DictionaryService;
 import cis.tinkoff.model.User;
 import cis.tinkoff.model.enumerated.NotificationType;
+import cis.tinkoff.repository.NotificationRepository;
 import cis.tinkoff.service.DictionaryService;
 import cis.tinkoff.service.NotificationService;
 import cis.tinkoff.service.PositionRequestService;
@@ -22,6 +20,8 @@ import jakarta.inject.Provider;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
+
 @Singleton
 @RequiredArgsConstructor
 public class NotificationServiceImpl implements NotificationService {
@@ -31,7 +31,6 @@ public class NotificationServiceImpl implements NotificationService {
     private final UserService userService;
     private final DictionaryService dictionaryService;
     private final Provider<PositionRequestService> positionRequestServiceProvider;
-    private final DictionaryService dictionaryService;
 
     @Override
     public Notification create(NotificationType type, User user) {
