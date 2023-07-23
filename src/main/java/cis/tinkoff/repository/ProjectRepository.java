@@ -45,7 +45,7 @@ public interface ProjectRepository extends CrudRepository<Project, Long> {
             UPDATE project SET is_deleted = true WHERE id = :id
             """,
             nativeQuery = true)
-    Project softDeleteProject(Long id);
+    void softDeleteProject(Long id);
 
     void updateLeaderByLeaderId(@Id Long id,
                                 User leader);
