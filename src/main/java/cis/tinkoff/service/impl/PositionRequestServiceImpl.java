@@ -55,15 +55,17 @@ public class PositionRequestServiceImpl implements PositionRequestService {
                 .setResume(resume)
                 .setCoverLetter(coverLetter)
                 .setIsInvite(false)
-                .setStatus(defaultStatus)
-                .setNotifications(List.of(
-                        notificationService.create(
-                                NotificationType.REQUEST,
-                                position.getProject().getLeader()
-                        ))
-                );
+                .setStatus(defaultStatus);
 
-        return positionRequestRepository.save(positionRequest);
+        positionRequest = positionRequestRepository.save(positionRequest);
+
+        notificationService.createNotification(
+                position.getProject().getLeader().getId(),
+                positionRequest.getId(),
+                NotificationType.REQUEST
+        );
+
+        return positionRequest;
     }
 
     @Override
@@ -87,15 +89,17 @@ public class PositionRequestServiceImpl implements PositionRequestService {
                 .setResume(resume)
                 .setCoverLetter(coverLetter)
                 .setIsInvite(true)
-                .setStatus(defaultStatus)
-                .setNotifications(List.of(
-                        notificationService.create(
-                                NotificationType.INVITE,
-                                resume.getUser()
-                        ))
-                );
+                .setStatus(defaultStatus);
 
-        return positionRequestRepository.save(positionRequest);
+        positionRequest = positionRequestRepository.save(positionRequest);
+
+        notificationService.createNotification(
+                resume.getUser().getId(),
+                positionRequest.getId(),
+                NotificationType.INVITE
+        );
+
+        return positionRequest;
     }
 
     @Override
@@ -215,8 +219,8 @@ public class PositionRequestServiceImpl implements PositionRequestService {
             );
 
             Notification createdNotification = request.getIsInvite()
-                    ? notificationService.create(NotificationType.INVITE_APPROVED, position.getProject().getLeader())
-                    : notificationService.create(NotificationType.REQUEST_APPROVED, resume.getUser());
+                    ? notificationService.createNotification(resume.getUser().getId(), requestId, NotificationType.INVITE_APPROVED)
+                    : notificationService.createNotification(position.getProject().getLeader().getId(), requestId, NotificationType.REQUEST_APPROVED);
 
             if (Objects.nonNull(request.getNotifications())) {
                 request.getNotifications().add(createdNotification);
@@ -228,8 +232,8 @@ public class PositionRequestServiceImpl implements PositionRequestService {
 
             status.setStatusName(RequestStatus.DECLINED);
             Notification createdNotification = request.getIsInvite()
-                    ? notificationService.create(NotificationType.INVITE_APPROVED, position.getProject().getLeader())
-                    : notificationService.create(NotificationType.REQUEST_DECLINED, resume.getUser());
+                    ? notificationService.createNotification(resume.getUser().getId(), requestId, NotificationType.INVITE_DECLINED)
+                    : notificationService.createNotification(position.getProject().getLeader().getId(), requestId, NotificationType.REQUEST_DECLINED);
 
             if (Objects.nonNull(request.getNotifications())) {
                 request.getNotifications().add(createdNotification);
