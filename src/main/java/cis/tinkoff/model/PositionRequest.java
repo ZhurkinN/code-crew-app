@@ -10,6 +10,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @Setter
 @Accessors(chain = true)
@@ -44,6 +47,14 @@ public class PositionRequest extends GenericModel {
     @MappedProperty(value = "position_id")
     @Nullable
     private Position position;
+
+    @Relation(
+            value = Relation.Kind.ONE_TO_MANY,
+            cascade = Relation.Cascade.ALL,
+            mappedBy = "request"
+    )
+    @Nullable
+    private List<Notification> notifications = new ArrayList<>();
 
     public PositionRequest(Long id,
                            Long createdWhen,

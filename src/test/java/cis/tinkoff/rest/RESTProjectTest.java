@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.INACCESSIBLE_PROJECT_ACTION;
-import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.PROJECT_WRONG_ACCESS;
 import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.proxy;
 

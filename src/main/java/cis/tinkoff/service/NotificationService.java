@@ -1,10 +1,11 @@
 package cis.tinkoff.service;
 
 import cis.tinkoff.model.Notification;
-
-import java.util.List;
+import cis.tinkoff.model.User;
+import cis.tinkoff.model.enumerated.NotificationType;
 
 public interface NotificationService {
 
-    List<Notification> getAll();
+    Notification create(NotificationType type,
+                        User user);
 }

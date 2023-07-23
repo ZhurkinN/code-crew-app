@@ -7,7 +7,6 @@ import cis.tinkoff.model.User;
 import cis.tinkoff.service.UserService;
 import cis.tinkoff.support.mapper.UserMapper;
 import io.micrometer.core.annotation.Timed;
-import io.micrometer.prometheus.PrometheusMeterRegistry;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.MediaType;
 import io.micronaut.http.annotation.*;

@@ -2,11 +2,6 @@ package cis.tinkoff.support.exceptions.constants;
 
 public interface ErrorDisplayMessageKeeper {
 
-    //CRUD action errors
-    String RECORD_NOT_FOUND = "The record for this query was not found.";
-
-    String PROJECT_WRONG_ACCESS = "Action with this project is not available.";
-
     //ProfilePictureNotFoundException
     String PICTURE_NOT_FOUND = "Profile picture for user with id = %d isn't found.";
 
@@ -35,6 +30,7 @@ public interface ErrorDisplayMessageKeeper {
     String REQUEST_NOT_FOUND = "Position request with id = %d is not found or deleted.";
     String DIRECTION_NOT_FOUND = "Direction with id = %s is not found.";
     String PROJECT_STATUS_NOT_FOUND = "Project status with id = %s is not found.";
-
+    String REQUEST_STATUS_NOT_FOUND = "Request status with id = %s is not found.";
+    String NOTIFICATION_TYPE_NOT_FOUND = "Notification type with id = %s is not found.";
 
 }

@@ -1,21 +1,24 @@
 package cis.tinkoff.service.impl;
 
 import cis.tinkoff.model.Notification;
-import cis.tinkoff.repository.NotificationRepository;
+import cis.tinkoff.model.User;
+import cis.tinkoff.model.enumerated.NotificationType;
+import cis.tinkoff.service.DictionaryService;
 import cis.tinkoff.service.NotificationService;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
-
-import java.util.List;
 
 @Singleton
 @RequiredArgsConstructor
 public class NotificationServiceImpl implements NotificationService {
 
-    private final NotificationRepository notificationRepository;
+    private final DictionaryService dictionaryService;
 
     @Override
-    public List<Notification> getAll() {
-        return (List<Notification>) notificationRepository.findAll();
+    public Notification create(NotificationType type, User user) {
+        return new Notification()
+                .setType(dictionaryService.getNotificationTypeDictionaryById(type))
+                .setUser(user);
     }
+
 }

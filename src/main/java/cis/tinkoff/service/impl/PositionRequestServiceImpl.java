@@ -1,9 +1,14 @@
 package cis.tinkoff.service.impl;
 
 import cis.tinkoff.model.*;
+import cis.tinkoff.model.enumerated.NotificationType;
 import cis.tinkoff.model.enumerated.RequestStatus;
-import cis.tinkoff.repository.*;
-import cis.tinkoff.repository.dictionary.RequestStatusRepository;
+import cis.tinkoff.repository.PositionRepository;
+import cis.tinkoff.repository.PositionRequestRepository;
+import cis.tinkoff.repository.ProjectRepository;
+import cis.tinkoff.repository.ResumeRepository;
+import cis.tinkoff.service.DictionaryService;
+import cis.tinkoff.service.NotificationService;
 import cis.tinkoff.service.PositionRequestService;
 import cis.tinkoff.service.enumerated.RequestType;
 import cis.tinkoff.support.exceptions.InaccessibleActionException;
@@ -22,12 +27,12 @@ import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper
 @RequiredArgsConstructor
 public class PositionRequestServiceImpl implements PositionRequestService {
 
+    private final NotificationService notificationService;
+    private final DictionaryService dictionaryService;
     private final PositionRequestRepository positionRequestRepository;
     private final ResumeRepository resumeRepository;
     private final PositionRepository positionRepository;
-    private final RequestStatusRepository requestStatusRepository;
     private final ProjectRepository projectRepository;
-    private final UserRepository userRepository;
 
     @Override
     public PositionRequest createPositionRequest(String authorEmail,
@@ -37,10 +42,9 @@ public class PositionRequestServiceImpl implements PositionRequestService {
 
         Resume resume = resumeRepository.findByIdAndIsDeletedFalseAndIsActiveTrue(resumeId)
                 .orElseThrow(() -> new RecordNotFoundException(RESUME_NOT_FOUND, resumeId));
-        Position position = positionRepository.findByIdAndIsDeletedFalseAndIsVisibleTrue(positionId)
+        Position position = positionRepository.getByIdAndIsDeletedFalseAndIsVisibleTrue(positionId)
                 .orElseThrow(() -> new RecordNotFoundException(POSITION_NOT_FOUND, positionId));
-        RequestStatusDictionary defaultStatus = requestStatusRepository.findById(RequestStatus.IN_CONSIDERATION)
-                .orElseThrow();
+        RequestStatusDictionary defaultStatus = dictionaryService.getRequestStatusDictionaryById(RequestStatus.IN_CONSIDERATION);
 
         validateUsersResumeOwnership(authorEmail, resumeId);
         validateUsersProjectMembership(authorEmail, positionId);
@@ -51,7 +55,13 @@ public class PositionRequestServiceImpl implements PositionRequestService {
                 .setResume(resume)
                 .setCoverLetter(coverLetter)
                 .setIsInvite(false)
-                .setStatus(defaultStatus);
+                .setStatus(defaultStatus)
+                .setNotifications(List.of(
+                        notificationService.create(
+                                NotificationType.REQUEST,
+                                position.getProject().getLeader()
+                        ))
+                );
 
         return positionRequestRepository.save(positionRequest);
     }
@@ -66,8 +76,7 @@ public class PositionRequestServiceImpl implements PositionRequestService {
                 .orElseThrow(() -> new RecordNotFoundException(RESUME_NOT_FOUND, resumeId));
         Position position = positionRepository.findByIdAndIsDeletedFalseAndIsVisibleTrue(positionId)
                 .orElseThrow(() -> new RecordNotFoundException(POSITION_NOT_FOUND, positionId));
-        RequestStatusDictionary defaultStatus = requestStatusRepository.findById(RequestStatus.IN_CONSIDERATION)
-                .orElseThrow();
+        RequestStatusDictionary defaultStatus = dictionaryService.getRequestStatusDictionaryById(RequestStatus.IN_CONSIDERATION);
 
         validateUsersProjectLeadership(authorEmail, positionId);
         validateInvitedUsersProjectMembership(resumeId, positionId);
@@ -78,7 +87,13 @@ public class PositionRequestServiceImpl implements PositionRequestService {
                 .setResume(resume)
                 .setCoverLetter(coverLetter)
                 .setIsInvite(true)
-                .setStatus(defaultStatus);
+                .setStatus(defaultStatus)
+                .setNotifications(List.of(
+                        notificationService.create(
+                                NotificationType.INVITE,
+                                resume.getUser()
+                        ))
+                );
 
         return positionRequestRepository.save(positionRequest);
     }
@@ -91,26 +106,25 @@ public class PositionRequestServiceImpl implements PositionRequestService {
         Position position = positionRepository.findByIdAndIsDeletedFalseAndIsVisibleTrue(positionId)
                 .orElseThrow(() -> new RecordNotFoundException(POSITION_NOT_FOUND, positionId));
         validateUsersProjectLeadership(leaderEmail, positionId);
-        RequestStatusDictionary inConsiderationStatus = requestStatusRepository
-                .findById(RequestStatus.IN_CONSIDERATION)
-                .orElseThrow();
+        RequestStatusDictionary inConsiderationStatus = dictionaryService.getRequestStatusDictionaryById(RequestStatus.IN_CONSIDERATION);
 
-        List<PositionRequest> positionRequests = switch (requestType) {
-            case INCOMING -> positionRequestRepository.findAllByPositionAndStatusAndIsDeletedFalseAndIsInvite(
-                    position,
-                    inConsiderationStatus,
-                    false
-            );
-            case SENT -> positionRequestRepository.findAllByPositionAndStatusAndIsDeletedFalseAndIsInvite(
-                    position,
-                    inConsiderationStatus,
-                    true
-            );
-            case RECENT -> positionRequestRepository.findAllByPositionAndStatusNotEqualsAndIsDeletedFalse(
-                    position,
-                    inConsiderationStatus
-            );
-        };
+        List<PositionRequest> positionRequests =
+                switch (requestType) {
+                    case INCOMING -> positionRequestRepository.findAllByPositionAndStatusAndIsDeletedFalseAndIsInvite(
+                            position,
+                            inConsiderationStatus,
+                            false
+                    );
+                    case SENT -> positionRequestRepository.findAllByPositionAndStatusAndIsDeletedFalseAndIsInvite(
+                            position,
+                            inConsiderationStatus,
+                            true
+                    );
+                    case RECENT -> positionRequestRepository.findAllByPositionAndStatusNotEqualsAndIsDeletedFalse(
+                            position,
+                            inConsiderationStatus
+                    );
+                };
         positionRequests.forEach(e -> {
             User user = resumeRepository.getUserById(Objects.requireNonNull(e.getResume()).getId());
             User detailedUser = new User()
@@ -134,26 +148,26 @@ public class PositionRequestServiceImpl implements PositionRequestService {
         Resume resume = resumeRepository.findByIdAndIsDeletedFalseAndIsActiveTrue(resumeId)
                 .orElseThrow(() -> new RecordNotFoundException(RESUME_NOT_FOUND, resumeId));
         validateUsersResumeOwnership(resumeOwnerEmail, resumeId);
-        RequestStatusDictionary inConsiderationStatus = requestStatusRepository
-                .findById(RequestStatus.IN_CONSIDERATION)
-                .orElseThrow();
+        RequestStatusDictionary inConsiderationStatus = dictionaryService.getRequestStatusDictionaryById(RequestStatus.IN_CONSIDERATION);
 
-        List<PositionRequest> resumesPositionRequests = switch (requestType) {
-            case INCOMING -> positionRequestRepository.findAllByResumeAndStatusAndIsDeletedFalseAndIsInvite(
-                    resume,
-                    inConsiderationStatus,
-                    true
-            );
-            case SENT -> positionRequestRepository.findAllByResumeAndStatusAndIsDeletedFalseAndIsInvite(
-                    resume,
-                    inConsiderationStatus,
-                    false
-            );
-            case RECENT -> positionRequestRepository.findAllByResumeAndStatusNotEqualsAndIsDeletedFalse(
-                    resume,
-                    inConsiderationStatus
-            );
-        };
+        List<PositionRequest> resumesPositionRequests =
+                switch (requestType) {
+                    case INCOMING -> positionRequestRepository.findAllByResumeAndStatusAndIsDeletedFalseAndIsInvite(
+                            resume,
+                            inConsiderationStatus,
+                            true
+                    );
+                    case SENT -> positionRequestRepository.findAllByResumeAndStatusAndIsDeletedFalseAndIsInvite(
+                            resume,
+                            inConsiderationStatus,
+                            false
+                    );
+                    case RECENT -> positionRequestRepository.findAllByResumeAndStatusNotEqualsAndIsDeletedFalse(
+                            resume,
+                            inConsiderationStatus
+                    );
+                };
+
         resumesPositionRequests.forEach(e -> {
             Project project = positionRepository.findProjectById(Objects.requireNonNull(e.getPosition()).getId());
             Project detailedProject = new Project()
@@ -199,9 +213,29 @@ public class PositionRequestServiceImpl implements PositionRequestService {
                     System.currentTimeMillis(),
                     resume.getUser()
             );
+
+            Notification createdNotification = request.getIsInvite()
+                    ? notificationService.create(NotificationType.INVITE_APPROVED, position.getProject().getLeader())
+                    : notificationService.create(NotificationType.REQUEST_APPROVED, resume.getUser());
+
+            if (Objects.nonNull(request.getNotifications())) {
+                request.getNotifications().add(createdNotification);
+            } else {
+                request.setNotifications(List.of(createdNotification));
+            }
+
         } else {
 
             status.setStatusName(RequestStatus.DECLINED);
+            Notification createdNotification = request.getIsInvite()
+                    ? notificationService.create(NotificationType.INVITE_APPROVED, position.getProject().getLeader())
+                    : notificationService.create(NotificationType.REQUEST_DECLINED, resume.getUser());
+
+            if (Objects.nonNull(request.getNotifications())) {
+                request.getNotifications().add(createdNotification);
+            } else {
+                request.setNotifications(List.of(createdNotification));
+            }
         }
 
         positionRequestRepository.update(request);
