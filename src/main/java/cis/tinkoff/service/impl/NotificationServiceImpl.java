@@ -6,6 +6,9 @@ import cis.tinkoff.model.Notification;
 import cis.tinkoff.model.enumerated.NotificationType;
 import cis.tinkoff.repository.NotificationRepository;
 import cis.tinkoff.service.DictionaryService;
+import cis.tinkoff.model.User;
+import cis.tinkoff.model.enumerated.NotificationType;
+import cis.tinkoff.service.DictionaryService;
 import cis.tinkoff.service.NotificationService;
 import cis.tinkoff.service.PositionRequestService;
 import cis.tinkoff.service.UserService;
@@ -19,8 +22,6 @@ import jakarta.inject.Provider;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 
-import java.util.List;
-
 @Singleton
 @RequiredArgsConstructor
 public class NotificationServiceImpl implements NotificationService {
@@ -30,10 +31,13 @@ public class NotificationServiceImpl implements NotificationService {
     private final UserService userService;
     private final DictionaryService dictionaryService;
     private final Provider<PositionRequestService> positionRequestServiceProvider;
+    private final DictionaryService dictionaryService;
 
     @Override
-    public List<Notification> getAll() {
-        return (List<Notification>) notificationRepository.findAll();
+    public Notification create(NotificationType type, User user) {
+        return new Notification()
+                .setType(dictionaryService.getNotificationTypeDictionaryById(type))
+                .setUser(user);
     }
 
     @Override
@@ -99,4 +103,5 @@ public class NotificationServiceImpl implements NotificationService {
 
         return Pageable.from(pageNumber, sizeLimit, Sort.of(sortOrder));
     }
+
 }

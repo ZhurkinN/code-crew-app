@@ -8,7 +8,7 @@ import cis.tinkoff.model.enumerated.Direction;
 import cis.tinkoff.model.generic.GenericModel;
 import cis.tinkoff.repository.ResumeRepository;
 import cis.tinkoff.repository.UserRepository;
-import cis.tinkoff.repository.dictionary.DirectionRepository;
+import cis.tinkoff.service.DictionaryService;
 import cis.tinkoff.service.ResumeService;
 import cis.tinkoff.service.enumerated.SortDirection;
 import cis.tinkoff.support.exceptions.InaccessibleActionException;
@@ -30,9 +30,9 @@ import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper
 @RequiredArgsConstructor
 public class ResumeServiceImpl implements ResumeService {
 
+    private final DictionaryService dictionaryService;
     private final UserRepository userRepository;
     private final ResumeRepository resumeRepository;
-    private final DirectionRepository directionRepository;
     private final ResumeMapper resumeMapper;
 
     @Override
@@ -79,8 +79,7 @@ public class ResumeServiceImpl implements ResumeService {
         User author = userRepository.findByEmailAndIsDeletedFalse(authorEmail)
                 .orElseThrow(() -> new RecordNotFoundException(USER_NOT_FOUND_BY_EMAIL, authorEmail));
         Direction directionId = Direction.valueOf(directionName);
-        DirectionDictionary direction = directionRepository.findById(directionId)
-                .orElseThrow(() -> new RecordNotFoundException(DIRECTION_NOT_FOUND, String.valueOf(directionId)));
+        DirectionDictionary direction = dictionaryService.getDirectionDictionaryById(directionId);
 
         Resume resume = new Resume()
                 .setDescription(description)
@@ -101,8 +100,7 @@ public class ResumeServiceImpl implements ResumeService {
         Resume resume = resumeRepository.findByIdAndIsDeletedFalse(resumeId)
                 .orElseThrow(() -> new RecordNotFoundException(RESUME_NOT_FOUND, resumeId));
         Direction directionId = Direction.valueOf(directionName);
-        DirectionDictionary direction = directionRepository.findById(directionId)
-                .orElseThrow(() -> new RecordNotFoundException(DIRECTION_NOT_FOUND, String.valueOf(directionId)));
+        DirectionDictionary direction = dictionaryService.getDirectionDictionaryById(directionId);
 
         if (!authorEmail.equals(resume.getUser().getEmail())) {
             throw new InaccessibleActionException(

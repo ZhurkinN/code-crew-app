@@ -60,9 +60,11 @@ public interface PositionRequestRepository extends CrudRepository<PositionReques
 
     @Join(value = "position", type = Join.Type.FETCH)
     @Join(value = "position.project", type = Join.Type.FETCH)
+    @Join(value = "position.project.leader", type = Join.Type.FETCH)
     @Join(value = "resume", type = Join.Type.FETCH)
     @Join(value = "resume.user", type = Join.Type.FETCH)
     @Join(value = "status", type = Join.Type.FETCH)
+    @Join(value = "notifications", type = Join.Type.FETCH)
     Optional<PositionRequest> findByIdAndIsDeletedFalse(@NotNull Long id);
 
 }

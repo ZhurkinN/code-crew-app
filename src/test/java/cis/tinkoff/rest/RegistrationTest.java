@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.PROJECT_WRONG_ACCESS;
 import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.USER_ALREADY_EXISTS;
 import static io.restassured.RestAssured.given;
 
