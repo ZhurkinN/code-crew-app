@@ -13,3 +13,9 @@ out/
 .settings
 .classpath
 .factorypath
+prometheus/
+config/grafana/alerting
+config/grafana/csv
+config/grafana/png
+config/grafana/plugins
+config/grafana/grafana.db

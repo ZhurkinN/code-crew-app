@@ -9,6 +9,7 @@ import cis.tinkoff.repository.UserRepository;
 import cis.tinkoff.service.UserService;
 import cis.tinkoff.support.exceptions.RecordNotFoundException;
 import cis.tinkoff.support.exceptions.UserAlreadyExistsException;
+import io.micrometer.core.annotation.Timed;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 
@@ -24,6 +25,11 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final ResumeRepository resumeRepository;
 
+    @Timed(
+            value = "cis.tinkoff.service.impl.userServiceImpl.getById",
+            percentiles = {0.5, 0.95, 0.99},
+            description = "Finds user by id"
+    )
     @Override
     public User getById(Long id) {
 

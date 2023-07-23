@@ -1,6 +1,7 @@
 package cis.tinkoff.service;
 
 import cis.tinkoff.model.User;
+import io.micrometer.core.annotation.Timed;
 
 import java.util.List;
 
