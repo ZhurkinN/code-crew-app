@@ -369,6 +369,27 @@ public class RESTPositionTest {
     }
 
     @Test
+    public void shouldReturnPositionsWhenPuttingSkillInDifferentCase() {
+        int size = 8;
+        Specifications.installSpecification(Specifications.requestSpec("/api/v1/positions/search?size=" + size + "&skills=jaVA"), Specifications.responseSpec(200));
+
+        List<VacancyDTO> dto = given()
+                .when()
+                .header("Authorization", "Bearer " + TOKEN_2)
+                .header("Content-Type", ContentType.JSON)
+                .get("/api/v1/positions/search?size=" + size + "&skills=jaVA")
+                .then()
+                .extract()
+                .body().jsonPath().getList("content.", VacancyDTO.class);
+
+        int resumeListSize = dto.size();
+
+        for (int i = 0; i < resumeListSize; i++) {
+            Assertions.assertTrue(dto.get(i).getSkills().contains("java"));
+        }
+    }
+
+    @Test
     @AfterAll
     public static void testUpdateVacancy() {
         // тест для лида первого проекта (TOKEN_2)

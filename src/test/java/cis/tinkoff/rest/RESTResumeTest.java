@@ -369,6 +369,27 @@ public class RESTResumeTest {
     }
 
     @Test
+    public void shouldReturnResumesWhenPuttingSkillInDifferentCase() {
+        Specifications.installSpecification(Specifications.requestSpec("/api/v1/resumes/search?size=10&skills=jaVA"), Specifications.responseSpec(200));
+
+        List<ResumeDTO> dto = given()
+                .when()
+                .header("Authorization", "Bearer " + TOKEN_2)
+                .header("Content-Type", ContentType.JSON)
+                .get("/api/v1/resumes/search?size=10&skills=jaVaScrIpt")
+                .then()
+                .extract()
+                .body().jsonPath().getList("content.", ResumeDTO.class);
+
+        int expectedSize = 3;
+        Assertions.assertEquals(expectedSize, dto.size());
+
+        for (int i = 0; i < expectedSize; i++) {
+            Assertions.assertTrue(dto.get(i).getSkills().contains("java"));
+        }
+    }
+
+    @Test
     public void testSearchByDirection() {
         Specifications.installSpecification(Specifications.requestSpec("/api/v1/resumes/search?size=10&direction=FRONTEND"), Specifications.responseSpec(200));
 
