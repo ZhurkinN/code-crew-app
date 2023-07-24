@@ -1,9 +1,9 @@
 package cis.tinkoff.controller.model;
 
 import cis.tinkoff.model.Notification;
-import cis.tinkoff.model.NotificationTypeDictionary;
 import cis.tinkoff.model.PositionRequest;
 import cis.tinkoff.model.User;
+import cis.tinkoff.model.dictionary.NotificationTypeDictionary;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
