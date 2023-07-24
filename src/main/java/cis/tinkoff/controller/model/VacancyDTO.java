@@ -1,10 +1,8 @@
 package cis.tinkoff.controller.model;
 
-import cis.tinkoff.model.Position;
 import cis.tinkoff.model.dictionary.DirectionDictionary;
 import lombok.*;
 
-import java.util.Collection;
 import java.util.List;
 
 @AllArgsConstructor

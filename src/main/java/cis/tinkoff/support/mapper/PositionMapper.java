@@ -1,7 +1,6 @@
 package cis.tinkoff.support.mapper;
 
 
-import cis.tinkoff.controller.model.ProjectDTO;
 import cis.tinkoff.controller.model.VacancyDTO;
 import cis.tinkoff.controller.model.custom.ProjectMemberDTO;
 import cis.tinkoff.model.Position;
@@ -17,6 +16,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class PositionMapper {
     private final ProjectMapper projectMapper;
+
     public VacancyDTO toVacancyDTO(Position position) {
         if (position == null) {
             return null;

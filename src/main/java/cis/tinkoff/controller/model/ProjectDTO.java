@@ -2,13 +2,10 @@ package cis.tinkoff.controller.model;
 
 import cis.tinkoff.controller.model.custom.ContactDTO;
 import cis.tinkoff.controller.model.custom.ProjectMemberDTO;
-import cis.tinkoff.model.Position;
-import cis.tinkoff.model.Project;
 import cis.tinkoff.model.dictionary.ProjectStatusDictionary;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
-import java.util.Collection;
 import java.util.List;
 
 @AllArgsConstructor
