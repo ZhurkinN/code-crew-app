@@ -35,8 +35,7 @@ public class UserController {
     @Get(value = "/{id}", produces = MediaType.APPLICATION_JSON)
     public HttpResponse<UserDTO> findById(@PathVariable Long id) {
 
-        User user = userService.getById(id);
-        UserDTO responseDto = userMapper.toDto(user);
+        UserDTO responseDto = userService.getById(id);
         return HttpResponse.ok(responseDto);
     }
 
@@ -45,8 +44,7 @@ public class UserController {
     public HttpResponse<UserDTO> find(Authentication authentication) {
 
         String email = authentication.getName();
-        User user = userService.getByEmail(email);
-        UserDTO responseDto = userMapper.toDto(user);
+        UserDTO responseDto = userService.getByEmail(email);
         return HttpResponse.ok(responseDto);
     }
 

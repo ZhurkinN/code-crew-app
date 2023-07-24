@@ -34,7 +34,7 @@ public class PositionRequest extends GenericModel {
 
     @Relation(
             value = Relation.Kind.MANY_TO_ONE,
-            cascade = Relation.Cascade.NONE
+            cascade = Relation.Cascade.UPDATE
     )
     @MappedProperty(value = "resume_id")
     @Nullable
@@ -42,7 +42,7 @@ public class PositionRequest extends GenericModel {
 
     @Relation(
             value = Relation.Kind.MANY_TO_ONE,
-            cascade = Relation.Cascade.NONE
+            cascade = Relation.Cascade.UPDATE
     )
     @MappedProperty(value = "position_id")
     @Nullable

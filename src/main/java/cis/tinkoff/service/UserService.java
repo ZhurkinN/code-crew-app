@@ -1,14 +1,19 @@
 package cis.tinkoff.service;
 
+import cis.tinkoff.controller.model.UserDTO;
 import cis.tinkoff.model.User;
 
 import java.util.List;
 
 public interface UserService {
 
-    User getById(Long id);
+    UserDTO getById(Long id);
 
-    User getByEmail(String email);
+    UserDTO getByEmail(String email);
+
+    User getByIdWithoutProjects(Long id);
+
+    User getByEmailWithoutProjects(String email);
 
     User register(String email,
                   String password,
@@ -24,5 +29,4 @@ public interface UserService {
 
     void softDelete(String email);
 
-    List<User> findUsersByIdsOrElseThrow(List<Long> ids);
 }

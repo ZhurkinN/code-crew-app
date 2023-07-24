@@ -361,7 +361,34 @@ public class RESTPositionTest {
                 .extract()
                 .body().jsonPath().getList("content.", VacancyDTO.class);
 
+        int expectedSize = 5;
         int resumeListSize = dto.size();
+
+        Assertions.assertEquals(expectedSize, resumeListSize);
+
+        for (int i = 0; i < resumeListSize; i++) {
+            Assertions.assertTrue(dto.get(i).getSkills().contains("java"));
+        }
+    }
+
+    @Test
+    public void shouldReturnPositionsWhenPassingSkillInDifferentCase() {
+        int size = 8;
+        Specifications.installSpecification(Specifications.requestSpec("/api/v1/positions/search?size=" + size + "&skills=jaVA"), Specifications.responseSpec(200));
+
+        List<VacancyDTO> dto = given()
+                .when()
+                .header("Authorization", "Bearer " + TOKEN_2)
+                .header("Content-Type", ContentType.JSON)
+                .get("/api/v1/positions/search?size=" + size + "&skills=jaVA")
+                .then()
+                .extract()
+                .body().jsonPath().getList("content.", VacancyDTO.class);
+
+        int expectedSize = 5;
+        int resumeListSize = dto.size();
+
+        Assertions.assertEquals(expectedSize, resumeListSize);
 
         for (int i = 0; i < resumeListSize; i++) {
             Assertions.assertTrue(dto.get(i).getSkills().contains("java"));

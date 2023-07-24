@@ -20,6 +20,7 @@ import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper
 @Singleton
 @RequiredArgsConstructor
 public class PositionSupportServiceImpl implements PositionSupportService {
+
     private final PositionRepository positionRepository;
     private final DictionaryService dictionaryService;
 
@@ -51,6 +52,11 @@ public class PositionSupportServiceImpl implements PositionSupportService {
     @Override
     public void softDeletePositionByUserIdAndProjectId(Long userId, Long projectId) {
         positionRepository.softDeletePositionByUserIdAndProjectId(userId, projectId);
+    }
+
+    @Override
+    public void softDeletePositionsByProjectId(Long projectId) {
+        positionRepository.softDeletePositionsByProjectId(projectId);
     }
 
     @Override

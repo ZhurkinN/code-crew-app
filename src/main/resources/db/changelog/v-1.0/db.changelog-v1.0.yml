@@ -28,9 +28,6 @@ databaseChangeLog:
       file: changeset-project_information-table.yml
   - include:
       relativeToChangelogFile: true
-      file: changeset-project_members-table.yml
-  - include:
-      relativeToChangelogFile: true
       file: changeset-refresh_token-table.yml
   - include:
       relativeToChangelogFile: true

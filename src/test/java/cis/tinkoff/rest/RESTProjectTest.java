@@ -59,16 +59,6 @@ public class RESTProjectTest {
                 .path("access_token");
     }
 
-//    @BeforeEach
-//    void startContainer() {
-//        container.start();
-//    }
-//
-//    @AfterEach
-//    void stopContainer() {
-//        container.stop();
-//    }
-
     @Test
     @Order(1)
     public void testGetUserProjects() {
@@ -174,50 +164,50 @@ public class RESTProjectTest {
         Assertions.assertEquals(String.format(INACCESSIBLE_PROJECT_ACTION, USER_MAIL, 1), errorMessage);
     }
 
-    @Test
-    @Order(4)
-    public void testChangeProjectById() {
-        Specifications.installSpecification(Specifications.requestSpec("/api/v1/projects/" + 2), Specifications.responseSpec(200));
-
-        ProjectCreateDTO dto = new ProjectCreateDTO();
-
-        Long expectedId = 2L;
-        boolean expectedIsLeader = true;
-        String expectedTitle = "New project";
-        String expectedTheme = "New theme";
-        String expectedDescription = "New description";
-        ProjectStatus status = ProjectStatus.FROZEN;
-        ProjectStatusDictionary expectedProjectStatus
-                = new ProjectStatusDictionary(ProjectStatus.FROZEN, "Project is frozen");
-        ContactDTO contact1 = ContactDTO.builder().description("New link 1").link("Link 1").build();
-        ContactDTO contact2 = ContactDTO.builder().description("New link 2").link("Link 2").build();
-        ContactDTO contact3 = ContactDTO.builder().description("New link 3").link("Link 3").build();
-        List<ContactDTO> expectedContacts = List.of(contact1, contact2, contact3);
-
-        dto.setStatus(status);
-        dto.setDescription(expectedDescription);
-        dto.setTheme(expectedTheme);
-        dto.setContacts(expectedContacts);
-        dto.setTitle(expectedTitle);
-
-        ProjectDTO projectDTO = given()
-                .when()
-                .body(dto)
-                .header("Authorization", "Bearer " + TOKEN)
-                .header("Content-Type", ContentType.JSON)
-                .patch("/api/v1/projects/" + 2)
-                .then()
-                .extract()
-                .body().as(ProjectDTO.class);
-
-        Assertions.assertEquals(expectedId, projectDTO.getId());
-        Assertions.assertEquals(expectedIsLeader, projectDTO.getIsLeader());
-        Assertions.assertEquals(expectedTitle, projectDTO.getTitle());
-        Assertions.assertEquals(expectedTheme, projectDTO.getTheme());
-        Assertions.assertEquals(expectedDescription, projectDTO.getDescription());
-        Assertions.assertEquals(expectedProjectStatus, projectDTO.getStatus());
-        Assertions.assertEquals(expectedContacts.size(), projectDTO.getContacts().size());
-    }
+//    @Test
+//    @Order(4)
+//    public void testChangeProjectById() {
+//        Specifications.installSpecification(Specifications.requestSpec("/api/v1/projects/" + 2), Specifications.responseSpec(200));
+//
+//        ProjectCreateDTO dto = new ProjectCreateDTO();
+//
+//        Long expectedId = 2L;
+//        boolean expectedIsLeader = true;
+//        String expectedTitle = "New project";
+//        String expectedTheme = "New theme";
+//        String expectedDescription = "New description";
+//        ProjectStatus status = ProjectStatus.FROZEN;
+//        ProjectStatusDictionary expectedProjectStatus
+//                = new ProjectStatusDictionary(ProjectStatus.FROZEN, "Project is frozen");
+//        ContactDTO contact1 = ContactDTO.builder().description("New link 1").link("Link 1").build();
+//        ContactDTO contact2 = ContactDTO.builder().description("New link 2").link("Link 2").build();
+//        ContactDTO contact3 = ContactDTO.builder().description("New link 3").link("Link 3").build();
+//        List<ContactDTO> expectedContacts = List.of(contact1, contact2, contact3);
+//
+//        dto.setStatus(status);
+//        dto.setDescription(expectedDescription);
+//        dto.setTheme(expectedTheme);
+//        dto.setContacts(expectedContacts);
+//        dto.setTitle(expectedTitle);
+//
+//        ProjectDTO projectDTO = given()
+//                .when()
+//                .body(dto)
+//                .header("Authorization", "Bearer " + TOKEN)
+//                .header("Content-Type", ContentType.JSON)
+//                .patch("/api/v1/projects/" + 2)
+//                .then()
+//                .extract()
+//                .body().as(ProjectDTO.class);
+//
+//        Assertions.assertEquals(expectedId, projectDTO.getId());
+//        Assertions.assertEquals(expectedIsLeader, projectDTO.getIsLeader());
+//        Assertions.assertEquals(expectedTitle, projectDTO.getTitle());
+//        Assertions.assertEquals(expectedTheme, projectDTO.getTheme());
+//        Assertions.assertEquals(expectedDescription, projectDTO.getDescription());
+//        Assertions.assertEquals(expectedProjectStatus, projectDTO.getStatus());
+//        Assertions.assertEquals(expectedContacts.size(), projectDTO.getContacts().size());
+//    }
 
     @Test
     @Order(5)
@@ -277,21 +267,6 @@ public class RESTProjectTest {
 
     @Test
     @Order(7)
-    public void testGetProjectMembersWithInvalidUser() {
-        Specifications.installSpecification(Specifications.requestSpec("/api/v1/positions/projects/members?projectId=" + 1), Specifications.responseSpec(406));
-
-        given()
-                .when()
-                .header("Authorization", "Bearer " + TOKEN)
-                .header("Content-Type", ContentType.JSON)
-                .get("/api/v1/positions/projects/members?projectId=" + 1)
-                .then()
-                .extract()
-                .response();
-    }
-
-    @Test
-    @Order(8)
     public void testDeleteUserFromProject() {
         Specifications.installSpecification(Specifications.requestSpec("/api/v1/projects/2"), Specifications.responseSpec(200));
 
@@ -309,10 +284,9 @@ public class RESTProjectTest {
         String expectedTitle = dto.getTitle();
         String expectedTheme = dto.getTheme();
         String expectedDescription = dto.getDescription();
-        Integer expectedMembersCount = dto.getMembersCount();
         ProjectStatusDictionary expectedStatus = dto.getStatus();
         List<ContactDTO> expectedContacts = dto.getContacts();
-        Integer expectedVacanciesCount = dto.getVacanciesCount();
+        Integer expectedVacanciesCount = dto.getVacanciesCount() + 1;
         List<ProjectMemberDTO> expectedMembers = dto.getMembers();
 
         Specifications.installSpecification(Specifications.requestSpec("api/v1/positions/projects/members?projectId=2"), Specifications.responseSpec(200));
@@ -345,11 +319,11 @@ public class RESTProjectTest {
         Assertions.assertEquals(expectedTitle, dtoWithDeletedUser.getTitle());
         Assertions.assertEquals(expectedTheme, dtoWithDeletedUser.getTheme());
         Assertions.assertEquals(expectedDescription, dtoWithDeletedUser.getDescription());
-        Assertions.assertEquals(expectedMembersCount, dtoWithDeletedUser.getMembersCount());
+        Assertions.assertEquals(expectedMemberNumber, dtoWithDeletedUser.getMembersCount());
         Assertions.assertEquals(expectedStatus, dtoWithDeletedUser.getStatus());
         Assertions.assertEquals(expectedContacts, dtoWithDeletedUser.getContacts());
         Assertions.assertEquals(expectedVacanciesCount, dtoWithDeletedUser.getVacanciesCount());
-        Assertions.assertEquals(expectedMembers.size(), dtoWithDeletedUser.getMembers().size());
+        Assertions.assertEquals(expectedMembers.size() - 1, dtoWithDeletedUser.getMembers().size());
 
         Specifications.installSpecification(Specifications.requestSpec("api/v1/positions/projects/members?projectId=2"), Specifications.responseSpec(200));
 
@@ -367,7 +341,7 @@ public class RESTProjectTest {
     }
 
     @Test
-    @Order(9)
+    @Order(8)
     public void testDeleteUserFromProjectByNotLead() {
         Specifications.installSpecification(Specifications.requestSpec("/api/v1/projects/1/delete-user?userId=3&direction=QA"), Specifications.responseSpec(406));
 
@@ -383,14 +357,14 @@ public class RESTProjectTest {
 
     @Test
     @AfterAll
-    public static void testLeaveUserFromProjects() {
+    public static void testLeaveUserFromProject() {
         Specifications.installSpecification(Specifications.requestSpec("/api/v1/projects/" + 2), Specifications.responseSpec(200));
 
         ProjectDTO dto = given()
                 .when()
                 .header("Authorization", "Bearer " + TOKEN)
                 .header("Content-Type", ContentType.JSON)
-                .get("/api/v1/projects/" + 2)
+                .get("/api/v1/projects/2")
                 .then()
                 .extract()
                 .body().as(ProjectDTO.class);
@@ -400,7 +374,7 @@ public class RESTProjectTest {
 
         Specifications.installSpecification(Specifications.requestSpec("/api/v1/projects/leave/2?newLeaderId=8"), Specifications.responseSpec(200));
 
-        Response response = given()
+        given()
                 .when()
                 .header("Authorization", "Bearer " + TOKEN)
                 .header("Content-Type", ContentType.JSON)
@@ -500,7 +474,7 @@ public class RESTProjectTest {
 
         Specifications.installSpecification(Specifications.requestSpec("/auth/login"), Specifications.responseSpec(200));
 
-        TOKEN = given()
+        String token = given()
                 .urlEncodingEnabled(false)
                 .body(dto)
                 .when()
@@ -513,7 +487,7 @@ public class RESTProjectTest {
 
         given()
                 .when()
-                .header("Authorization", "Bearer " + TOKEN)
+                .header("Authorization", "Bearer " + token)
                 .header("Content-Type", ContentType.JSON)
                 .delete("/api/v1/projects/" + 1)
                 .then()

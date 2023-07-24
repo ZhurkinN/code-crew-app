@@ -22,6 +22,7 @@ import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper
 @Singleton
 @RequiredArgsConstructor
 public class ProjectServiceImpl implements ProjectService {
+
     private final ProjectRepository projectRepository;
     private final ProjectContactRepository projectContactRepository;
     private final UserService userService;
@@ -44,11 +45,6 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public ProjectDTO getProjectById(Long id, String login) {
         Project project = projectSupportService.getProjectByIdOrElseThrow(id);
-        List<Position> positions = project.getPositions();
-        List<User> users = positions.stream()
-                .filter(position -> position.getUser() != null)
-                .map(position -> position.getUser())
-                .toList();
 
         return getProjectDTO(project, login);
     }
@@ -66,8 +62,8 @@ public class ProjectServiceImpl implements ProjectService {
             );
         }
 
+        positionSupportService.softDeletePositionsByProjectId(projectId);
         projectRepository.softDeleteProject(projectId);
-
     }
 
     @Transactional
@@ -76,7 +72,7 @@ public class ProjectServiceImpl implements ProjectService {
                                      String login,
                                      Long newLeaderId) {
         Project project = projectSupportService.getProjectByIdOrElseThrow(id);
-        User oldUser = userService.getByEmail(login);
+        User oldUser = userService.getByEmailWithoutProjects(login);
 
         positionSupportService
                 .findPositionsByUserAndProjectOrElseThrow(
@@ -91,7 +87,7 @@ public class ProjectServiceImpl implements ProjectService {
                             newLeaderId,
                             project.getId()
                     );
-            User newLeader = userService.getById(newLeaderId);
+            User newLeader = userService.getByIdWithoutProjects(newLeaderId);
 
             projectRepository.updateLeaderByLeaderId(project.getId(), newLeader);
         }
@@ -126,11 +122,10 @@ public class ProjectServiceImpl implements ProjectService {
         return getProjectDTO(project, login);
     }
 
-    @Transactional
     @Override
     public ProjectDTO createProject(String login,
                                     ProjectCreateDTO projectCreateDTO) {
-        User leader = userService.getByEmail(login);
+        User leader = userService.getByEmailWithoutProjects(login);
         ProjectStatusDictionary status = dictionaryService
                 .getProjectStatusDictionaryById(projectCreateDTO.getStatus());
         DirectionDictionary directionDictionary = dictionaryService
