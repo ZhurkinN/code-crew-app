@@ -13,13 +13,14 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 @Builder
-@Accessors(chain = true)
+@Accessors(chain = true) // вот это можно вынести отовсюду в ломбок.конфиг
 @JsonInclude
 public class SearchDTO {
     private List<?> content;
     private Integer pageCount;
 
-    public static SearchDTO toDto(List<?> content, Integer pageCount) {
+    public static SearchDTO toDto(List<?> content, Integer pageCount) { // почему методы-мапперы в дто? напиши маппер
+        // отдельно, а лучше генирируй
         if (content == null) {
             return null;
         }

@@ -32,7 +32,8 @@ public class PositionRequestServiceImpl implements PositionRequestService {
     private final PositionRequestRepository positionRequestRepository;
     private final ResumeRepository resumeRepository;
     private final PositionRepository positionRepository;
-    private final ProjectRepository projectRepository;
+    private final ProjectRepository projectRepository; // как будто тут и не нужен
+
 
     @Override
     public PositionRequest createPositionRequest(String authorEmail,

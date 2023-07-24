@@ -17,7 +17,7 @@ import java.util.List;
 
 @Getter
 @Setter
-@Accessors(chain = true)
+@Accessors(chain = true) // вот это можно вынести отовсюду в ломбок.конфиг
 @NoArgsConstructor
 @MappedEntity(value = "resume")
 public class Resume extends GenericModel {

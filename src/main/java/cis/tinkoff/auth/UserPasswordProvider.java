@@ -20,8 +20,9 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserPasswordProvider implements AuthenticationProvider {
 
-    private final static List<String> BASIC_ROLES = List.of("USER_ROLE");
-    private final static int MAX_COUNT_OF_ACTIVE_REFRESH_TOKENS = 5;
+    private final static List<String> BASIC_ROLES = List.of("USER_ROLE"); // надо сделать енум с ролями
+    private final static int MAX_COUNT_OF_ACTIVE_REFRESH_TOKENS = 5; //  эту штуку надо втащить в конфиги и тут
+    // проставлять из них с дефолтным значением
 
     private final UserRepository userRepository;
     private final RefreshTokenRepository refreshTokenRepository;

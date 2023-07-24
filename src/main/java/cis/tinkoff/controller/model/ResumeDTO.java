@@ -15,7 +15,7 @@ import java.util.Objects;
 
 @Getter
 @Setter
-@Accessors(chain = true)
+@Accessors(chain = true) // вот это можно вынести отовсюду в ломбок.конфиг
 @NoArgsConstructor
 public class ResumeDTO extends GenericDTO {
 

@@ -32,7 +32,7 @@ public class UserRefreshTokenPersistence implements RefreshTokenPersistence {
                 event.getRefreshToken() != null &&
                 event.getAuthentication() != null &&
                 event.getAuthentication().getName() != null) {
-            String payload = event.getRefreshToken();
+            String payload = event.getRefreshToken(); // лишняя переменная
             RefreshToken token = new RefreshToken()
                     .setUsername(event.getAuthentication().getName())
                     .setRefreshToken(payload);

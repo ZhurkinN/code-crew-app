@@ -19,7 +19,8 @@ public class ContactDTO {
     private String link;
     private String description;
 
-    public static ContactDTO toContactDto(ProjectContact contact) {
+    public static ContactDTO toContactDto(ProjectContact contact) { // почему методы-мапперы в дто? напиши маппер
+        // отдельно, а лучше генирируй
         if (contact == null) {
             return null;
         }

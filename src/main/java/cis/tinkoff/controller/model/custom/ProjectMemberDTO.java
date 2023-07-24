@@ -25,7 +25,8 @@ public class ProjectMemberDTO {
     private Long joinDate;
     private Boolean isLead;
 
-    public static ProjectMemberDTO toProjectMemberDTO(User user, Position position, Long leaderId) {
+    public static ProjectMemberDTO toProjectMemberDTO(User user, Position position, Long leaderId) { // почему методы-мапперы в дто? напиши маппер
+        // отдельно, а лучше генирируй
         if (user == null || position == null) {
             return null;
         }

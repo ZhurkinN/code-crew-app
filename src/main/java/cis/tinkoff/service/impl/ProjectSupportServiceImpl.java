@@ -17,7 +17,7 @@ public class ProjectSupportServiceImpl implements ProjectSupportService {
 
     @Override
     public boolean isUserProjectLeader(String login, Long projectId) {
-        Project project = getProjectByIdOrElseThrow(projectId);
+        Project project = getProjectByIdOrElseThrow(projectId); // зачем эта переменная?
 
         return project.getLeader().getEmail().equals(login);
     }

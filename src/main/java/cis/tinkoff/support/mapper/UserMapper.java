@@ -10,7 +10,8 @@ import java.util.List;
 import java.util.Objects;
 
 @Singleton
-public class UserMapper extends GenericMapper<User, UserDTO> {
+public class UserMapper extends GenericMapper<User, UserDTO> { // а тут у вас маппер есть. А мапстракта нету?
+
 
     public UserDTO toDtoWithProjects(User user,
                                      List<Project> projects) {

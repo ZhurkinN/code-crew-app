@@ -34,6 +34,9 @@ public class RegistrationTest {
         RegisterUserDTO dto
                 = new RegisterUserDTO(expectedEmail, password, expectedName, expectedSurname);
 
+        // в таком тесте надо проверить либо репозитории, что такого пользака не было перед вызовом
+        // /api/v1/users/register и после, что он появился
+
         UserDTO userDTO = given()
                 .when()
                 .body(dto)

@@ -6,7 +6,7 @@ ___
 
 ![cover](https://github.com/ZhurkinN/code-crew-app/blob/endpoints-branch/gitsrc/code-hru.jpg)
 #### <center> Данный репозиторий является Backend частью проекта CodeCrew. </center>
-
+// давайте всю ридмиху продублируем по английски 
 ___
 ### Навигация:
 [1. Цель проекта](#aim)  

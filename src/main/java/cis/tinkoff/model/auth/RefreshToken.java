@@ -14,7 +14,7 @@ import java.time.Instant;
 @Getter
 @Setter
 @MappedEntity
-@Accessors(chain = true)
+@Accessors(chain = true) // вот это можно вынести отовсюду в ломбок.конфиг
 @NoArgsConstructor
 public class RefreshToken {
 

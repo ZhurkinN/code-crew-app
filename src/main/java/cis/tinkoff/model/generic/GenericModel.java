@@ -14,7 +14,7 @@ import lombok.experimental.Accessors;
 @Getter
 @Setter
 @NoArgsConstructor
-@Accessors(chain = true)
+@Accessors(chain = true) // вот это можно вынести отовсюду в ломбок.конфиг
 @Introspected
 public class GenericModel {
 

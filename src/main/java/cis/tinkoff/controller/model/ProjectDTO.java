@@ -32,7 +32,8 @@ public class ProjectDTO {
     private List<ProjectMemberDTO> members;
     private Long createdWhen;
 
-    public static ProjectDTO toProjectDTO(Project project, String userLogin) {
+    public static ProjectDTO toProjectDTO(Project project, String userLogin) { // почему методы-мапперы в дто? напиши маппер
+        // отдельно, а лучше генирируй
         if (project == null) {
             return null;
         }
