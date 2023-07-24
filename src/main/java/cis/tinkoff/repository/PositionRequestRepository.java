@@ -64,4 +64,6 @@ public interface PositionRequestRepository extends CrudRepository<PositionReques
     @Join(value = "notifications", type = Join.Type.LEFT_FETCH)
     Optional<PositionRequest> findByIdAndIsDeletedFalse(@NotNull Long id);
 
+    Optional<PositionRequest> getByIdAndIsDeletedFalse(@NotNull Long id);
+
 }

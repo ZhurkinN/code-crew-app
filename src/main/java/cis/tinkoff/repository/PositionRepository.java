@@ -116,6 +116,7 @@ public interface PositionRepository extends PageableRepository<Position, Long>, 
     void softDeletePositionsByProjectId(Long projectId);
 
     @Join(value = "direction", type = Join.Type.FETCH)
+    @Join(value = "project", type = Join.Type.FETCH)
     Optional<Position> findByIdAndIsDeletedFalseAndIsVisibleTrue(@Id Long id);
 
     @Join(value = "direction", type = Join.Type.FETCH)

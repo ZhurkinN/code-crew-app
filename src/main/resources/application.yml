@@ -65,6 +65,10 @@ micronaut:
         http-method: GET
         access:
           - isAnonymous()
+      - pattern: /ws/**
+        http-method: GET
+        access:
+          - isAnonymous()
     token:
       jwt:
         generator:
