@@ -64,9 +64,9 @@ public class ProjectController {
     @Post(value = "/leave/{id}", produces = MediaType.APPLICATION_JSON)
     public HttpResponse<?> leaveUserFromProject(
             Authentication authentication,
-            @PathVariable(value = "id") Long id,
-            @Nullable @QueryValue(value = "newLeaderId") Long newLeaderId) throws Exception {
-        projectService.leaveUserFromProject(id, authentication.getName(), newLeaderId);
+            @PathVariable(value = "id") Long projectId,
+            @Nullable @QueryValue(value = "newLeaderId") Long newLeaderId) {
+        projectService.leaveUserFromProject(projectId, authentication.getName(), newLeaderId);
 
         return HttpResponse.ok();
     }

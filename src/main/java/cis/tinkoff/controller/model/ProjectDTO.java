@@ -51,7 +51,7 @@ public class ProjectDTO {
         List<Position> positions = project.getPositions();
 
         if (positions != null) {
-            Integer vacanciesCount = Math.toIntExact(positions.stream().filter(position -> position.getUser() == null).count());
+            int vacanciesCount = Math.toIntExact(positions.stream().filter(position -> position.getUser() == null).count());
             Integer membersCount = positions.size() - vacanciesCount;
             projectDTO.setVacanciesCount(vacanciesCount);
             projectDTO.setMembersCount(membersCount);

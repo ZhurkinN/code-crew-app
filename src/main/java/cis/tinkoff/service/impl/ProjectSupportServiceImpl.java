@@ -25,7 +25,7 @@ public class ProjectSupportServiceImpl implements ProjectSupportService {
     @Override
     public Project getProjectByIdOrElseThrow(Long id) {
 
-        return projectRepository.findById(id)
+        return projectRepository.findByIdAndIsDeletedFalse(id)
                 .orElseThrow(() -> new RecordNotFoundException(
                         PROJECT_NOT_FOUND,
                         id
