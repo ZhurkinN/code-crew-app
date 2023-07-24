@@ -75,6 +75,7 @@ micronaut:
           access-token:
             expiration: 1_80000  # 30 minutes
           refresh-token:
+            max-token-count: 5
             enabled: true
             jws-algorithm: HS512
             secret: ${JWT_REFRESH_SECRET}
@@ -98,6 +99,8 @@ micronaut:
       enabled: true
       max-file-size: 5_242_880 # 5 MB
       common-file-extension: png
+    netty:
+      max-header-size: 30_720
 
 datasources:
   default:

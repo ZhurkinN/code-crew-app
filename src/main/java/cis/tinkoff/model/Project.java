@@ -1,5 +1,6 @@
 package cis.tinkoff.model;
 
+import cis.tinkoff.model.dictionary.ProjectStatusDictionary;
 import cis.tinkoff.model.generic.GenericModel;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.data.annotation.MappedEntity;
@@ -8,14 +9,12 @@ import io.micronaut.data.annotation.Relation;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.experimental.Accessors;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 @Setter
-@Accessors(chain = true)
 @NoArgsConstructor
 @MappedEntity(value = "project")
 public class Project extends GenericModel {
@@ -57,14 +56,6 @@ public class Project extends GenericModel {
     )
     @Nullable
     private List<ProjectContact> contacts = new ArrayList<>();
-
-    @Relation(
-            value = Relation.Kind.MANY_TO_MANY,
-            cascade = Relation.Cascade.ALL,
-            mappedBy = "projects"
-    )
-    @Nullable
-    private List<User> members = new ArrayList<>();
 
     public Project(Long id,
                    Long createdWhen,

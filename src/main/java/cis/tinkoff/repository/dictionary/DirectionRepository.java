@@ -1,6 +1,6 @@
 package cis.tinkoff.repository.dictionary;
 
-import cis.tinkoff.model.DirectionDictionary;
+import cis.tinkoff.model.dictionary.DirectionDictionary;
 import cis.tinkoff.model.enumerated.Direction;
 import io.micronaut.data.jdbc.annotation.JdbcRepository;
 import io.micronaut.data.model.query.builder.sql.Dialect;

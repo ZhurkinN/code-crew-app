@@ -31,4 +31,4 @@ databaseChangeLog:
       file: changeset-refresh_token-table.yml
   - include:
       relativeToChangelogFile: true
-      file: changeset-insert-data.yml
+      file: changeset-insert-data-test.yml

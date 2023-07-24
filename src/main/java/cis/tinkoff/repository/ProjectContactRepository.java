@@ -7,5 +7,6 @@ import io.micronaut.data.repository.CrudRepository;
 
 @JdbcRepository(dialect = Dialect.POSTGRES)
 public interface ProjectContactRepository extends CrudRepository<ProjectContact, Long> {
-    void deleteByProjectId(Long project_id);
+
+    void deleteByProjectId(Long projectId);
 }

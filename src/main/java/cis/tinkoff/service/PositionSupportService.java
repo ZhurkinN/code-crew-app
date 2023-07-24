@@ -7,13 +7,18 @@ import cis.tinkoff.model.enumerated.Direction;
 import java.util.List;
 
 public interface PositionSupportService {
+
     boolean isUserProjectMember(String login, Long projectId);
 
     Position findPositionByIdOrElseThrow(Long id);
 
     List<Position> findPositionsByUserAndProjectOrElseThrow(Long userId, Long projectId);
 
-    void softDeletePositionByUserIdAndProjectId(Long userId, Long projectId);
+    void deleteUserFromPositionsByUserIdAndProjectId(Long userId, Long projectId);
+
+    void softDeletePositionsByProjectId(Long projectId);
+
+    void deleteUserFromAllPositions(Long userId);
 
     Position createPosition(User user, Direction direction, String description, List<String> skills, Long joinDate, Boolean isVisible);
 }

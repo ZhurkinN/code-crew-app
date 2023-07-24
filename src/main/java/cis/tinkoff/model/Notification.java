@@ -1,5 +1,6 @@
 package cis.tinkoff.model;
 
+import cis.tinkoff.model.dictionary.NotificationTypeDictionary;
 import cis.tinkoff.support.helper.TimestampAttributeConverter;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.data.annotation.*;
@@ -7,11 +8,9 @@ import io.micronaut.data.model.DataType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.experimental.Accessors;
 
 @Getter
 @Setter
-@Accessors(chain = true)
 @NoArgsConstructor
 @MappedEntity(value = "notification")
 public class Notification {

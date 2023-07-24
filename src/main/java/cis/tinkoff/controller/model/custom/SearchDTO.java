@@ -1,19 +1,15 @@
 package cis.tinkoff.controller.model.custom;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.experimental.Accessors;
+import lombok.*;
 
 import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Setter
+@Getter
 @Builder
-@Accessors(chain = true)
 @JsonInclude
 public class SearchDTO {
     private List<?> content;
@@ -24,9 +20,8 @@ public class SearchDTO {
             return null;
         }
 
-        return SearchDTO.builder()
-                .content(content)
-                .pageCount(pageCount)
-                .build();
+        return new SearchDTO()
+                .setContent(content)
+                .setPageCount(pageCount);
     }
 }

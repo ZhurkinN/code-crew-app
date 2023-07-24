@@ -12,13 +12,16 @@ import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper
 @Singleton
 @RequiredArgsConstructor
 public class ProjectSupportServiceImpl implements ProjectSupportService {
+
     private final ProjectRepository projectRepository;
 
     @Override
     public boolean isUserProjectLeader(String login, Long projectId) {
-        Project project = getProjectByIdOrElseThrow(projectId);
 
-        return project.getLeader().getEmail().equals(login);
+        return getProjectByIdOrElseThrow(projectId)
+                .getLeader()
+                .getEmail()
+                .equals(login);
     }
 
     @Override

@@ -1,8 +1,8 @@
 package cis.tinkoff.service.impl;
 
-import cis.tinkoff.model.DirectionDictionary;
 import cis.tinkoff.model.Position;
 import cis.tinkoff.model.User;
+import cis.tinkoff.model.dictionary.DirectionDictionary;
 import cis.tinkoff.model.enumerated.Direction;
 import cis.tinkoff.repository.PositionRepository;
 import cis.tinkoff.service.DictionaryService;
@@ -20,6 +20,7 @@ import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper
 @Singleton
 @RequiredArgsConstructor
 public class PositionSupportServiceImpl implements PositionSupportService {
+
     private final PositionRepository positionRepository;
     private final DictionaryService dictionaryService;
 
@@ -49,8 +50,18 @@ public class PositionSupportServiceImpl implements PositionSupportService {
     }
 
     @Override
-    public void softDeletePositionByUserIdAndProjectId(Long userId, Long projectId) {
-        positionRepository.softDeletePositionByUserIdAndProjectId(userId, projectId);
+    public void deleteUserFromPositionsByUserIdAndProjectId(Long userId, Long projectId) {
+        positionRepository.deleteUserFromPositionsByUserIdAndProjectId(userId, projectId);
+    }
+
+    @Override
+    public void softDeletePositionsByProjectId(Long projectId) {
+        positionRepository.softDeletePositionsByProjectId(projectId);
+    }
+
+    @Override
+    public void deleteUserFromAllPositions(Long userId) {
+        positionRepository.deleteUserFromAllPositionsByUserId(userId);
     }
 
     @Override

@@ -1,4 +1,4 @@
-package cis.tinkoff.model;
+package cis.tinkoff.model.dictionary;
 
 import cis.tinkoff.model.enumerated.ProjectStatus;
 import io.micronaut.data.annotation.Id;
@@ -9,13 +9,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.experimental.Accessors;
 
 import java.util.Objects;
 
 @Getter
 @Setter
-@Accessors(chain = true)
 @AllArgsConstructor
 @NoArgsConstructor
 @MappedEntity(value = "dictionary_project_status")

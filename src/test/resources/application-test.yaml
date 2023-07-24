@@ -104,7 +104,7 @@ liquibase:
   enabled: true
   datasources:
     default:
-      change-log: classpath:db/changelog/changelog.yaml
+      change-log: classpath:db/changelog/changelog-test.yaml
 
 
 logger:

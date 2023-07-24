@@ -5,13 +5,10 @@ import io.micronaut.core.annotation.Nullable;
 import io.micronaut.data.annotation.MappedEntity;
 import io.micronaut.data.annotation.Relation;
 import io.micronaut.data.annotation.TypeDef;
-import io.micronaut.data.jdbc.annotation.JoinColumn;
-import io.micronaut.data.jdbc.annotation.JoinTable;
 import io.micronaut.data.model.DataType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.experimental.Accessors;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +16,6 @@ import java.util.Objects;
 
 @Getter
 @Setter
-@Accessors(chain = true)
 @NoArgsConstructor
 @MappedEntity(value = "users")
 public class User extends GenericModel {
@@ -61,18 +57,6 @@ public class User extends GenericModel {
     @Nullable
     private List<Position> positions = new ArrayList<>();
 
-    @Relation(
-            value = Relation.Kind.MANY_TO_MANY,
-            cascade = Relation.Cascade.ALL
-    )
-    @JoinTable(
-            name = "project_members",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "project_id")
-    )
-    @Nullable
-    private List<Project> projects = new ArrayList<>();
-
     public User(Long id,
                 Long createdWhen,
                 Boolean isDeleted,
@@ -85,8 +69,7 @@ public class User extends GenericModel {
                 @Nullable List<String> contacts,
                 @Nullable List<Resume> resumes,
                 @Nullable List<Project> leadProjects,
-                @Nullable List<Position> positions,
-                @Nullable List<Project> projects) {
+                @Nullable List<Position> positions) {
         super(id, createdWhen, isDeleted);
         this.email = email;
         this.password = password;
@@ -98,19 +81,18 @@ public class User extends GenericModel {
         this.resumes = resumes;
         this.leadProjects = leadProjects;
         this.positions = positions;
-        this.projects = projects;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof User user)) return false;
-        return Objects.equals(getEmail(), user.getEmail()) && Objects.equals(getPassword(), user.getPassword()) && Objects.equals(getName(), user.getName()) && Objects.equals(getSurname(), user.getSurname()) && Objects.equals(getMainInformation(), user.getMainInformation()) && Objects.equals(getPictureLink(), user.getPictureLink()) && Objects.equals(getContacts(), user.getContacts()) && Objects.equals(getResumes(), user.getResumes()) && Objects.equals(getLeadProjects(), user.getLeadProjects()) && Objects.equals(getPositions(), user.getPositions()) && Objects.equals(getProjects(), user.getProjects());
+        return Objects.equals(getEmail(), user.getEmail()) && Objects.equals(getPassword(), user.getPassword()) && Objects.equals(getName(), user.getName()) && Objects.equals(getSurname(), user.getSurname()) && Objects.equals(getMainInformation(), user.getMainInformation()) && Objects.equals(getPictureLink(), user.getPictureLink()) && Objects.equals(getContacts(), user.getContacts()) && Objects.equals(getResumes(), user.getResumes()) && Objects.equals(getLeadProjects(), user.getLeadProjects()) && Objects.equals(getPositions(), user.getPositions());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getEmail(), getPassword(), getName(), getSurname(), getMainInformation(), getPictureLink(), getContacts(), getResumes(), getLeadProjects(), getPositions(), getProjects());
+        return Objects.hash(getEmail(), getPassword(), getName(), getSurname(), getMainInformation(), getPictureLink(), getContacts(), getResumes(), getLeadProjects(), getPositions());
     }
 }
 

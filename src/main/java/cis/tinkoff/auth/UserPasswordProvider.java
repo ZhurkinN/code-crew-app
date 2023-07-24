@@ -3,6 +3,7 @@ package cis.tinkoff.auth;
 import cis.tinkoff.model.User;
 import cis.tinkoff.repository.UserRepository;
 import cis.tinkoff.repository.auth.RefreshTokenRepository;
+import io.micronaut.context.annotation.Property;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.security.authentication.AuthenticationProvider;
 import io.micronaut.security.authentication.AuthenticationRequest;
@@ -16,15 +17,18 @@ import reactor.core.publisher.FluxSink;
 import java.util.List;
 import java.util.Optional;
 
+import static cis.tinkoff.auth.enumerated.UserRole.USER_ROLE;
+import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.AUTHENTICATION_ERROR;
+
 @Singleton
 @RequiredArgsConstructor
 public class UserPasswordProvider implements AuthenticationProvider {
 
-    private final static List<String> BASIC_ROLES = List.of("USER_ROLE");
-    private final static int MAX_COUNT_OF_ACTIVE_REFRESH_TOKENS = 5;
-
     private final UserRepository userRepository;
     private final RefreshTokenRepository refreshTokenRepository;
+
+    @Property(name = "micronaut.security.token.jwt.generator.refresh-token.max-token-count")
+    private int activeRefreshTokensCount;
 
     @Override
     public Publisher<AuthenticationResponse> authenticate(HttpRequest<?> httpRequest,
@@ -40,10 +44,10 @@ public class UserPasswordProvider implements AuthenticationProvider {
                     && !userOptional.get().getIsDeleted();
 
             if (!isValid) {
-                emitter.error(AuthenticationResponse.exception("Auth error"));
+                emitter.error(AuthenticationResponse.exception(AUTHENTICATION_ERROR));
             } else
-                refreshTokenRepository.checkAndUpdateActiveRefreshTokensByUsername(login, MAX_COUNT_OF_ACTIVE_REFRESH_TOKENS);
-            emitter.next(AuthenticationResponse.success(userOptional.get().getEmail(), BASIC_ROLES));
+                refreshTokenRepository.checkAndUpdateActiveRefreshTokensByUsername(login, activeRefreshTokensCount);
+            emitter.next(AuthenticationResponse.success(userOptional.get().getEmail(), List.of(USER_ROLE.name())));
             emitter.complete();
         }, FluxSink.OverflowStrategy.ERROR);
     }

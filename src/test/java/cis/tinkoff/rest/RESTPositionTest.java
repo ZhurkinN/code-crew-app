@@ -1,11 +1,10 @@
 package cis.tinkoff.rest;
 
 import cis.tinkoff.controller.model.ProjectDTO;
-import cis.tinkoff.controller.model.ResumeDTO;
 import cis.tinkoff.controller.model.VacancyDTO;
 import cis.tinkoff.controller.model.custom.SearchDTO;
 import cis.tinkoff.controller.model.custom.VacancyCreateDTO;
-import cis.tinkoff.model.DirectionDictionary;
+import cis.tinkoff.model.dictionary.DirectionDictionary;
 import cis.tinkoff.model.enumerated.Direction;
 import cis.tinkoff.rest.model.UserLoginDTO;
 import cis.tinkoff.spec.Specifications;
@@ -25,7 +24,8 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import java.util.ArrayList;
 import java.util.List;
 
-import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.*;
+import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.INACCESSIBLE_PROJECT_ACTION;
+import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.POSITION_NOT_FOUND;
 import static io.restassured.RestAssured.given;
 
 @MicronautTest
@@ -37,8 +37,8 @@ public class RESTPositionTest {
 
     private static String TOKEN_1 = "";
     private static String TOKEN_2 = "";
-    private static String USER_MAIL = "alex@mail.ru";
-    private static String USER_PASSWORD = "123";
+    private static final String USER_MAIL = "alex@mail.ru";
+    private static final String USER_PASSWORD = "123";
 
     @BeforeAll
     static void setUp() {
@@ -361,7 +361,34 @@ public class RESTPositionTest {
                 .extract()
                 .body().jsonPath().getList("content.", VacancyDTO.class);
 
+        int expectedSize = 5;
         int resumeListSize = dto.size();
+
+        Assertions.assertEquals(expectedSize, resumeListSize);
+
+        for (int i = 0; i < resumeListSize; i++) {
+            Assertions.assertTrue(dto.get(i).getSkills().contains("java"));
+        }
+    }
+
+    @Test
+    public void shouldReturnPositionsWhenPassingSkillInDifferentCase() {
+        int size = 8;
+        Specifications.installSpecification(Specifications.requestSpec("/api/v1/positions/search?size=" + size + "&skills=jaVA"), Specifications.responseSpec(200));
+
+        List<VacancyDTO> dto = given()
+                .when()
+                .header("Authorization", "Bearer " + TOKEN_2)
+                .header("Content-Type", ContentType.JSON)
+                .get("/api/v1/positions/search?size=" + size + "&skills=jaVA")
+                .then()
+                .extract()
+                .body().jsonPath().getList("content.", VacancyDTO.class);
+
+        int expectedSize = 5;
+        int resumeListSize = dto.size();
+
+        Assertions.assertEquals(expectedSize, resumeListSize);
 
         for (int i = 0; i < resumeListSize; i++) {
             Assertions.assertTrue(dto.get(i).getSkills().contains("java"));

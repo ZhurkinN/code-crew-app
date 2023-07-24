@@ -1,11 +1,10 @@
 package cis.tinkoff.rest;
 
 import cis.tinkoff.controller.model.ProjectDTO;
-import cis.tinkoff.controller.model.VacancyDTO;
 import cis.tinkoff.controller.model.custom.ContactDTO;
 import cis.tinkoff.controller.model.custom.ProjectCreateDTO;
 import cis.tinkoff.controller.model.custom.ProjectMemberDTO;
-import cis.tinkoff.model.ProjectStatusDictionary;
+import cis.tinkoff.model.dictionary.ProjectStatusDictionary;
 import cis.tinkoff.model.enumerated.Direction;
 import cis.tinkoff.model.enumerated.ProjectStatus;
 import cis.tinkoff.rest.model.UserLoginDTO;
@@ -16,18 +15,14 @@ import io.restassured.http.ContentType;
 import io.restassured.parsing.Parser;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
-import jakarta.inject.Inject;
 import org.junit.jupiter.api.*;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import javax.transaction.Transactional;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.INACCESSIBLE_PROJECT_ACTION;
 import static io.restassured.RestAssured.given;
-import static io.restassured.RestAssured.proxy;
 
 @Testcontainers
 @MicronautTest
@@ -38,9 +33,9 @@ public class RESTProjectTest {
 
     private static String TOKEN = "";
 
-    private static String USER_MAIL = "alex@mail.ru";
+    private static final String USER_MAIL = "alex@mail.ru";
 
-    private static String USER_PASSWORD = "123";
+    private static final String USER_PASSWORD = "123";
 
     @BeforeAll
     static void setUp() {
@@ -58,16 +53,6 @@ public class RESTProjectTest {
                 .extract()
                 .path("access_token");
     }
-
-//    @BeforeEach
-//    void startContainer() {
-//        container.start();
-//    }
-//
-//    @AfterEach
-//    void stopContainer() {
-//        container.stop();
-//    }
 
     @Test
     @Order(1)
@@ -277,21 +262,6 @@ public class RESTProjectTest {
 
     @Test
     @Order(7)
-    public void testGetProjectMembersWithInvalidUser() {
-        Specifications.installSpecification(Specifications.requestSpec("/api/v1/positions/projects/members?projectId=" + 1), Specifications.responseSpec(406));
-
-        given()
-                .when()
-                .header("Authorization", "Bearer " + TOKEN)
-                .header("Content-Type", ContentType.JSON)
-                .get("/api/v1/positions/projects/members?projectId=" + 1)
-                .then()
-                .extract()
-                .response();
-    }
-
-    @Test
-    @Order(8)
     public void testDeleteUserFromProject() {
         Specifications.installSpecification(Specifications.requestSpec("/api/v1/projects/2"), Specifications.responseSpec(200));
 
@@ -309,10 +279,9 @@ public class RESTProjectTest {
         String expectedTitle = dto.getTitle();
         String expectedTheme = dto.getTheme();
         String expectedDescription = dto.getDescription();
-        Integer expectedMembersCount = dto.getMembersCount();
         ProjectStatusDictionary expectedStatus = dto.getStatus();
         List<ContactDTO> expectedContacts = dto.getContacts();
-        Integer expectedVacanciesCount = dto.getVacanciesCount();
+        Integer expectedVacanciesCount = dto.getVacanciesCount() + 1;
         List<ProjectMemberDTO> expectedMembers = dto.getMembers();
 
         Specifications.installSpecification(Specifications.requestSpec("api/v1/positions/projects/members?projectId=2"), Specifications.responseSpec(200));
@@ -345,11 +314,11 @@ public class RESTProjectTest {
         Assertions.assertEquals(expectedTitle, dtoWithDeletedUser.getTitle());
         Assertions.assertEquals(expectedTheme, dtoWithDeletedUser.getTheme());
         Assertions.assertEquals(expectedDescription, dtoWithDeletedUser.getDescription());
-        Assertions.assertEquals(expectedMembersCount, dtoWithDeletedUser.getMembersCount());
+        Assertions.assertEquals(expectedMemberNumber, dtoWithDeletedUser.getMembersCount());
         Assertions.assertEquals(expectedStatus, dtoWithDeletedUser.getStatus());
         Assertions.assertEquals(expectedContacts, dtoWithDeletedUser.getContacts());
         Assertions.assertEquals(expectedVacanciesCount, dtoWithDeletedUser.getVacanciesCount());
-        Assertions.assertEquals(expectedMembers.size(), dtoWithDeletedUser.getMembers().size());
+        Assertions.assertEquals(expectedMembers.size() - 1, dtoWithDeletedUser.getMembers().size());
 
         Specifications.installSpecification(Specifications.requestSpec("api/v1/positions/projects/members?projectId=2"), Specifications.responseSpec(200));
 
@@ -367,7 +336,7 @@ public class RESTProjectTest {
     }
 
     @Test
-    @Order(9)
+    @Order(8)
     public void testDeleteUserFromProjectByNotLead() {
         Specifications.installSpecification(Specifications.requestSpec("/api/v1/projects/1/delete-user?userId=3&direction=QA"), Specifications.responseSpec(406));
 
@@ -383,14 +352,14 @@ public class RESTProjectTest {
 
     @Test
     @AfterAll
-    public static void testLeaveUserFromProjects() {
+    public static void testLeaveUserFromProject() {
         Specifications.installSpecification(Specifications.requestSpec("/api/v1/projects/" + 2), Specifications.responseSpec(200));
 
         ProjectDTO dto = given()
                 .when()
                 .header("Authorization", "Bearer " + TOKEN)
                 .header("Content-Type", ContentType.JSON)
-                .get("/api/v1/projects/" + 2)
+                .get("/api/v1/projects/2")
                 .then()
                 .extract()
                 .body().as(ProjectDTO.class);
@@ -400,7 +369,7 @@ public class RESTProjectTest {
 
         Specifications.installSpecification(Specifications.requestSpec("/api/v1/projects/leave/2?newLeaderId=8"), Specifications.responseSpec(200));
 
-        Response response = given()
+        given()
                 .when()
                 .header("Authorization", "Bearer " + TOKEN)
                 .header("Content-Type", ContentType.JSON)
@@ -500,7 +469,7 @@ public class RESTProjectTest {
 
         Specifications.installSpecification(Specifications.requestSpec("/auth/login"), Specifications.responseSpec(200));
 
-        TOKEN = given()
+        String token = given()
                 .urlEncodingEnabled(false)
                 .body(dto)
                 .when()
@@ -513,7 +482,7 @@ public class RESTProjectTest {
 
         given()
                 .when()
-                .header("Authorization", "Bearer " + TOKEN)
+                .header("Authorization", "Bearer " + token)
                 .header("Content-Type", ContentType.JSON)
                 .delete("/api/v1/projects/" + 1)
                 .then()

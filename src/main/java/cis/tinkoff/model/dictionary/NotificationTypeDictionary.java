@@ -1,6 +1,6 @@
-package cis.tinkoff.model;
+package cis.tinkoff.model.dictionary;
 
-import cis.tinkoff.model.enumerated.RequestStatus;
+import cis.tinkoff.model.enumerated.NotificationType;
 import io.micronaut.data.annotation.Id;
 import io.micronaut.data.annotation.MappedEntity;
 import jakarta.persistence.EnumType;
@@ -8,17 +8,15 @@ import jakarta.persistence.Enumerated;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.experimental.Accessors;
 
 @Getter
 @Setter
-@Accessors(chain = true)
 @NoArgsConstructor
-@MappedEntity(value = "dictionary_request_status")
-public class RequestStatusDictionary {
+@MappedEntity(value = "dictionary_notification_type")
+public class NotificationTypeDictionary {
 
     @Id
     @Enumerated(value = EnumType.STRING)
-    private RequestStatus statusName;
+    private NotificationType typeName;
     private String description;
 }

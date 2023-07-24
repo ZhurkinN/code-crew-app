@@ -3,9 +3,8 @@ package cis.tinkoff.rest;
 import cis.tinkoff.controller.model.ResumeDTO;
 import cis.tinkoff.controller.model.custom.InteractResumeDTO;
 import cis.tinkoff.controller.model.custom.RequestsChoiceResumeDTO;
-import cis.tinkoff.controller.model.custom.SearchDTO;
-import cis.tinkoff.model.DirectionDictionary;
 import cis.tinkoff.model.User;
+import cis.tinkoff.model.dictionary.DirectionDictionary;
 import cis.tinkoff.model.enumerated.Direction;
 import cis.tinkoff.rest.model.UserLoginDTO;
 import cis.tinkoff.spec.Specifications;
@@ -15,10 +14,10 @@ import io.restassured.http.ContentType;
 import io.restassured.parsing.Parser;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
-import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Test;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
@@ -356,6 +355,27 @@ public class RESTResumeTest {
                 .header("Authorization", "Bearer " + TOKEN_2)
                 .header("Content-Type", ContentType.JSON)
                 .get("/api/v1/resumes/search?size=10&skills=java")
+                .then()
+                .extract()
+                .body().jsonPath().getList("content.", ResumeDTO.class);
+
+        int expectedSize = 3;
+        Assertions.assertEquals(expectedSize, dto.size());
+
+        for (int i = 0; i < expectedSize; i++) {
+            Assertions.assertTrue(dto.get(i).getSkills().contains("java"));
+        }
+    }
+
+    @Test
+    public void shouldReturnResumesWhenPassingSkillInDifferentCase() {
+        Specifications.installSpecification(Specifications.requestSpec("/api/v1/resumes/search?size=10&skills=jaVA"), Specifications.responseSpec(200));
+
+        List<ResumeDTO> dto = given()
+                .when()
+                .header("Authorization", "Bearer " + TOKEN_2)
+                .header("Content-Type", ContentType.JSON)
+                .get("/api/v1/resumes/search?size=10&skills=jaVA")
                 .then()
                 .extract()
                 .body().jsonPath().getList("content.", ResumeDTO.class);

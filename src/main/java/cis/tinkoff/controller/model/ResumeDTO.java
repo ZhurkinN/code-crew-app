@@ -1,21 +1,19 @@
 package cis.tinkoff.controller.model;
 
 import cis.tinkoff.controller.model.generic.GenericDTO;
-import cis.tinkoff.model.DirectionDictionary;
 import cis.tinkoff.model.PositionRequest;
 import cis.tinkoff.model.User;
+import cis.tinkoff.model.dictionary.DirectionDictionary;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.experimental.Accessors;
 
 import java.util.List;
 import java.util.Objects;
 
 @Getter
 @Setter
-@Accessors(chain = true)
 @NoArgsConstructor
 public class ResumeDTO extends GenericDTO {
 

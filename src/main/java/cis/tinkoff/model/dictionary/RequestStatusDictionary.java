@@ -1,6 +1,6 @@
-package cis.tinkoff.model;
+package cis.tinkoff.model.dictionary;
 
-import cis.tinkoff.model.enumerated.Direction;
+import cis.tinkoff.model.enumerated.RequestStatus;
 import io.micronaut.data.annotation.Id;
 import io.micronaut.data.annotation.MappedEntity;
 import jakarta.persistence.EnumType;
@@ -9,33 +9,30 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.experimental.Accessors;
 
 import java.util.Objects;
 
 @Getter
 @Setter
-@Accessors(chain = true)
 @AllArgsConstructor
 @NoArgsConstructor
-@MappedEntity(value = "dictionary_direction")
-public class DirectionDictionary {
+@MappedEntity(value = "dictionary_request_status")
+public class RequestStatusDictionary {
 
     @Id
     @Enumerated(value = EnumType.STRING)
-    private Direction directionName;
+    private RequestStatus statusName;
     private String description;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        DirectionDictionary that = (DirectionDictionary) o;
-        return directionName == that.directionName && Objects.equals(description, that.description);
+        if (!(o instanceof RequestStatusDictionary that)) return false;
+        return getStatusName() == that.getStatusName() && Objects.equals(getDescription(), that.getDescription());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(directionName, description);
+        return Objects.hash(getStatusName(), getDescription());
     }
 }
