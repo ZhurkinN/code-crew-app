@@ -8,14 +8,12 @@ import io.micronaut.data.annotation.Relation;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.experimental.Accessors;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 @Setter
-@Accessors(chain = true)
 @NoArgsConstructor
 @MappedEntity(value = "position_request")
 public class PositionRequest extends GenericModel {

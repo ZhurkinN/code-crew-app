@@ -210,6 +210,10 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     private ProjectContact mapToProjectContactEntity(ContactDTO contactDTO) {
-        return new ProjectContact(null, contactDTO.getLink(), contactDTO.getDescription(), null);
+        return new ProjectContact()
+                .setId(null)
+                .setLink(contactDTO.getLink())
+                .setDescription(contactDTO.getDescription())
+                .setProject(null);
     }
 }

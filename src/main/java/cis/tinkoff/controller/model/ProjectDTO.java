@@ -20,6 +20,7 @@ import java.util.List;
 @Builder
 @JsonInclude
 public class ProjectDTO {
+
     private Long id;
     private Boolean isLeader;
     private String title;
@@ -61,14 +62,13 @@ public class ProjectDTO {
     }
 
     public static List<ProjectDTO> toProjectDTO(Collection<Project> projects, String userLogin) {
+
         if (projects == null) {
             return null;
         }
 
-        List<ProjectDTO> projectDTOList = projects.stream()
+        return projects.stream()
                 .map(project -> ProjectDTO.toProjectDTO(project, userLogin))
                 .toList();
-
-        return projectDTOList;
     }
 }
