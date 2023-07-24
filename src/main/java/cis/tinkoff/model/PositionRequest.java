@@ -1,5 +1,6 @@
 package cis.tinkoff.model;
 
+import cis.tinkoff.model.dictionary.RequestStatusDictionary;
 import cis.tinkoff.model.generic.GenericModel;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.data.annotation.MappedEntity;

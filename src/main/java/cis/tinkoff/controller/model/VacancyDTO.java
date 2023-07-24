@@ -1,7 +1,7 @@
 package cis.tinkoff.controller.model;
 
-import cis.tinkoff.model.DirectionDictionary;
 import cis.tinkoff.model.Position;
+import cis.tinkoff.model.dictionary.DirectionDictionary;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

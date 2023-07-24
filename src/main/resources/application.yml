@@ -71,6 +71,7 @@ micronaut:
           access-token:
             expiration: 1_80000  # 30 minutes
           refresh-token:
+            max-token-count: 5
             enabled: true
             jws-algorithm: HS512
             secret: ${JWT_REFRESH_SECRET}

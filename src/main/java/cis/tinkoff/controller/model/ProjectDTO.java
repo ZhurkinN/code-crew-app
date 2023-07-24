@@ -4,7 +4,7 @@ import cis.tinkoff.controller.model.custom.ContactDTO;
 import cis.tinkoff.controller.model.custom.ProjectMemberDTO;
 import cis.tinkoff.model.Position;
 import cis.tinkoff.model.Project;
-import cis.tinkoff.model.ProjectStatusDictionary;
+import cis.tinkoff.model.dictionary.ProjectStatusDictionary;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

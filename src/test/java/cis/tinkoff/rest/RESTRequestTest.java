@@ -1,12 +1,10 @@
 package cis.tinkoff.rest;
 
 import cis.tinkoff.controller.model.PositionRequestDTO;
-import cis.tinkoff.controller.model.ProjectDTO;
-import cis.tinkoff.controller.model.UserDTO;
 import cis.tinkoff.controller.model.custom.CreateRequestDTO;
 import cis.tinkoff.model.Position;
-import cis.tinkoff.model.RequestStatusDictionary;
 import cis.tinkoff.model.Resume;
+import cis.tinkoff.model.dictionary.RequestStatusDictionary;
 import cis.tinkoff.model.enumerated.RequestStatus;
 import cis.tinkoff.rest.model.UserLoginDTO;
 import cis.tinkoff.spec.Specifications;
@@ -35,8 +33,8 @@ public class RESTRequestTest {
     public static TestSQLContainer container = TestSQLContainer.getInstance();
 
     private static String TOKEN = "";
-    private static String USER_MAIL = "alex@mail.ru";
-    private static String USER_PASSWORD = "123";
+    private static final String USER_MAIL = "alex@mail.ru";
+    private static final String USER_PASSWORD = "123";
 
     @BeforeAll
     static void setUp() {

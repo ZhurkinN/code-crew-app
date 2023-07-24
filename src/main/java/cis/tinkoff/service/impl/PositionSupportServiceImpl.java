@@ -1,8 +1,8 @@
 package cis.tinkoff.service.impl;
 
-import cis.tinkoff.model.DirectionDictionary;
 import cis.tinkoff.model.Position;
 import cis.tinkoff.model.User;
+import cis.tinkoff.model.dictionary.DirectionDictionary;
 import cis.tinkoff.model.enumerated.Direction;
 import cis.tinkoff.repository.PositionRepository;
 import cis.tinkoff.service.DictionaryService;

@@ -15,10 +15,10 @@ import org.junit.jupiter.api.*;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import static io.restassured.RestAssured.given;
-import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.*;
-
 import java.util.List;
+
+import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.USER_NOT_FOUND;
+import static io.restassured.RestAssured.given;
 
 @MicronautTest
 @Testcontainers

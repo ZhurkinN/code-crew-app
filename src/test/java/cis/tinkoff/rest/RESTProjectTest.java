@@ -1,11 +1,10 @@
 package cis.tinkoff.rest;
 
 import cis.tinkoff.controller.model.ProjectDTO;
-import cis.tinkoff.controller.model.VacancyDTO;
 import cis.tinkoff.controller.model.custom.ContactDTO;
 import cis.tinkoff.controller.model.custom.ProjectCreateDTO;
 import cis.tinkoff.controller.model.custom.ProjectMemberDTO;
-import cis.tinkoff.model.ProjectStatusDictionary;
+import cis.tinkoff.model.dictionary.ProjectStatusDictionary;
 import cis.tinkoff.model.enumerated.Direction;
 import cis.tinkoff.model.enumerated.ProjectStatus;
 import cis.tinkoff.rest.model.UserLoginDTO;
@@ -16,18 +15,14 @@ import io.restassured.http.ContentType;
 import io.restassured.parsing.Parser;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
-import jakarta.inject.Inject;
 import org.junit.jupiter.api.*;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import javax.transaction.Transactional;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.INACCESSIBLE_PROJECT_ACTION;
 import static io.restassured.RestAssured.given;
-import static io.restassured.RestAssured.proxy;
 
 @Testcontainers
 @MicronautTest
@@ -38,9 +33,9 @@ public class RESTProjectTest {
 
     private static String TOKEN = "";
 
-    private static String USER_MAIL = "alex@mail.ru";
+    private static final String USER_MAIL = "alex@mail.ru";
 
-    private static String USER_PASSWORD = "123";
+    private static final String USER_PASSWORD = "123";
 
     @BeforeAll
     static void setUp() {

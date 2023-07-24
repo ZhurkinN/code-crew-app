@@ -1,8 +1,8 @@
 package cis.tinkoff.rest;
 
 import cis.tinkoff.controller.model.custom.InteractResumeDTO;
-import cis.tinkoff.model.DirectionDictionary;
-import cis.tinkoff.model.ProjectStatusDictionary;
+import cis.tinkoff.model.dictionary.DirectionDictionary;
+import cis.tinkoff.model.dictionary.ProjectStatusDictionary;
 import cis.tinkoff.model.enumerated.Direction;
 import cis.tinkoff.model.enumerated.ProjectStatus;
 import cis.tinkoff.rest.model.UserLoginDTO;

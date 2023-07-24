@@ -4,7 +4,12 @@ import cis.tinkoff.controller.model.ProjectDTO;
 import cis.tinkoff.controller.model.custom.ContactDTO;
 import cis.tinkoff.controller.model.custom.ProjectCreateDTO;
 import cis.tinkoff.controller.model.custom.ProjectMemberDTO;
-import cis.tinkoff.model.*;
+import cis.tinkoff.model.Position;
+import cis.tinkoff.model.Project;
+import cis.tinkoff.model.ProjectContact;
+import cis.tinkoff.model.User;
+import cis.tinkoff.model.dictionary.DirectionDictionary;
+import cis.tinkoff.model.dictionary.ProjectStatusDictionary;
 import cis.tinkoff.model.enumerated.Direction;
 import cis.tinkoff.repository.ProjectContactRepository;
 import cis.tinkoff.repository.ProjectRepository;
@@ -131,7 +136,8 @@ public class ProjectServiceImpl implements ProjectService {
         DirectionDictionary directionDictionary = dictionaryService
                 .getDirectionDictionaryById(projectCreateDTO.getDirection());
 
-        Position newPosition = new Position().setUser(leader)
+        Position newPosition = new Position()
+                .setUser(leader)
                 .setDirection(directionDictionary)
                 .setDescription(projectCreateDTO.getDescription())
                 .setSkills(null)

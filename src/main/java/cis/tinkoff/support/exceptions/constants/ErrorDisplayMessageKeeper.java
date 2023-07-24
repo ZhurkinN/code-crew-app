@@ -36,4 +36,9 @@ public interface ErrorDisplayMessageKeeper {
     //RequestAlreadyProcessedException
     String REQUEST_ALREADY_PROCESSED = "User with email = %s tried to process request with id = %d, that is already processed";
 
+    //Authentication errors
+    String AUTHENTICATION_ERROR = "Authentication error. User couldn't authorize.";
+    String REFRESH_TOKEN_REVOKED = "Refresh token is revoked";
+    String REFRESH_TOKEN_NOT_FOUND = "Refresh token is not found";
+
 }

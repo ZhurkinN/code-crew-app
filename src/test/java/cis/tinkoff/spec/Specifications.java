@@ -9,37 +9,41 @@ import io.restassured.specification.ResponseSpecification;
 
 public class Specifications {
 
-    public static RequestSpecification requestSpec(String url){
+    public static RequestSpecification requestSpec(String url) {
         return new RequestSpecBuilder()
                 .setContentType(ContentType.JSON)
                 .build();
     }
 
-    public static ResponseSpecification responseSpecOK200(){
+    public static ResponseSpecification responseSpecOK200() {
         return new ResponseSpecBuilder()
                 .expectStatusCode(200)
                 .build();
     }
-    public static ResponseSpecification responseSpecError400(){
+
+    public static ResponseSpecification responseSpecError400() {
         return new ResponseSpecBuilder()
                 .expectStatusCode(400)
                 .build();
     }
-    public static ResponseSpecification responseSpec(int status){
+
+    public static ResponseSpecification responseSpec(int status) {
         return new ResponseSpecBuilder()
                 .expectStatusCode(status)
                 .build();
     }
-    public static void installSpecification(RequestSpecification requestSpec, ResponseSpecification responseSpec){
+
+    public static void installSpecification(RequestSpecification requestSpec, ResponseSpecification responseSpec) {
         RestAssured.requestSpecification = requestSpec;
         RestAssured.responseSpecification = responseSpec;
     }
 
-    public static void installSpecification(RequestSpecification requestSpec){
-        RestAssured.requestSpecification =requestSpec;
+    public static void installSpecification(RequestSpecification requestSpec) {
+        RestAssured.requestSpecification = requestSpec;
     }
-    public static void installSpecification(ResponseSpecification responseSpec){
-        RestAssured.responseSpecification =responseSpec;
+
+    public static void installSpecification(ResponseSpecification responseSpec) {
+        RestAssured.responseSpecification = responseSpec;
     }
 
 

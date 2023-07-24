@@ -1,6 +1,11 @@
 package cis.tinkoff.service.impl;
 
-import cis.tinkoff.model.*;
+import cis.tinkoff.model.Resume;
+import cis.tinkoff.model.User;
+import cis.tinkoff.model.dictionary.DirectionDictionary;
+import cis.tinkoff.model.dictionary.NotificationTypeDictionary;
+import cis.tinkoff.model.dictionary.ProjectStatusDictionary;
+import cis.tinkoff.model.dictionary.RequestStatusDictionary;
 import cis.tinkoff.model.enumerated.Direction;
 import cis.tinkoff.model.enumerated.NotificationType;
 import cis.tinkoff.model.enumerated.ProjectStatus;

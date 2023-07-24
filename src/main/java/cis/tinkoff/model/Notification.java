@@ -1,5 +1,6 @@
 package cis.tinkoff.model;
 
+import cis.tinkoff.model.dictionary.NotificationTypeDictionary;
 import cis.tinkoff.support.helper.TimestampAttributeConverter;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.data.annotation.*;

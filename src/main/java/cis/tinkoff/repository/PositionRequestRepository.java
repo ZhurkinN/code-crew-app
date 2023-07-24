@@ -2,8 +2,8 @@ package cis.tinkoff.repository;
 
 import cis.tinkoff.model.Position;
 import cis.tinkoff.model.PositionRequest;
-import cis.tinkoff.model.RequestStatusDictionary;
 import cis.tinkoff.model.Resume;
+import cis.tinkoff.model.dictionary.RequestStatusDictionary;
 import io.micronaut.data.annotation.Id;
 import io.micronaut.data.annotation.Join;
 import io.micronaut.data.jdbc.annotation.JdbcRepository;

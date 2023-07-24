@@ -1,8 +1,8 @@
 package cis.tinkoff.controller.model.custom;
 
-import cis.tinkoff.model.DirectionDictionary;
 import cis.tinkoff.model.Position;
 import cis.tinkoff.model.User;
+import cis.tinkoff.model.dictionary.DirectionDictionary;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

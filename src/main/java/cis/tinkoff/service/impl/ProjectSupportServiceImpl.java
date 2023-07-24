@@ -17,9 +17,11 @@ public class ProjectSupportServiceImpl implements ProjectSupportService {
 
     @Override
     public boolean isUserProjectLeader(String login, Long projectId) {
-        Project project = getProjectByIdOrElseThrow(projectId);
 
-        return project.getLeader().getEmail().equals(login);
+        return getProjectByIdOrElseThrow(projectId)
+                .getLeader()
+                .getEmail()
+                .equals(login);
     }
 
     @Override

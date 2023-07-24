@@ -1,11 +1,11 @@
 package cis.tinkoff.service.impl;
 
 import cis.tinkoff.model.*;
+import cis.tinkoff.model.dictionary.RequestStatusDictionary;
 import cis.tinkoff.model.enumerated.NotificationType;
 import cis.tinkoff.model.enumerated.RequestStatus;
 import cis.tinkoff.repository.PositionRepository;
 import cis.tinkoff.repository.PositionRequestRepository;
-import cis.tinkoff.repository.ProjectRepository;
 import cis.tinkoff.repository.ResumeRepository;
 import cis.tinkoff.service.DictionaryService;
 import cis.tinkoff.service.NotificationService;
@@ -32,7 +32,6 @@ public class PositionRequestServiceImpl implements PositionRequestService {
     private final PositionRequestRepository positionRequestRepository;
     private final ResumeRepository resumeRepository;
     private final PositionRepository positionRepository;
-    private final ProjectRepository projectRepository;
 
     @Override
     public PositionRequest createPositionRequest(String authorEmail,

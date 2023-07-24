@@ -1,8 +1,8 @@
 package cis.tinkoff.controller;
 
-import cis.tinkoff.model.DirectionDictionary;
-import cis.tinkoff.model.ProjectStatusDictionary;
-import cis.tinkoff.model.RequestStatusDictionary;
+import cis.tinkoff.model.dictionary.DirectionDictionary;
+import cis.tinkoff.model.dictionary.ProjectStatusDictionary;
+import cis.tinkoff.model.dictionary.RequestStatusDictionary;
 import cis.tinkoff.service.DictionaryService;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.MediaType;

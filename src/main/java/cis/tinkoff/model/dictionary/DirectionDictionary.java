@@ -1,10 +1,11 @@
-package cis.tinkoff.model;
+package cis.tinkoff.model.dictionary;
 
 import cis.tinkoff.model.enumerated.Direction;
 import io.micronaut.data.annotation.Id;
 import io.micronaut.data.annotation.MappedEntity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -14,6 +15,7 @@ import java.util.Objects;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @MappedEntity(value = "dictionary_direction")
 public class DirectionDictionary {
 
