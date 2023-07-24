@@ -1,16 +1,14 @@
 package cis.tinkoff.controller.model.custom;
 
 import cis.tinkoff.model.enumerated.Direction;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Setter
+@Getter
 @Builder
 public class VacancyCreateDTO {
     private Direction direction;

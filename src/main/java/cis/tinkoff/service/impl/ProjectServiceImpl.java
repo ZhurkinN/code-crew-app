@@ -15,6 +15,8 @@ import cis.tinkoff.repository.ProjectContactRepository;
 import cis.tinkoff.repository.ProjectRepository;
 import cis.tinkoff.service.*;
 import cis.tinkoff.support.exceptions.InaccessibleActionException;
+import cis.tinkoff.support.mapper.PositionMapper;
+import cis.tinkoff.support.mapper.ProjectMapper;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 
@@ -34,6 +36,8 @@ public class ProjectServiceImpl implements ProjectService {
     private final DictionaryService dictionaryService;
     private final PositionSupportService positionSupportService;
     private final ProjectSupportService projectSupportService;
+    private final ProjectMapper projectMapper;
+    private final PositionMapper positionMapper;
 
     @Override
     public List<ProjectDTO> getAllUserProjects(String login, Boolean isLead) {
@@ -44,7 +48,7 @@ public class ProjectServiceImpl implements ProjectService {
             projects = projectRepository.findByPositionsUserEmailAndIsDeletedFalse(login);
         }
 
-        return ProjectDTO.toProjectDTO(projects, login);
+        return projectMapper.toProjectDTO(projects, login);
     }
 
     @Override
@@ -206,8 +210,8 @@ public class ProjectServiceImpl implements ProjectService {
                 .map(Position::getUser)
                 .filter(Objects::nonNull)
                 .toList();
-        ProjectDTO projectDTO = ProjectDTO.toProjectDTO(project, userLogin);
-        projectDTO.setMembers(ProjectMemberDTO.toProjectMemberDTO(
+        ProjectDTO projectDTO = projectMapper.toProjectDTO(project, userLogin);
+        projectDTO.setMembers(positionMapper.toProjectMemberDTO(
                 members,
                 project.getPositions(),
                 project.getLeader().getId()

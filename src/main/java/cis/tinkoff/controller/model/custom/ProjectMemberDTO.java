@@ -4,16 +4,15 @@ import cis.tinkoff.model.Position;
 import cis.tinkoff.model.User;
 import cis.tinkoff.model.dictionary.DirectionDictionary;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
+import java.util.Objects;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Setter
+@Getter
 @Builder
 @JsonInclude
 public class ProjectMemberDTO {
@@ -24,41 +23,4 @@ public class ProjectMemberDTO {
     private DirectionDictionary direction;
     private Long joinDate;
     private Boolean isLead;
-
-    public static ProjectMemberDTO toProjectMemberDTO(User user, Position position, Long leaderId) {
-        if (user == null || position == null) {
-            return null;
-        }
-
-        ProjectMemberDTO projectMemberDTO = ProjectMemberDTO.builder()
-                .userId(user.getId())
-                .name(user.getName())
-                .surname(user.getSurname())
-                .pictureLink(null) //TODO insert picture link
-                .direction(position.getDirection())
-                .joinDate(position.getJoinDate())
-                .isLead(user.getId() == leaderId)
-                .build();
-
-        return projectMemberDTO;
-    }
-
-    public static List<ProjectMemberDTO> toProjectMemberDTO(List<User> users, List<Position> positions, Long leaderId) {
-        if (users == null || positions == null) {
-            return null;
-        }
-
-        List<ProjectMemberDTO> projectMemberDTOList = positions.stream()
-                .filter(position -> position.getUser() != null)
-                .map(position -> {
-                    User member = users.stream().filter(user -> user.getId() == position.getUser().getId())
-                            .findFirst().orElse(null);
-                    ProjectMemberDTO projectMemberDTO = toProjectMemberDTO(member, position, leaderId);
-
-                    return projectMemberDTO;
-                })
-                .toList();
-
-        return projectMemberDTOList;
-    }
 }

@@ -6,17 +6,15 @@ import cis.tinkoff.model.Position;
 import cis.tinkoff.model.Project;
 import cis.tinkoff.model.dictionary.ProjectStatusDictionary;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Collection;
 import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Setter
+@Getter
 @Builder
 @JsonInclude
 public class ProjectDTO {
@@ -32,43 +30,4 @@ public class ProjectDTO {
     private Integer vacanciesCount;
     private List<ProjectMemberDTO> members;
     private Long createdWhen;
-
-    public static ProjectDTO toProjectDTO(Project project, String userLogin) {
-        if (project == null) {
-            return null;
-        }
-
-        ProjectDTO projectDTO = ProjectDTO.builder()
-                .id(project.getId())
-                .title(project.getTitle())
-                .theme(project.getTheme())
-                .description(project.getDescription())
-                .status(project.getStatus())
-                .contacts(ContactDTO.toContactDto(project.getContacts()))
-                .createdWhen(project.getCreatedWhen())
-                .isLeader(project.getLeader().getEmail().equals(userLogin))
-                .build();
-
-        List<Position> positions = project.getPositions();
-
-        if (positions != null) {
-            int vacanciesCount = Math.toIntExact(positions.stream().filter(position -> position.getUser() == null).count());
-            Integer membersCount = positions.size() - vacanciesCount;
-            projectDTO.setVacanciesCount(vacanciesCount);
-            projectDTO.setMembersCount(membersCount);
-        }
-
-        return projectDTO;
-    }
-
-    public static List<ProjectDTO> toProjectDTO(Collection<Project> projects, String userLogin) {
-
-        if (projects == null) {
-            return null;
-        }
-
-        return projects.stream()
-                .map(project -> ProjectDTO.toProjectDTO(project, userLogin))
-                .toList();
-    }
 }

@@ -19,6 +19,7 @@ import cis.tinkoff.service.ProjectSupportService;
 import cis.tinkoff.service.enumerated.SortDirection;
 import cis.tinkoff.support.exceptions.InaccessibleActionException;
 import cis.tinkoff.support.exceptions.RecordNotFoundException;
+import cis.tinkoff.support.mapper.PositionMapper;
 import io.micronaut.data.model.Page;
 import io.micronaut.data.model.Pageable;
 import io.micronaut.data.model.Sort;
@@ -40,6 +41,7 @@ public class PositionServiceImpl implements PositionService {
     private final DictionaryService dictionaryService;
     private final PositionSupportService positionSupportService;
     private final ProjectSupportService projectSupportService;
+    private final PositionMapper positionMapper;
 
     @Override
     public SearchDTO searchVacancyList(Integer page,
@@ -89,7 +91,7 @@ public class PositionServiceImpl implements PositionService {
         );
 
         return SearchDTO.toDto(
-                VacancyDTO.toVacancyDTO(positions),
+                positionMapper.toVacancyDTO(positions),
                 positionPage.getTotalPages()
         );
     }
@@ -106,14 +108,14 @@ public class PositionServiceImpl implements PositionService {
             throw new RecordNotFoundException(POSITION_NOT_FOUND, positionId);
         }
 
-        return VacancyDTO.toVacancyDTO(vacancy);
+        return positionMapper.toVacancyDTO(vacancy);
     }
 
     @Override
     public List<VacancyDTO> getProjectVacancies(Long projectId, Boolean isVisible) {
         List<Position> positions = positionRepository.findByProjectIdAndIsVisibleAndIsDeletedFalseAndUserIsNull(projectId, isVisible);
 
-        return VacancyDTO.toVacancyDTO(positions);
+        return positionMapper.toVacancyDTO(positions);
     }
 
     @Override
@@ -143,7 +145,7 @@ public class PositionServiceImpl implements PositionService {
 
         newPosition = positionRepository.save(newPosition);
 
-        return VacancyDTO.toVacancyDTO(newPosition);
+        return positionMapper.toVacancyDTO(newPosition);
     }
 
     @Override
@@ -171,7 +173,7 @@ public class PositionServiceImpl implements PositionService {
 
         updatedPosition = positionRepository.update(updatedPosition);
 
-        return VacancyDTO.toVacancyDTO(updatedPosition);
+        return positionMapper.toVacancyDTO(updatedPosition);
     }
 
     @Override
@@ -193,7 +195,7 @@ public class PositionServiceImpl implements PositionService {
 
         updatedPosition = positionRepository.update(updatedPosition);
 
-        return VacancyDTO.toVacancyDTO(updatedPosition);
+        return positionMapper.toVacancyDTO(updatedPosition);
     }
 
     @Override
@@ -226,6 +228,6 @@ public class PositionServiceImpl implements PositionService {
                 .toList();
         User leader = positions.get(0).getProject().getLeader();
 
-        return ProjectMemberDTO.toProjectMemberDTO(members, positions, leader.getId());
+        return positionMapper.toProjectMemberDTO(members, positions, leader.getId());
     }
 }
