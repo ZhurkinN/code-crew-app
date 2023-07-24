@@ -20,6 +20,7 @@ import org.junit.jupiter.api.Test;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import cis.tinkoff.controller.model.ProjectDTO;
 import java.util.List;
 
 import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.INACCESSIBLE_POSITION_ACTION;
@@ -308,6 +309,8 @@ public class RESTRequestTest {
         Long expectedResumeId = 8L;
         String expectedCoverLetter = "Wanna work with you";
 
+        Specifications.installSpecification(Specifications.requestSpec("/auth/login"), Specifications.responseSpec(200));
+
         UserLoginDTO loginDTO = new UserLoginDTO("kio@mail.ru", "123");
 
         String token = given()
@@ -366,5 +369,115 @@ public class RESTRequestTest {
         Assertions.assertEquals(expectedCoverLetter, dto.getCoverLetter());
         Assertions.assertEquals(expectedStatus, dto.getStatus());
         Assertions.assertEquals(expectedIsInvite, dto.getIsInvite());
+    }
+
+    @Test
+    public void testProcessRequestByLead() {
+        Specifications.installSpecification(Specifications.requestSpec("/api/v1/projects/1"), Specifications.responseSpec(200));
+
+        ProjectDTO project = given()
+                .when()
+                .header("Authorization", "Bearer " + TOKEN)
+                .header("Content-Type", ContentType.JSON)
+                .get("/api/v1/projects/" + 1)
+                .then()
+                .extract()
+                .body().as(ProjectDTO.class);
+
+        int expectedMembersNumber = project.getMembersCount() + 1;
+
+        Specifications.installSpecification(Specifications.requestSpec("/auth/login"), Specifications.responseSpec(200));
+
+        UserLoginDTO loginDTO = new UserLoginDTO("weiber@mail.ru", "123");
+
+        String token = given()
+                .urlEncodingEnabled(false)
+                .body(loginDTO)
+                .when()
+                .post("/auth/login")
+                .then()
+                .extract()
+                .path("access_token");
+
+        Specifications.installSpecification(Specifications.requestSpec("/api/v1/requests/1?isAccepted=true"), Specifications.responseSpec(200));
+
+        given()
+                .when()
+                .header("Authorization", "Bearer " + token)
+                .header("Content-Type", ContentType.JSON)
+                .post("/api/v1/requests/1?isAccepted=true")
+                .then()
+                .extract()
+                .body();
+
+        // Смотреть, что у первого типа прибавился проект, смотреть, что в проекте плюс один тип
+
+        Specifications.installSpecification(Specifications.requestSpec("/api/v1/projects/1"), Specifications.responseSpec(200));
+
+        project = given()
+                .when()
+                .header("Authorization", "Bearer " + TOKEN)
+                .header("Content-Type", ContentType.JSON)
+                .get("/api/v1/projects/" + 1)
+                .then()
+                .extract()
+                .body().as(ProjectDTO.class);
+
+        Assertions.assertEquals(expectedMembersNumber, project.getMembersCount());
+    }
+
+    @Test
+    public void testProcessRequestByResumeOwner() {
+        Specifications.installSpecification(Specifications.requestSpec("/api/v1/projects/4"), Specifications.responseSpec(200));
+
+        ProjectDTO project = given()
+                .when()
+                .header("Authorization", "Bearer " + TOKEN)
+                .header("Content-Type", ContentType.JSON)
+                .get("/api/v1/projects/4")
+                .then()
+                .extract()
+                .body().as(ProjectDTO.class);
+
+        int expectedMembersNumber = project.getMembersCount() + 1;
+
+        Specifications.installSpecification(Specifications.requestSpec("/auth/login"), Specifications.responseSpec(200));
+
+        UserLoginDTO loginDTO = new UserLoginDTO("kulich@anser.ru", "123");
+
+        String token = given()
+                .urlEncodingEnabled(false)
+                .body(loginDTO)
+                .when()
+                .post("/auth/login")
+                .then()
+                .extract()
+                .path("access_token");
+
+        Specifications.installSpecification(Specifications.requestSpec("/api/v1/requests/17?isAccepted=true"), Specifications.responseSpec(200));
+
+        given()
+                .when()
+                .header("Authorization", "Bearer " + token)
+                .header("Content-Type", ContentType.JSON)
+                .post("/api/v1/requests/17?isAccepted=true")
+                .then()
+                .extract()
+                .body();
+
+        // Смотреть, что у первого типа прибавился проект, смотреть, что в проекте плюс один тип
+
+        Specifications.installSpecification(Specifications.requestSpec("/api/v1/projects/4"), Specifications.responseSpec(200));
+
+        project = given()
+                .when()
+                .header("Authorization", "Bearer " + TOKEN)
+                .header("Content-Type", ContentType.JSON)
+                .get("/api/v1/projects/" + 4)
+                .then()
+                .extract()
+                .body().as(ProjectDTO.class);
+
+        Assertions.assertEquals(expectedMembersNumber, project.getMembersCount());
     }
 }
