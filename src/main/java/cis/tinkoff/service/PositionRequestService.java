@@ -28,4 +28,6 @@ public interface PositionRequestService {
     void processRequest(Long requestId,
                         Boolean isAccepted,
                         String respondentEmail);
+
+    PositionRequest findPositionRequestById(Long positionRequestId);
 }
