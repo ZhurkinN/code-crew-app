@@ -34,22 +34,13 @@ public class NotificationWebSocketController implements ApplicationEventListener
 
     @Override
     public void onApplicationEvent(NotificationEvent event) {
-//        String userLogin = getUserLogin();
         List<NotificationDTO> message = notificationService.getLatestUserNotificationsByLogin(userLogin);
-//        var session = sessions.get(userLogin);
-//
-//        if (Objects.nonNull(session)) {
-//            publishMessage(message, sessions.get(userLogin));
-//        }
         publishMessage(message, session);
     }
 
     @OnOpen
     public void onOpen(WebSocketSession session, @PathVariable String userLogin) {
-//        String userLogin = getUserLogin();
         this.userLogin = userLogin;
-
-//        sessions.put(userLogin, session);
         this.session = session;
         List<NotificationDTO> message = notificationService.getLatestUserNotificationsByLogin(userLogin);
 
@@ -58,16 +49,6 @@ public class NotificationWebSocketController implements ApplicationEventListener
 
     @OnMessage
     public void onMessage(NotificationRequestDTO requestDTO, WebSocketSession session, @PathVariable String userLogin) {
-//        String userLogin = getUserLogin();
-//
-//        if (!requestDTO.getDelete()) {
-//            List<NotificationDTO> message = notificationService.getUserNotificationsByLogin(userLogin, requestDTO);
-//            publishMessage(message, session);
-//        } else {
-//            notificationService.deleteNotificationById(requestDTO.getNotificationId());
-//            session.sendSync("OK", MediaType.APPLICATION_JSON_TYPE);
-//        }
-
     }
 
     public void publishMessage(List<NotificationDTO> message, WebSocketSession session) {
@@ -81,9 +62,6 @@ public class NotificationWebSocketController implements ApplicationEventListener
 
     @OnClose
     public void onClose(CloseReason closeReason, WebSocketSession session, @PathVariable String userLogin) {
-//        String userLogin = getUserLogin();
-//
-//        session.remove(userLogin);
     }
 
     private String getUserLogin(@PathVariable String userLogin) {
