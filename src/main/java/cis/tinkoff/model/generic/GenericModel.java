@@ -14,7 +14,6 @@ import lombok.experimental.Accessors;
 @Getter
 @Setter
 @NoArgsConstructor
-@Accessors(chain = true)
 @Introspected
 public class GenericModel {
 

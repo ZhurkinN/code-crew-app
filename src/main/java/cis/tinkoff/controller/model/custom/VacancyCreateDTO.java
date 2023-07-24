@@ -5,12 +5,11 @@ import lombok.*;
 
 import java.util.List;
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Setter
 @Getter
-@Builder
+@NoArgsConstructor
 public class VacancyCreateDTO {
+
     private Direction direction;
     private String description;
     private List<String> skills;

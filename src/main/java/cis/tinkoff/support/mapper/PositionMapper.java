@@ -15,6 +15,7 @@ import java.util.Objects;
 @Singleton
 @RequiredArgsConstructor
 public class PositionMapper {
+
     private final ProjectMapper projectMapper;
 
     public VacancyDTO toVacancyDTO(Position position) {

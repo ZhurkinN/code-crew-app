@@ -133,7 +133,7 @@ public interface PositionRepository extends PageableRepository<Position, Long>, 
                     WHERE po.id = :id
                     """
     )
-    List<User> findProjectMembersByPositionId(@Parameter Long id);
+    List<User> findProjectMembersByPositionId(@Id Long id);
 
     @Query(
             nativeQuery = true,

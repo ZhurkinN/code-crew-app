@@ -5,11 +5,9 @@ import lombok.*;
 
 import java.util.List;
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Setter
 @Getter
-@Builder
+@NoArgsConstructor
 public class VacancyDTO {
 
     private Long id;
@@ -20,3 +18,4 @@ public class VacancyDTO {
     private Boolean isVisible;
     private ProjectDTO project;
 }
+

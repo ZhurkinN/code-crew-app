@@ -5,13 +5,12 @@ import lombok.*;
 
 import java.util.List;
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Setter
 @Getter
-@Builder
+@NoArgsConstructor
 @JsonInclude
 public class SearchDTO {
+
     private List<?> content;
     private Integer pageCount;
 

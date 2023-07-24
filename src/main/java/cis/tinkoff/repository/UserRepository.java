@@ -26,9 +26,6 @@ public interface UserRepository extends CrudRepository<User, Long> {
     void update(@Id Long id,
                 Boolean isDeleted);
 
-    List<User> findByIdInList(Collection<Long> id);
-
-
     Optional<User> findByIdAndIsDeletedFalse(@Id Long id);
 
 }

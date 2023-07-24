@@ -11,6 +11,7 @@ import java.util.List;
 
 @Singleton
 public class ProjectMapper {
+
     public ProjectDTO toProjectDTO(Project project, String userLogin) {
         if (project == null) {
             return null;

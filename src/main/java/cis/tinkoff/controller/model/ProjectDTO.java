@@ -8,12 +8,10 @@ import lombok.*;
 
 import java.util.List;
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Setter
 @Getter
-@Builder
 @JsonInclude
+@NoArgsConstructor
 public class ProjectDTO {
 
     private Long id;
@@ -28,3 +26,4 @@ public class ProjectDTO {
     private List<ProjectMemberDTO> members;
     private Long createdWhen;
 }
+

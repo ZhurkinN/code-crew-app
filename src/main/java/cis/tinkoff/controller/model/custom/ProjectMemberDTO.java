@@ -4,11 +4,9 @@ import cis.tinkoff.model.dictionary.DirectionDictionary;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Setter
 @Getter
-@Builder
+@NoArgsConstructor
 @JsonInclude
 public class ProjectMemberDTO {
     private Long userId;

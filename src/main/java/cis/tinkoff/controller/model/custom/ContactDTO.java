@@ -6,13 +6,12 @@ import lombok.*;
 
 import java.util.List;
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Setter
 @Getter
-@Builder
+@NoArgsConstructor
 @JsonInclude
 public class ContactDTO {
+
     private Long id;
     private String link;
     private String description;
