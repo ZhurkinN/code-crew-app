@@ -14,10 +14,10 @@ import cis.tinkoff.service.enumerated.RequestType;
 import cis.tinkoff.support.exceptions.InaccessibleActionException;
 import cis.tinkoff.support.exceptions.RecordNotFoundException;
 import cis.tinkoff.support.exceptions.RequestAlreadyExistsException;
+import cis.tinkoff.support.exceptions.RequestAlreadyProcessedException;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Objects;
 
@@ -106,7 +106,8 @@ public class PositionRequestServiceImpl implements PositionRequestService {
         Position position = positionRepository.findByIdAndIsDeletedFalseAndIsVisibleTrue(positionId)
                 .orElseThrow(() -> new RecordNotFoundException(POSITION_NOT_FOUND, positionId));
         validateUsersProjectLeadership(leaderEmail, positionId);
-        RequestStatusDictionary inConsiderationStatus = dictionaryService.getRequestStatusDictionaryById(RequestStatus.IN_CONSIDERATION);
+        RequestStatusDictionary inConsiderationStatus
+                = dictionaryService.getRequestStatusDictionaryById(RequestStatus.IN_CONSIDERATION);
 
         List<PositionRequest> positionRequests =
                 switch (requestType) {
@@ -148,7 +149,8 @@ public class PositionRequestServiceImpl implements PositionRequestService {
         Resume resume = resumeRepository.findByIdAndIsDeletedFalseAndIsActiveTrue(resumeId)
                 .orElseThrow(() -> new RecordNotFoundException(RESUME_NOT_FOUND, resumeId));
         validateUsersResumeOwnership(resumeOwnerEmail, resumeId);
-        RequestStatusDictionary inConsiderationStatus = dictionaryService.getRequestStatusDictionaryById(RequestStatus.IN_CONSIDERATION);
+        RequestStatusDictionary inConsiderationStatus
+                = dictionaryService.getRequestStatusDictionaryById(RequestStatus.IN_CONSIDERATION);
 
         List<PositionRequest> resumesPositionRequests =
                 switch (requestType) {
@@ -184,7 +186,6 @@ public class PositionRequestServiceImpl implements PositionRequestService {
     }
 
     @Override
-    @Transactional
     public void processRequest(Long requestId,
                                Boolean isAccepted,
                                String respondentEmail) {
@@ -195,6 +196,7 @@ public class PositionRequestServiceImpl implements PositionRequestService {
         Resume resume = request.getResume();
         Position position = request.getPosition();
 
+        validateRequestStatus(status, position.getId(), respondentEmail);
         validateInvitedUsersProjectMembership(resume.getId(), position.getId());
         if (request.getIsInvite()) {
             validateUsersResumeOwnership(respondentEmail, resume.getId());
@@ -204,15 +206,11 @@ public class PositionRequestServiceImpl implements PositionRequestService {
 
         if (isAccepted) {
 
+            position.setUser(resume.getUser())
+                    .setIsVisible(false)
+                    .setJoinDate(System.currentTimeMillis());
+            request.getResume().setIsActive(false);
             status.setStatusName(RequestStatus.ACCEPTED);
-            projectRepository.saveMember(position.getProject().getId(), resume.getUser().getId());
-            resumeRepository.updateIsActiveById(resume.getId(), false);
-            positionRepository.updateIsVisibleAndJoinDateAndUserById(
-                    position.getId(),
-                    false,
-                    System.currentTimeMillis(),
-                    resume.getUser()
-            );
 
             Notification createdNotification = request.getIsInvite()
                     ? notificationService.create(NotificationType.INVITE_APPROVED, position.getProject().getLeader())
@@ -239,6 +237,18 @@ public class PositionRequestServiceImpl implements PositionRequestService {
         }
 
         positionRequestRepository.update(request);
+    }
+
+    private void validateRequestStatus(RequestStatusDictionary status,
+                                       Long positionId,
+                                       String userEmail) {
+
+        if (!Objects.equals(status.getStatusName(), RequestStatus.IN_CONSIDERATION)) {
+            throw new RequestAlreadyProcessedException(
+                    userEmail,
+                    positionId
+            );
+        }
     }
 
 

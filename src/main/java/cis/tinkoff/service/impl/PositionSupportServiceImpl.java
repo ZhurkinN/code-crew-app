@@ -20,6 +20,7 @@ import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper
 @Singleton
 @RequiredArgsConstructor
 public class PositionSupportServiceImpl implements PositionSupportService {
+
     private final PositionRepository positionRepository;
     private final DictionaryService dictionaryService;
 

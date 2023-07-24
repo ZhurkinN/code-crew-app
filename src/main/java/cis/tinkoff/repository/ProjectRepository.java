@@ -24,11 +24,7 @@ public interface ProjectRepository extends CrudRepository<Project, Long> {
     @Join(value = "contacts", type = Join.Type.LEFT_FETCH)
     @Join(value = "positions.direction", type = Join.Type.FETCH)
     @Join(value = "positions.user", type = Join.Type.LEFT_FETCH)
-    Optional<Project> findById(@NotNull Long aLong);
-
-    @Join(value = "leader", type = Join.Type.FETCH)
-    @Join(value = "status", type = Join.Type.FETCH)
-    List<Project> list();
+    Optional<Project> findById(@NotNull Long id);
 
     @Join(value = "positions.user", type = Join.Type.LEFT_FETCH)
     @Join(value = "status", type = Join.Type.FETCH)
@@ -52,13 +48,4 @@ public interface ProjectRepository extends CrudRepository<Project, Long> {
     void updateLeaderByLeaderId(@Id Long id,
                                 User leader);
 
-    @Query(
-            nativeQuery = true,
-            value = """
-                    INSERT INTO project_members (user_id, project_id)
-                    VALUES (:userId, :projectId)
-                    """
-    )
-    void saveMember(Long projectId,
-                    Long userId);
 }

@@ -29,5 +29,4 @@ public interface UserService {
 
     void softDelete(String email);
 
-    List<User> findUsersByIdsOrElseThrow(List<Long> ids);
 }

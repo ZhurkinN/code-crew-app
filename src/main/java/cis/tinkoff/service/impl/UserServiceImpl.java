@@ -4,11 +4,9 @@ import cis.tinkoff.controller.model.UserDTO;
 import cis.tinkoff.model.Project;
 import cis.tinkoff.model.Resume;
 import cis.tinkoff.model.User;
-import cis.tinkoff.model.generic.GenericModel;
 import cis.tinkoff.repository.ProjectRepository;
 import cis.tinkoff.repository.ResumeRepository;
 import cis.tinkoff.repository.UserRepository;
-import cis.tinkoff.service.ProjectSupportService;
 import cis.tinkoff.service.UserService;
 import cis.tinkoff.support.exceptions.RecordNotFoundException;
 import cis.tinkoff.support.exceptions.UserAlreadyExistsException;
@@ -116,17 +114,6 @@ public class UserServiceImpl implements UserService {
         user.setResumes(userResumes);
 
         return userMapper.toDtoWithProjects(user, userProjects);
-    }
-
-    @Override
-    public List<User> findUsersByIdsOrElseThrow(List<Long> ids) {
-        List<User> users = userRepository.findByIdInList(ids);
-
-        if (users.size() == 0) {
-            throw new RecordNotFoundException(USER_NOT_FOUND, ids.get(0));
-        }
-
-        return users;
     }
 
 }

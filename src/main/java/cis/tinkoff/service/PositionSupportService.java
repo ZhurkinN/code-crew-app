@@ -7,6 +7,7 @@ import cis.tinkoff.model.enumerated.Direction;
 import java.util.List;
 
 public interface PositionSupportService {
+
     boolean isUserProjectMember(String login, Long projectId);
 
     Position findPositionByIdOrElseThrow(Long id);

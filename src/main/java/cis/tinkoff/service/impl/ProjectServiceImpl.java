@@ -1,7 +1,6 @@
 package cis.tinkoff.service.impl;
 
 import cis.tinkoff.controller.model.ProjectDTO;
-import cis.tinkoff.controller.model.UserDTO;
 import cis.tinkoff.controller.model.custom.ContactDTO;
 import cis.tinkoff.controller.model.custom.ProjectCreateDTO;
 import cis.tinkoff.controller.model.custom.ProjectMemberDTO;
@@ -123,7 +122,6 @@ public class ProjectServiceImpl implements ProjectService {
         return getProjectDTO(project, login);
     }
 
-    @Transactional
     @Override
     public ProjectDTO createProject(String login,
                                     ProjectCreateDTO projectCreateDTO) {

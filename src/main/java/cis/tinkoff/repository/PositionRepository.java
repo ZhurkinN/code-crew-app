@@ -3,7 +3,6 @@ package cis.tinkoff.repository;
 import cis.tinkoff.model.Position;
 import cis.tinkoff.model.Project;
 import cis.tinkoff.model.User;
-import cis.tinkoff.model.enumerated.Direction;
 import io.micronaut.context.annotation.Parameter;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.data.annotation.Id;
@@ -45,7 +44,10 @@ public interface PositionRepository extends PageableRepository<Position, Long>, 
                                AND position_.direction ilike coalesce(:direction, '%')
                                AND project_.status ilike coalesce(:status, '%')
                                AND lower(position_.skills::text)::text[] @> coalesce(lower(:skills::text)::text[], lower(position_.skills::text)::text[])""")
-    Page<Position> searchAllVacancies(@Nullable String direction, @Nullable String status, @Nullable List<String> skills, Pageable pageable);
+    Page<Position> searchAllVacancies(@Nullable String direction,
+                                      @Nullable String status,
+                                      @Nullable List<String> skills,
+                                      Pageable pageable);
 
     @Override
     @Join(value = "project", type = Join.Type.FETCH)
@@ -60,14 +62,16 @@ public interface PositionRepository extends PageableRepository<Position, Long>, 
     @Join(value = "project.status", type = Join.Type.FETCH)
     @Join(value = "direction", type = Join.Type.FETCH)
     @Join(value = "user", type = Join.Type.LEFT_FETCH)
-    List<Position> findByIdInList(List<Long> ids, Sort sort);
+    List<Position> findByIdInList(List<Long> ids,
+                                  Sort sort);
 
     @Join(value = "project", type = Join.Type.FETCH)
     @Join(value = "project.leader", type = Join.Type.FETCH)
     @Join(value = "project.status", type = Join.Type.FETCH)
     @Join(value = "direction", type = Join.Type.FETCH)
     @Join(value = "user", type = Join.Type.FETCH)
-    List<Position> findByUserIdAndProjectId(Long user_id, Long project_id);
+    List<Position> findByUserIdAndProjectId(Long user_id,
+                                            Long project_id);
 
     @Join(value = "project", type = Join.Type.FETCH)
     @Join(value = "direction", type = Join.Type.FETCH)
@@ -97,7 +101,8 @@ public interface PositionRepository extends PageableRepository<Position, Long>, 
             AND position.project_id = :projectId
             """,
             nativeQuery = true)
-    void softDeletePositionByUserIdAndProjectId(Long userId, Long projectId);
+    void softDeletePositionByUserIdAndProjectId(Long userId,
+                                                Long projectId);
 
     @Query(value = """
             UPDATE position SET is_deleted = true, user_id = null, is_visible = false\040
@@ -119,12 +124,12 @@ public interface PositionRepository extends PageableRepository<Position, Long>, 
                     SELECT DISTINCT u.*
                     FROM position po
                         JOIN project p on po.project_id = p.id
-                        JOIN project_members pm on p.id = pm.project_id
-                        JOIN users u on u.id = pm.user_id
+                        JOIN position pos on p.id = pos.project_id
+                        JOIN users u on u.id = pos.user_id
                     WHERE po.id = :id
                     """
     )
-    List<User> findProjectMembersByPositionId(@Parameter("id") Long id);
+    List<User> findProjectMembersByPositionId(@Parameter Long id);
 
     @Query(
             nativeQuery = true,
@@ -141,11 +146,6 @@ public interface PositionRepository extends PageableRepository<Position, Long>, 
     @Join(value = "project.status", type = Join.Type.FETCH)
     @Join(value = "project.positions.user", type = Join.Type.FETCH)
     Project findProjectById(@Id Long id);
-
-    void updateIsVisibleAndJoinDateAndUserById(@Id Long id,
-                                               Boolean isVisible,
-                                               Long joinDate,
-                                               User user);
 
     @Join(value = "project", type = Join.Type.FETCH)
     @Join(value = "project.leader", type = Join.Type.FETCH)
