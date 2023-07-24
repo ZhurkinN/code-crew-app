@@ -3,7 +3,6 @@ package cis.tinkoff.service.impl;
 import cis.tinkoff.controller.model.ProjectDTO;
 import cis.tinkoff.controller.model.custom.ContactDTO;
 import cis.tinkoff.controller.model.custom.ProjectCreateDTO;
-import cis.tinkoff.controller.model.custom.ProjectMemberDTO;
 import cis.tinkoff.model.Position;
 import cis.tinkoff.model.Project;
 import cis.tinkoff.model.ProjectContact;
@@ -88,7 +87,7 @@ public class ProjectServiceImpl implements ProjectService {
                         oldUser.getId(),
                         project.getId()
                 );
-        positionSupportService.softDeletePositionByUserIdAndProjectId(oldUser.getId(), project.getId());
+        positionSupportService.deleteUserFromPositionsByUserIdAndProjectId(oldUser.getId(), project.getId());
 
         if (projectSupportService.isUserProjectLeader(login, project.getId())) {
             positionSupportService
@@ -124,7 +123,7 @@ public class ProjectServiceImpl implements ProjectService {
                         projectId
                 );
 
-        positionSupportService.softDeletePositionByUserIdAndProjectId(userId, projectId);
+        positionSupportService.deleteUserFromPositionsByUserIdAndProjectId(userId, projectId);
 
         project = projectSupportService.getProjectByIdOrElseThrow(projectId);
 

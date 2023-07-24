@@ -93,13 +93,20 @@ public interface PositionRepository extends PageableRepository<Position, Long>, 
     List<Position> retrieveByProjectId(Long project_id);
 
     @Query(value = """
-            UPDATE position SET is_deleted = true, user_id = null, is_visible = false\040
+            UPDATE position SET user_id = null, is_visible = false\040
             WHERE position.user_id = :userId\040
             AND position.project_id = :projectId
             """,
             nativeQuery = true)
-    void softDeletePositionByUserIdAndProjectId(Long userId,
-                                                Long projectId);
+    void deleteUserFromPositionsByUserIdAndProjectId(Long userId,
+                                                     Long projectId);
+
+    @Query(value = """
+            UPDATE position SET user_id = null, is_visible = false\040
+            WHERE position.user_id = :userId
+            """,
+            nativeQuery = true)
+    void deleteUserFromAllPositionsByUserId(Long userId);
 
     @Query(value = """
             UPDATE position SET is_deleted = true, user_id = null, is_visible = false\040
