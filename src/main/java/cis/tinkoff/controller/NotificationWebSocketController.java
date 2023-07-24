@@ -6,6 +6,8 @@ import cis.tinkoff.service.NotificationService;
 import cis.tinkoff.service.event.NotificationEvent;
 import io.micronaut.context.event.ApplicationEventListener;
 import io.micronaut.http.MediaType;
+import io.micronaut.http.annotation.Controller;
+import io.micronaut.http.annotation.PathVariable;
 import io.micronaut.security.annotation.Secured;
 import io.micronaut.security.authentication.Authentication;
 import io.micronaut.security.rules.SecurityRule;
@@ -17,45 +19,55 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 @RequiredArgsConstructor
-@Secured(SecurityRule.IS_AUTHENTICATED)
-@ServerWebSocket("/ws/notifications")
+@Secured(SecurityRule.IS_ANONYMOUS)
+@ServerWebSocket("/ws/notifications/{userLogin}")
 public class NotificationWebSocketController implements ApplicationEventListener<NotificationEvent> {
     private final NotificationService notificationService;
     private final SecurityService securityService;
-    private final Map<String, WebSocketSession> sessions = new ConcurrentHashMap<>();
+//    private final Map<String, WebSocketSession> sessions = new ConcurrentHashMap<>();
+    private WebSocketSession session;
+    private String userLogin;
 
     @Override
     public void onApplicationEvent(NotificationEvent event) {
-        String userLogin = getUserLogin();
+//        String userLogin = getUserLogin();
         List<NotificationDTO> message = notificationService.getLatestUserNotificationsByLogin(userLogin);
-
-        publishMessage(message, sessions.get(userLogin));
+//        var session = sessions.get(userLogin);
+//
+//        if (Objects.nonNull(session)) {
+//            publishMessage(message, sessions.get(userLogin));
+//        }
+        publishMessage(message, session);
     }
 
     @OnOpen
-    public void onOpen(WebSocketSession session) {
-        String userLogin = getUserLogin();
+    public void onOpen(WebSocketSession session, @PathVariable String userLogin) {
+//        String userLogin = getUserLogin();
+        this.userLogin = userLogin;
 
-        sessions.put(userLogin, session);
+//        sessions.put(userLogin, session);
+        this.session = session;
         List<NotificationDTO> message = notificationService.getLatestUserNotificationsByLogin(userLogin);
 
         publishMessage(message, session);
     }
 
     @OnMessage
-    public void onMessage(NotificationRequestDTO requestDTO, WebSocketSession session) {
-        String userLogin = getUserLogin();
+    public void onMessage(NotificationRequestDTO requestDTO, WebSocketSession session, @PathVariable String userLogin) {
+//        String userLogin = getUserLogin();
+//
+//        if (!requestDTO.getDelete()) {
+//            List<NotificationDTO> message = notificationService.getUserNotificationsByLogin(userLogin, requestDTO);
+//            publishMessage(message, session);
+//        } else {
+//            notificationService.deleteNotificationById(requestDTO.getNotificationId());
+//            session.sendSync("OK", MediaType.APPLICATION_JSON_TYPE);
+//        }
 
-        if (!requestDTO.getDelete()) {
-            List<NotificationDTO> message = notificationService.getUserNotificationsByLogin(userLogin, requestDTO);
-            publishMessage(message, session);
-        } else {
-            notificationService.deleteNotificationById(requestDTO.getNotificationId());
-            session.sendSync("OK", MediaType.APPLICATION_JSON_TYPE);
-        }
     }
 
     public void publishMessage(List<NotificationDTO> message, WebSocketSession session) {
@@ -63,18 +75,18 @@ public class NotificationWebSocketController implements ApplicationEventListener
     }
 
     @OnError
-    public void onError(Throwable error) throws Throwable {
+    public void onError(Throwable error, @PathVariable String userLogin) throws Throwable {
         throw error;
     }
 
     @OnClose
-    public void onClose(CloseReason closeReason, WebSocketSession session) {
-        String userLogin = getUserLogin();
-
-        session.remove(userLogin);
+    public void onClose(CloseReason closeReason, WebSocketSession session, @PathVariable String userLogin) {
+//        String userLogin = getUserLogin();
+//
+//        session.remove(userLogin);
     }
 
-    private String getUserLogin() {
+    private String getUserLogin(@PathVariable String userLogin) {
         Authentication authentication = securityService.getAuthentication().get();
         return authentication.getName();
     }
