@@ -13,6 +13,9 @@ import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -61,12 +64,33 @@ public class FileServiceImpl implements FileService {
     }
 
     @SneakyThrows
-    private void savePicture(CompletedFileUpload file,
+    private void savePicture(CompletedFileUpload inputFile,
                              String filename) {
 
-        FileOutputStream fileOutputStream = new FileOutputStream(storagePath + filename);
-        fileOutputStream.write(file.getBytes());
-        fileOutputStream.close();
+        BufferedImage bufferedImage = ImageIO.read(inputFile.getInputStream());
+        byte[] imageBytes;
+        try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
+            ImageIO.write(cropImageToRectangle(bufferedImage), "png", byteArrayOutputStream);
+            imageBytes = byteArrayOutputStream.toByteArray();
+        }
+
+        try (FileOutputStream fileOutputStream = new FileOutputStream(storagePath + filename)) {
+            fileOutputStream.write(imageBytes);
+        }
+    }
+
+    private BufferedImage cropImageToRectangle(BufferedImage givenImage) {
+
+        int width = givenImage.getWidth();
+        int height = givenImage.getHeight();
+
+        if (height == width) {
+            return givenImage;
+        }
+
+        return height > width
+                ? givenImage.getSubimage(0, (int) ((height - width) / 2.0), width, width)
+                : givenImage.getSubimage((int) ((width - height) / 2.0), 0, height, height);
     }
 
 }
