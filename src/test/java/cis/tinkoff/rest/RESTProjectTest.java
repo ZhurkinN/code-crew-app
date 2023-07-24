@@ -164,50 +164,50 @@ public class RESTProjectTest {
         Assertions.assertEquals(String.format(INACCESSIBLE_PROJECT_ACTION, USER_MAIL, 1), errorMessage);
     }
 
-//    @Test
-//    @Order(4)
-//    public void testChangeProjectById() {
-//        Specifications.installSpecification(Specifications.requestSpec("/api/v1/projects/" + 2), Specifications.responseSpec(200));
-//
-//        ProjectCreateDTO dto = new ProjectCreateDTO();
-//
-//        Long expectedId = 2L;
-//        boolean expectedIsLeader = true;
-//        String expectedTitle = "New project";
-//        String expectedTheme = "New theme";
-//        String expectedDescription = "New description";
-//        ProjectStatus status = ProjectStatus.FROZEN;
-//        ProjectStatusDictionary expectedProjectStatus
-//                = new ProjectStatusDictionary(ProjectStatus.FROZEN, "Project is frozen");
-//        ContactDTO contact1 = ContactDTO.builder().description("New link 1").link("Link 1").build();
-//        ContactDTO contact2 = ContactDTO.builder().description("New link 2").link("Link 2").build();
-//        ContactDTO contact3 = ContactDTO.builder().description("New link 3").link("Link 3").build();
-//        List<ContactDTO> expectedContacts = List.of(contact1, contact2, contact3);
-//
-//        dto.setStatus(status);
-//        dto.setDescription(expectedDescription);
-//        dto.setTheme(expectedTheme);
-//        dto.setContacts(expectedContacts);
-//        dto.setTitle(expectedTitle);
-//
-//        ProjectDTO projectDTO = given()
-//                .when()
-//                .body(dto)
-//                .header("Authorization", "Bearer " + TOKEN)
-//                .header("Content-Type", ContentType.JSON)
-//                .patch("/api/v1/projects/" + 2)
-//                .then()
-//                .extract()
-//                .body().as(ProjectDTO.class);
-//
-//        Assertions.assertEquals(expectedId, projectDTO.getId());
-//        Assertions.assertEquals(expectedIsLeader, projectDTO.getIsLeader());
-//        Assertions.assertEquals(expectedTitle, projectDTO.getTitle());
-//        Assertions.assertEquals(expectedTheme, projectDTO.getTheme());
-//        Assertions.assertEquals(expectedDescription, projectDTO.getDescription());
-//        Assertions.assertEquals(expectedProjectStatus, projectDTO.getStatus());
-//        Assertions.assertEquals(expectedContacts.size(), projectDTO.getContacts().size());
-//    }
+    @Test
+    @Order(4)
+    public void testChangeProjectById() {
+        Specifications.installSpecification(Specifications.requestSpec("/api/v1/projects/" + 2), Specifications.responseSpec(200));
+
+        ProjectCreateDTO dto = new ProjectCreateDTO();
+
+        Long expectedId = 2L;
+        boolean expectedIsLeader = true;
+        String expectedTitle = "New project";
+        String expectedTheme = "New theme";
+        String expectedDescription = "New description";
+        ProjectStatus status = ProjectStatus.FROZEN;
+        ProjectStatusDictionary expectedProjectStatus
+                = new ProjectStatusDictionary(ProjectStatus.FROZEN, "Project is frozen");
+        ContactDTO contact1 = ContactDTO.builder().description("New link 1").link("Link 1").build();
+        ContactDTO contact2 = ContactDTO.builder().description("New link 2").link("Link 2").build();
+        ContactDTO contact3 = ContactDTO.builder().description("New link 3").link("Link 3").build();
+        List<ContactDTO> expectedContacts = List.of(contact1, contact2, contact3);
+
+        dto.setStatus(status);
+        dto.setDescription(expectedDescription);
+        dto.setTheme(expectedTheme);
+        dto.setContacts(expectedContacts);
+        dto.setTitle(expectedTitle);
+
+        ProjectDTO projectDTO = given()
+                .when()
+                .body(dto)
+                .header("Authorization", "Bearer " + TOKEN)
+                .header("Content-Type", ContentType.JSON)
+                .patch("/api/v1/projects/" + 2)
+                .then()
+                .extract()
+                .body().as(ProjectDTO.class);
+
+        Assertions.assertEquals(expectedId, projectDTO.getId());
+        Assertions.assertEquals(expectedIsLeader, projectDTO.getIsLeader());
+        Assertions.assertEquals(expectedTitle, projectDTO.getTitle());
+        Assertions.assertEquals(expectedTheme, projectDTO.getTheme());
+        Assertions.assertEquals(expectedDescription, projectDTO.getDescription());
+        Assertions.assertEquals(expectedProjectStatus, projectDTO.getStatus());
+        Assertions.assertEquals(expectedContacts.size(), projectDTO.getContacts().size());
+    }
 
     @Test
     @Order(5)

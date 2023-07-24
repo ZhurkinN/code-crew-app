@@ -96,6 +96,7 @@ values (1, 'BACKEND', 'Позиция Backend-developer', ARRAY ['java', 'postgr
        (4, 'BACKEND', 'Позиция Backend-developer', ARRAY ['java', 'postgres', 'spring', 'maven'], null),
        (4, 'FRONTEND', 'Позиция Frontend-developer', ARRAY ['javascript', 'typescript', 'react', 'next'], null),
        (4, 'DATA_SCIENCE', 'Позиция Data Science Engineer', ARRAY ['Python'], 6),
+       (4, 'ML', 'Позиция Machine Learning Engineer', ARRAY ['Python'], null),
 
        (5, 'BACKEND', 'Позиция Backend-developer', ARRAY ['java', 'postgres', 'spring', 'maven'], null),
        (5, 'QA', 'Позиция тестировщика', ARRAY ['java', 'mockito', 'junit', 'selenium'], 3),
@@ -104,6 +105,8 @@ values (1, 'BACKEND', 'Позиция Backend-developer', ARRAY ['java', 'postgr
 
 insert into position_request(resume_id, position_id, status, cover_letter, is_invite)
 values (1, 1, 'IN_CONSIDERATION', 'Очень хочу работать в вашей команде. Обещаю много работать, иначе можете меня уволить. Хочу много денег', false),
+       (1, 14, 'IN_CONSIDERATION', 'Очень хочу работать в вашей команде. Обещаю много работать, иначе можете меня уволить. Хочу много денег', false),
+       (2, 13, 'IN_CONSIDERATION', 'Очень хочу работать в вашей команде. Обещаю много работать, иначе можете меня уволить. Хочу много денег', false),
        (8, 2, 'IN_CONSIDERATION', 'Очень хочу работать в вашей команде. Обещаю много работать, иначе можете меня уволить. Хочу много денег', false),
        (3, 3, 'IN_CONSIDERATION', 'Очень хочу работать в вашей команде. Обещаю много работать, иначе можете меня уволить. Хочу много денег', false),
        (7, 4, 'IN_CONSIDERATION', 'Очень хочу работать в вашей команде. Обещаю много работать, иначе можете меня уволить. Хочу много денег', false),

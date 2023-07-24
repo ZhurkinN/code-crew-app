@@ -376,7 +376,7 @@ public class RESTResumeTest {
                 .when()
                 .header("Authorization", "Bearer " + TOKEN_2)
                 .header("Content-Type", ContentType.JSON)
-                .get("/api/v1/resumes/search?size=10&skills=jaVaScrIpt")
+                .get("/api/v1/resumes/search?size=10&skills=jaVA")
                 .then()
                 .extract()
                 .body().jsonPath().getList("content.", ResumeDTO.class);

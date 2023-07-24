@@ -76,7 +76,7 @@ public class RESTUserTest {
         List<String> expectedContacts = List.of("https://github.com/Lieben", "https://inst/Lieben");
         String expectedMainInformation = "I am Karl. Love to play basketball, watching films, doing programs, doing popcorn and smth else. Feeling kaif when popcorn is good. Feeling good when programs works";
         int expectedResumesSize = 1;
-        int expectedProjectsSize = 1;
+        int expectedProjectsSize = 3;
 
         Assertions.assertEquals(expectedName, name);
         Assertions.assertEquals(expectedSurname, surname);
