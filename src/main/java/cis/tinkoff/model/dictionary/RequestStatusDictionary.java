@@ -5,6 +5,7 @@ import io.micronaut.data.annotation.Id;
 import io.micronaut.data.annotation.MappedEntity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,6 +14,7 @@ import java.util.Objects;
 
 @Getter
 @Setter
+@AllArgsConstructor
 @NoArgsConstructor
 @MappedEntity(value = "dictionary_request_status")
 public class RequestStatusDictionary {

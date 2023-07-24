@@ -160,7 +160,7 @@ public class RESTRequestTest {
                 .body().jsonPath().getList(".", PositionRequestDTO.class);
 
         int expectedRequestsSize = 2;
-        Long expectedVacancyId = 2L;
+        long expectedVacancyId = 2L;
         boolean expectedIsInvite = true;
         RequestStatusDictionary expectedStatus = new RequestStatusDictionary(RequestStatus.IN_CONSIDERATION, "Request is under consideration");
 
@@ -205,7 +205,7 @@ public class RESTRequestTest {
                 .body().jsonPath().getList(".", PositionRequestDTO.class);
 
         int expectedRequestsSize = 2;
-        Long expectedVacancyId = 1L;
+        long expectedVacancyId = 1L;
         boolean expectedIsInvite = false;
         RequestStatusDictionary expectedStatus = new RequestStatusDictionary(RequestStatus.IN_CONSIDERATION, "Request is under consideration");
 
