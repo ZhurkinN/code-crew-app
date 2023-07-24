@@ -111,7 +111,7 @@ public class PositionServiceImpl implements PositionService {
 
     @Override
     public List<VacancyDTO> getProjectVacancies(Long projectId, Boolean isVisible) {
-        List<Position> positions = positionRepository.findByProjectIdAndIsDeletedFalse(projectId, isVisible);
+        List<Position> positions = positionRepository.findByProjectIdAndIsVisibleAndIsDeletedFalseAndUserIsNull(projectId, isVisible);
 
         return VacancyDTO.toVacancyDTO(positions);
     }

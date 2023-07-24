@@ -8,7 +8,6 @@ import io.micronaut.core.annotation.Nullable;
 import io.micronaut.data.annotation.Id;
 import io.micronaut.data.annotation.Join;
 import io.micronaut.data.annotation.Query;
-import io.micronaut.data.annotation.Where;
 import io.micronaut.data.jdbc.annotation.JdbcRepository;
 import io.micronaut.data.model.Page;
 import io.micronaut.data.model.Pageable;
@@ -55,7 +54,7 @@ public interface PositionRepository extends PageableRepository<Position, Long>, 
     @Join(value = "project.status", type = Join.Type.FETCH)
     @Join(value = "direction", type = Join.Type.FETCH)
     @Join(value = "user", type = Join.Type.LEFT_FETCH)
-    Optional<Position> findById(@NotNull Long aLong);
+    Optional<Position> findById(@Id @NotNull Long id);
 
     @Join(value = "project", type = Join.Type.FETCH)
     @Join(value = "project.leader", type = Join.Type.FETCH)
@@ -70,24 +69,22 @@ public interface PositionRepository extends PageableRepository<Position, Long>, 
     @Join(value = "project.status", type = Join.Type.FETCH)
     @Join(value = "direction", type = Join.Type.FETCH)
     @Join(value = "user", type = Join.Type.FETCH)
-    List<Position> findByUserIdAndProjectId(Long user_id,
-                                            Long project_id);
+    List<Position> findByUserIdAndProjectId(Long userId,
+                                            Long projectId);
 
     @Join(value = "project", type = Join.Type.FETCH)
     @Join(value = "direction", type = Join.Type.FETCH)
     @Join(value = "user", type = Join.Type.FETCH)
     List<Position> findByProjectIdAndUserEmail(Long project_id,
-                                               String user_email);
+                                               String userEmail);
 
-    @Where("@.user_id is null")
-    @Where("@.is_visible = :isVisible")
     @Join(value = "project", type = Join.Type.FETCH)
     @Join(value = "project.leader", type = Join.Type.FETCH)
     @Join(value = "project.status", type = Join.Type.FETCH)
     @Join(value = "direction", type = Join.Type.FETCH)
     @Join(value = "user", type = Join.Type.LEFT_FETCH)
-    List<Position> findByProjectIdAndIsDeletedFalse(Long project_id,
-                                                    Boolean isVisible);
+    List<Position> findByProjectIdAndIsVisibleAndIsDeletedFalseAndUserIsNull(Long project_id,
+                                                                             Boolean isVisible);
 
     @Join(value = "project.leader", type = Join.Type.FETCH)
     @Join(value = "project.status", type = Join.Type.FETCH)
