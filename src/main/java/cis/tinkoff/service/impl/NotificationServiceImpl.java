@@ -47,7 +47,6 @@ public class NotificationServiceImpl implements NotificationService {
     ) {
         Notification newNotification = new Notification()
                 .setUser(userService.getByIdWithoutProjects(targetUserId))
-                .setCreatedWhen(System.currentTimeMillis())
                 .setType(dictionaryService.getNotificationTypeDictionaryById(notificationType))
                 .setRequest(
                         positionRequestServiceProvider.get()

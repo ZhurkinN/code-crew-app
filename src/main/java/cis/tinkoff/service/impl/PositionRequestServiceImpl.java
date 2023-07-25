@@ -2,7 +2,6 @@ package cis.tinkoff.service.impl;
 
 import cis.tinkoff.model.*;
 import cis.tinkoff.model.dictionary.RequestStatusDictionary;
-import cis.tinkoff.model.enumerated.NotificationType;
 import cis.tinkoff.model.enumerated.RequestStatus;
 import cis.tinkoff.repository.PositionRepository;
 import cis.tinkoff.repository.PositionRequestRepository;
@@ -18,6 +17,7 @@ import cis.tinkoff.support.exceptions.RequestAlreadyProcessedException;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Objects;
 
@@ -58,12 +58,6 @@ public class PositionRequestServiceImpl implements PositionRequestService {
 
         positionRequest = positionRequestRepository.save(positionRequest);
 
-        notificationService.createNotification(
-                position.getProject().getLeader().getId(),
-                positionRequest.getId(),
-                NotificationType.REQUEST
-        );
-
         return positionRequest;
     }
 
@@ -91,12 +85,6 @@ public class PositionRequestServiceImpl implements PositionRequestService {
                 .setStatus(defaultStatus);
 
         positionRequest = positionRequestRepository.save(positionRequest);
-
-        notificationService.createNotification(
-                resume.getUser().getId(),
-                positionRequest.getId(),
-                NotificationType.INVITE
-        );
 
         return positionRequest;
     }
@@ -189,6 +177,7 @@ public class PositionRequestServiceImpl implements PositionRequestService {
     }
 
     @Override
+    @Transactional
     public void processRequest(Long requestId,
                                Boolean isAccepted,
                                String respondentEmail) {
@@ -215,28 +204,8 @@ public class PositionRequestServiceImpl implements PositionRequestService {
             request.getResume().setIsActive(false);
             status.setStatusName(RequestStatus.ACCEPTED);
 
-            Notification createdNotification = request.getIsInvite()
-                    ? notificationService.createNotification(resume.getUser().getId(), requestId, NotificationType.INVITE_APPROVED)
-                    : notificationService.createNotification(position.getProject().getLeader().getId(), requestId, NotificationType.REQUEST_APPROVED);
-
-            if (Objects.nonNull(request.getNotifications())) {
-                request.getNotifications().add(createdNotification);
-            } else {
-                request.setNotifications(List.of(createdNotification));
-            }
-
         } else {
-
             status.setStatusName(RequestStatus.DECLINED);
-            Notification createdNotification = request.getIsInvite()
-                    ? notificationService.createNotification(resume.getUser().getId(), requestId, NotificationType.INVITE_DECLINED)
-                    : notificationService.createNotification(position.getProject().getLeader().getId(), requestId, NotificationType.REQUEST_DECLINED);
-
-            if (Objects.nonNull(request.getNotifications())) {
-                request.getNotifications().add(createdNotification);
-            } else {
-                request.setNotifications(List.of(createdNotification));
-            }
         }
 
         positionRequestRepository.update(request);
@@ -244,6 +213,7 @@ public class PositionRequestServiceImpl implements PositionRequestService {
 
     @Override
     public PositionRequest findPositionRequestById(Long positionRequestId) {
+
         return positionRequestRepository.getByIdAndIsDeletedFalse(positionRequestId)
                 .orElseThrow(() -> new RecordNotFoundException(
                         REQUEST_NOT_FOUND,

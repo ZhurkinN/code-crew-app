@@ -1,34 +1,31 @@
 package cis.tinkoff.controller;
 
 import cis.tinkoff.controller.model.NotificationDTO;
-import cis.tinkoff.controller.model.custom.NotificationRequestDTO;
 import cis.tinkoff.service.NotificationService;
 import cis.tinkoff.service.event.NotificationEvent;
 import io.micronaut.context.event.ApplicationEventListener;
 import io.micronaut.http.MediaType;
-import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.PathVariable;
 import io.micronaut.security.annotation.Secured;
-import io.micronaut.security.authentication.Authentication;
 import io.micronaut.security.rules.SecurityRule;
-import io.micronaut.security.utils.SecurityService;
-import io.micronaut.websocket.CloseReason;
 import io.micronaut.websocket.WebSocketSession;
-import io.micronaut.websocket.annotation.*;
+import io.micronaut.websocket.annotation.OnClose;
+import io.micronaut.websocket.annotation.OnError;
+import io.micronaut.websocket.annotation.OnOpen;
+import io.micronaut.websocket.annotation.ServerWebSocket;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
 
-@RequiredArgsConstructor
+@Setter
 @Secured(SecurityRule.IS_ANONYMOUS)
 @ServerWebSocket("/ws/notifications/{userLogin}")
+@RequiredArgsConstructor
 public class NotificationWebSocketController implements ApplicationEventListener<NotificationEvent> {
+
     private final NotificationService notificationService;
-    private final SecurityService securityService;
-//    private final Map<String, WebSocketSession> sessions = new ConcurrentHashMap<>();
+    //    private final Map<String, WebSocketSession> sessions = new ConcurrentHashMap<>();
     private WebSocketSession session;
     private String userLogin;
 
@@ -47,10 +44,6 @@ public class NotificationWebSocketController implements ApplicationEventListener
         publishMessage(message, session);
     }
 
-    @OnMessage
-    public void onMessage(NotificationRequestDTO requestDTO, WebSocketSession session, @PathVariable String userLogin) {
-    }
-
     public void publishMessage(List<NotificationDTO> message, WebSocketSession session) {
         session.sendSync(message, MediaType.APPLICATION_JSON_TYPE);
     }
@@ -61,11 +54,9 @@ public class NotificationWebSocketController implements ApplicationEventListener
     }
 
     @OnClose
-    public void onClose(CloseReason closeReason, WebSocketSession session, @PathVariable String userLogin) {
+    public void onClose(@PathVariable String userLogin) {
+        setUserLogin(null);
+        setSession(null);
     }
 
-    private String getUserLogin(@PathVariable String userLogin) {
-        Authentication authentication = securityService.getAuthentication().get();
-        return authentication.getName();
-    }
 }

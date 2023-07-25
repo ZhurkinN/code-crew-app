@@ -1,7 +1,9 @@
 package cis.tinkoff.controller.model;
 
 import cis.tinkoff.model.dictionary.DirectionDictionary;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
 

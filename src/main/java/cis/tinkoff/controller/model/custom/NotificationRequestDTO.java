@@ -2,8 +2,9 @@ package cis.tinkoff.controller.model.custom;
 
 import cis.tinkoff.service.enumerated.SortDirection;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.*;
-import lombok.experimental.Accessors;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
 

@@ -1,8 +1,9 @@
 package cis.tinkoff.controller.model.custom;
 
 import cis.tinkoff.model.enumerated.NotificationType;
-import lombok.*;
-import lombok.experimental.Accessors;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Setter
