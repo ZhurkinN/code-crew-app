@@ -13,6 +13,7 @@ import cis.tinkoff.service.enumerated.SortDirection;
 import cis.tinkoff.service.event.NotificationEvent;
 import cis.tinkoff.support.exceptions.RecordNotFoundException;
 import cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper;
+import cis.tinkoff.support.mapper.NotificationMapper;
 import io.micronaut.context.event.ApplicationEventPublisher;
 import io.micronaut.data.model.Page;
 import io.micronaut.data.model.Pageable;
@@ -27,7 +28,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class NotificationServiceImpl implements NotificationService {
     private final ApplicationEventPublisher<NotificationEvent> eventPublisher;
-
+    private final NotificationMapper notificationMapper;
     private final NotificationRepository notificationRepository;
     private final UserService userService;
     private final DictionaryService dictionaryService;
@@ -69,7 +70,7 @@ public class NotificationServiceImpl implements NotificationService {
                         notificationId
                 ));
 
-        return NotificationDTO.of(notification);
+        return notificationMapper.of(notification);
     }
 
     @Override
@@ -80,7 +81,7 @@ public class NotificationServiceImpl implements NotificationService {
 
         Page<Notification> notifications = notificationRepository.findByUserId(userId, pageable);
 
-        return NotificationDTO.of(notifications.getContent());
+        return notificationMapper.of(notifications.getContent());
     }
 
     @Override

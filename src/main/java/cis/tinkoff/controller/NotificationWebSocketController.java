@@ -21,7 +21,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Setter
 @Secured(SecurityRule.IS_ANONYMOUS)
-@ServerWebSocket("/ws/notifications/{userLogin}")
+@ServerWebSocket("/api/v1/notifications/{userLogin}")
 @RequiredArgsConstructor
 public class NotificationWebSocketController implements ApplicationEventListener<NotificationEvent> {
 
