@@ -3,11 +3,11 @@
 ___
 <br>
 
-![cover](https://github.com/ZhurkinN/code-crew-app/blob/endpoints-branch/gitsrc/code-hru.jpg)
+![cover](https://github.com/ZhurkinN/code-crew-app/blob/master/gitsrc/code-hru.jpg)
 #### <center> Данный репозиторий является Backend частью проекта CodeCrew.  </center>
 <a name="readme-top"></a>
 
-###  <center> Readme is available in English :gb: : [change language](https://github.com/ZhurkinN/code-crew-app/blob/endpoints-branch/gitsrc/README-EN.md) </center>
+###  <center> Readme is available in English :gb: : [change language](https://github.com/ZhurkinN/code-crew-app/blob/master/gitsrc/README-EN.md) </center>
 
 ---
 
