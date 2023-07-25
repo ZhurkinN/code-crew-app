@@ -1,7 +1,6 @@
 package cis.tinkoff.controller;
 
 import cis.tinkoff.controller.model.NotificationDTO;
-import cis.tinkoff.controller.model.custom.NotificationRequestDTO;
 import cis.tinkoff.model.Notification;
 import cis.tinkoff.service.NotificationService;
 import cis.tinkoff.service.event.NotificationEvent;
@@ -28,8 +27,6 @@ public class NotificationWebSocketController implements ApplicationEventListener
 
     private final NotificationService notificationService;
     private final Map<String, WebSocketSession> sessions = new ConcurrentHashMap<>();
-//    private WebSocketSession session;
-//    private String userLogin;
 
     @Override
     public void onApplicationEvent(NotificationEvent event) {
@@ -44,8 +41,6 @@ public class NotificationWebSocketController implements ApplicationEventListener
 
     @OnOpen
     public void onOpen(WebSocketSession session, @PathVariable String userLogin) {
-//        this.userLogin = userLogin;
-//        this.session = session;
         sessions.put(userLogin, session);
         List<NotificationDTO> message = notificationService.getLatestUserNotificationsByLogin(userLogin);
 
@@ -53,11 +48,8 @@ public class NotificationWebSocketController implements ApplicationEventListener
     }
 
     @OnMessage
-    public void onMessage(NotificationRequestDTO requestDTO, @PathVariable String userLogin) {
-
-        if (requestDTO.getDelete().equals(true)) {
-            notificationService.deleteNotificationById(requestDTO.getNotificationId());
-        }
+    public void onMessage(Long notificationId, @PathVariable String userLogin) {
+        notificationService.deleteNotificationById(notificationId);
     }
 
     public void publishMessage(List<NotificationDTO> message, WebSocketSession session) {
@@ -71,8 +63,6 @@ public class NotificationWebSocketController implements ApplicationEventListener
 
     @OnClose
     public void onClose(@PathVariable String userLogin) {
-//        setUserLogin(null);
-//        setSession(null);
         sessions.remove(userLogin);
     }
 
