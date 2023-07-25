@@ -1,12 +1,14 @@
 package cis.tinkoff.service.impl;
 
 import cis.tinkoff.controller.model.NotificationDTO;
-import cis.tinkoff.controller.model.custom.NotificationRequestDTO;
 import cis.tinkoff.model.Notification;
 import cis.tinkoff.model.User;
 import cis.tinkoff.model.enumerated.NotificationType;
 import cis.tinkoff.repository.NotificationRepository;
-import cis.tinkoff.service.*;
+import cis.tinkoff.service.DictionaryService;
+import cis.tinkoff.service.NotificationService;
+import cis.tinkoff.service.PositionRequestService;
+import cis.tinkoff.service.UserService;
 import cis.tinkoff.service.enumerated.SortDirection;
 import cis.tinkoff.service.event.NotificationEvent;
 import cis.tinkoff.support.exceptions.RecordNotFoundException;
@@ -29,7 +31,6 @@ public class NotificationServiceImpl implements NotificationService {
     private final NotificationRepository notificationRepository;
     private final UserService userService;
     private final DictionaryService dictionaryService;
-    private final ResumeService resumeService;
     private final Provider<PositionRequestService> positionRequestServiceProvider;
 
     @Override
@@ -74,24 +75,6 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public List<NotificationDTO> getLatestUserNotificationsByLogin(String login) {
         Pageable pageable = createPageable(0, 10, SortDirection.DESC);
-
-        Long userId = userService.getByEmail(login).getId();
-
-        Page<Notification> notifications = notificationRepository.findByUserId(userId, pageable);
-
-        return NotificationDTO.of(notifications.getContent());
-    }
-
-    @Override
-    public List<NotificationDTO> getUserNotificationsByLogin(
-            String login,
-            NotificationRequestDTO notificationRequestDTO
-    ) {
-        Pageable pageable = createPageable(
-                notificationRequestDTO.getPage(),
-                notificationRequestDTO.getSize(),
-                notificationRequestDTO.getSort()
-        );
 
         Long userId = userService.getByEmail(login).getId();
 

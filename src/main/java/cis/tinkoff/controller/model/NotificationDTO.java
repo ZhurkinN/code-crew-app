@@ -35,7 +35,8 @@ public class NotificationDTO {
 
         switch (notification.getType().getTypeName()) {
             case INVITE, REQUEST_APPROVED, REQUEST_DECLINED -> resumeId = notification.getRequest().getResume().getId();
-            case REQUEST, INVITE_APPROVED, INVITE_DECLINED -> vacancyId = notification.getRequest().getPosition().getId();
+            case REQUEST, INVITE_APPROVED, INVITE_DECLINED ->
+                    vacancyId = notification.getRequest().getPosition().getId();
         }
 
         return new NotificationDTO()

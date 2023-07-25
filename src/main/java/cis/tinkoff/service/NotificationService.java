@@ -1,7 +1,6 @@
 package cis.tinkoff.service;
 
 import cis.tinkoff.controller.model.NotificationDTO;
-import cis.tinkoff.controller.model.custom.NotificationRequestDTO;
 import cis.tinkoff.model.Notification;
 import cis.tinkoff.model.User;
 import cis.tinkoff.model.enumerated.NotificationType;
@@ -22,11 +21,6 @@ public interface NotificationService {
     NotificationDTO getNotificationById(Long notificationId);
 
     List<NotificationDTO> getLatestUserNotificationsByLogin(String login);
-
-    List<NotificationDTO> getUserNotificationsByLogin(
-            String login,
-            NotificationRequestDTO notificationRequestDTO
-    );
 
     void deleteNotificationById(Long notificationId);
 }
