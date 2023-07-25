@@ -25,13 +25,12 @@ import java.util.Objects;
 public class NotificationWebSocketController implements ApplicationEventListener<NotificationEvent> {
 
     private final NotificationService notificationService;
-    //    private final Map<String, WebSocketSession> sessions = new ConcurrentHashMap<>();
+//    private final Map<String, WebSocketSession> sessions = new ConcurrentHashMap<>();
     private WebSocketSession session;
     private String userLogin;
 
     @Override
     public void onApplicationEvent(NotificationEvent event) {
-
         if (Objects.nonNull(userLogin)) {
             Notification newNotification = (Notification) event.getSource();
             NotificationDTO message = notificationService.getNotificationById(newNotification.getId());
