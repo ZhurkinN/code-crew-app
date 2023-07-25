@@ -8,7 +8,6 @@ import cis.tinkoff.repository.PositionRepository;
 import cis.tinkoff.repository.PositionRequestRepository;
 import cis.tinkoff.repository.ResumeRepository;
 import cis.tinkoff.service.DictionaryService;
-import cis.tinkoff.service.NotificationService;
 import cis.tinkoff.service.PositionRequestService;
 import cis.tinkoff.service.enumerated.RequestType;
 import cis.tinkoff.support.exceptions.InaccessibleActionException;
@@ -28,7 +27,6 @@ import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper
 @RequiredArgsConstructor
 public class PositionRequestServiceImpl implements PositionRequestService {
 
-    private final NotificationService notificationService;
     private final DictionaryService dictionaryService;
     private final PositionRequestRepository positionRequestRepository;
     private final ResumeRepository resumeRepository;
@@ -203,7 +201,6 @@ public class PositionRequestServiceImpl implements PositionRequestService {
 
         Long targetUserId;
         validateRequestStatus(status, position.getId(), respondentEmail);
-        validateInvitedUsersProjectMembership(resume.getId(), position.getId());
         if (request.getIsInvite()) {
             validateUsersResumeOwnership(respondentEmail, resume.getId());
             targetUserId = position.getProject().getLeader().getId();
@@ -216,6 +213,7 @@ public class PositionRequestServiceImpl implements PositionRequestService {
 
         if (isAccepted) {
 
+            validateInvitedUsersProjectMembership(resume.getId(), position.getId());
             position.setUser(resume.getUser())
                     .setIsVisible(false)
                     .setJoinDate(System.currentTimeMillis());

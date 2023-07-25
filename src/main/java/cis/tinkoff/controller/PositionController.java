@@ -16,9 +16,11 @@ import io.micronaut.security.rules.SecurityRule;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
+@Slf4j
 @Tag(name = "Positions/Vacancies", description = "All actions with positions of project including vacancies.")
 @Controller("/api/v1/positions")
 @Secured(SecurityRule.IS_AUTHENTICATED)
@@ -64,10 +66,15 @@ public class PositionController {
     @Operation(method = "getProjectVacancies", description = "Get vacancies of the project by project id")
     @Get(uri = "/projects", produces = MediaType.APPLICATION_JSON)
     public HttpResponse<List<VacancyDTO>> getProjectVacancies(
+            Authentication authentication,
             @QueryValue Long projectId,
             @QueryValue Boolean isVisible
     ) {
-        List<VacancyDTO> vacancyDTOList = positionService.getProjectVacancies(projectId, isVisible);
+        List<VacancyDTO> vacancyDTOList = positionService.getProjectVacancies(
+                authentication.getName(),
+                projectId,
+                isVisible
+        );
 
         return HttpResponse.ok(vacancyDTOList);
     }

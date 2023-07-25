@@ -5,6 +5,7 @@ import cis.tinkoff.model.Resume;
 import cis.tinkoff.model.User;
 import cis.tinkoff.model.dictionary.DirectionDictionary;
 import cis.tinkoff.model.enumerated.Direction;
+import cis.tinkoff.model.enumerated.RequestStatus;
 import cis.tinkoff.model.generic.GenericModel;
 import cis.tinkoff.repository.ResumeRepository;
 import cis.tinkoff.repository.UserRepository;
@@ -20,6 +21,7 @@ import io.micronaut.data.model.Sort;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 
+import javax.transaction.Transactional;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -138,6 +140,7 @@ public class ResumeServiceImpl implements ResumeService {
     }
 
     @Override
+    @Transactional
     public void softDelete(Long resumeId,
                            String authorEmail) {
 
@@ -150,6 +153,7 @@ public class ResumeServiceImpl implements ResumeService {
             );
         }
 
+        resumeRepository.softDeleteActiveRequestsByResumeIdAndRequestStatusId(resumeId, RequestStatus.IN_CONSIDERATION);
         resumeRepository.updateById(resumeId, true);
     }
 

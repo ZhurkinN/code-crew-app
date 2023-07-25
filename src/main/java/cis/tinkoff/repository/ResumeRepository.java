@@ -2,6 +2,8 @@ package cis.tinkoff.repository;
 
 import cis.tinkoff.model.Resume;
 import cis.tinkoff.model.User;
+import cis.tinkoff.model.enumerated.RequestStatus;
+import io.micronaut.context.annotation.Parameter;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.data.annotation.Id;
 import io.micronaut.data.annotation.Join;
@@ -51,6 +53,16 @@ public interface ResumeRepository extends CrudRepository<Resume, Long> {
     @Join(value = "direction", type = Join.Type.FETCH)
     @Join(value = "user", type = Join.Type.FETCH)
     Optional<Resume> findByIdAndIsDeletedFalseAndIsActiveTrue(@Id Long id);
+
+    @Query(
+            nativeQuery = true,
+            value = """
+                    UPDATE position_request SET is_deleted = true
+                    WHERE position_request.resume_id = :resumeId and position_request.status = :statusId
+                    """
+    )
+    void softDeleteActiveRequestsByResumeIdAndRequestStatusId(Long resumeId,
+                                                              @Parameter("statusId") RequestStatus requestStatusId);
 
     @Query(value = """
             SELECT  resume_.* FROM resume resume_

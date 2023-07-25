@@ -13,12 +13,14 @@ import io.micronaut.websocket.WebSocketSession;
 import io.micronaut.websocket.annotation.*;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Slf4j
 @Setter
 @Secured(SecurityRule.IS_ANONYMOUS)
 @ServerWebSocket("/api/v1/notifications/{userLogin}")

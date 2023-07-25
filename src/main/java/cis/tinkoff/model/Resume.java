@@ -47,7 +47,7 @@ public class Resume extends GenericModel {
 
     @Relation(
             value = Relation.Kind.ONE_TO_MANY,
-            cascade = Relation.Cascade.ALL,
+            cascade = Relation.Cascade.NONE,
             mappedBy = "resume"
     )
     @Nullable

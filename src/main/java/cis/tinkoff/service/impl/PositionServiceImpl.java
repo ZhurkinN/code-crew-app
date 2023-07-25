@@ -112,7 +112,15 @@ public class PositionServiceImpl implements PositionService {
     }
 
     @Override
-    public List<VacancyDTO> getProjectVacancies(Long projectId, Boolean isVisible) {
+    public List<VacancyDTO> getProjectVacancies(String login, Long projectId, Boolean isVisible) {
+        if (projectSupportService.isUserProjectLeader(login, projectId)) {
+            throw new InaccessibleActionException(
+                    INACCESSIBLE_PROJECT_ACTION,
+                    login,
+                    projectId
+            );
+        }
+
         List<Position> positions = positionRepository.findByProjectIdAndIsVisibleAndIsDeletedFalseAndUserIsNull(projectId, isVisible);
 
         return positionMapper.toVacancyDTO(positions);
