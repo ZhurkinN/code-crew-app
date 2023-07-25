@@ -113,7 +113,7 @@ public class PositionServiceImpl implements PositionService {
 
     @Override
     public List<VacancyDTO> getProjectVacancies(String login, Long projectId, Boolean isVisible) {
-        if (projectSupportService.isUserProjectLeader(login, projectId)) {
+        if (!projectSupportService.isUserProjectLeader(login, projectId)) {
             throw new InaccessibleActionException(
                     INACCESSIBLE_PROJECT_ACTION,
                     login,
