@@ -29,7 +29,7 @@ public class Notification {
 
     @Relation(
             value = Relation.Kind.MANY_TO_ONE,
-            cascade = Relation.Cascade.ALL
+            cascade = Relation.Cascade.NONE
     )
     @MappedProperty(value = "request_id")
     @Nullable

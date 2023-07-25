@@ -59,7 +59,7 @@ public class Position extends GenericModel {
 
     @Relation(
             value = Relation.Kind.ONE_TO_MANY,
-            cascade = Relation.Cascade.ALL,
+            cascade = Relation.Cascade.NONE,
             mappedBy = "position"
     )
     @Nullable

@@ -234,13 +234,13 @@ public class PositionRequestServiceImpl implements PositionRequestService {
                     : NotificationType.REQUEST_DECLINED;
         }
 
+        positionRequestRepository.update(request);
+
         notificationService.createNotification(
                 targetUserId,
                 request.getId(),
                 notificationType
         );
-
-        positionRequestRepository.update(request);
     }
 
     @Override
