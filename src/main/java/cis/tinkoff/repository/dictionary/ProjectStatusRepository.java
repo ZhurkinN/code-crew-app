@@ -1,6 +1,6 @@
 package cis.tinkoff.repository.dictionary;
 
-import cis.tinkoff.model.ProjectStatusDictionary;
+import cis.tinkoff.model.dictionary.ProjectStatusDictionary;
 import cis.tinkoff.model.enumerated.ProjectStatus;
 import io.micronaut.data.jdbc.annotation.JdbcRepository;
 import io.micronaut.data.model.query.builder.sql.Dialect;

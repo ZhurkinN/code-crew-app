@@ -3,13 +3,19 @@ package cis.tinkoff.service.impl;
 import cis.tinkoff.controller.model.ProjectDTO;
 import cis.tinkoff.controller.model.custom.ContactDTO;
 import cis.tinkoff.controller.model.custom.ProjectCreateDTO;
-import cis.tinkoff.controller.model.custom.ProjectMemberDTO;
-import cis.tinkoff.model.*;
+import cis.tinkoff.model.Position;
+import cis.tinkoff.model.Project;
+import cis.tinkoff.model.ProjectContact;
+import cis.tinkoff.model.User;
+import cis.tinkoff.model.dictionary.DirectionDictionary;
+import cis.tinkoff.model.dictionary.ProjectStatusDictionary;
 import cis.tinkoff.model.enumerated.Direction;
 import cis.tinkoff.repository.ProjectContactRepository;
 import cis.tinkoff.repository.ProjectRepository;
 import cis.tinkoff.service.*;
 import cis.tinkoff.support.exceptions.InaccessibleActionException;
+import cis.tinkoff.support.mapper.PositionMapper;
+import cis.tinkoff.support.mapper.ProjectMapper;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 
@@ -29,17 +35,19 @@ public class ProjectServiceImpl implements ProjectService {
     private final DictionaryService dictionaryService;
     private final PositionSupportService positionSupportService;
     private final ProjectSupportService projectSupportService;
+    private final ProjectMapper projectMapper;
+    private final PositionMapper positionMapper;
 
     @Override
     public List<ProjectDTO> getAllUserProjects(String login, Boolean isLead) {
         List<Project> projects;
         if (isLead) {
-            projects = projectRepository.findByLeaderEmailAndIsDeletedFalse(login);
+            projects = projectRepository.findByLeaderEmail(login);
         } else {
-            projects = projectRepository.findByPositionsUserEmailAndIsDeletedFalse(login);
+            projects = projectRepository.findByPositionsUserEmail(login);
         }
 
-        return ProjectDTO.toProjectDTO(projects, login);
+        return projectMapper.toProjectDTO(projects, login);
     }
 
     @Override
@@ -79,7 +87,7 @@ public class ProjectServiceImpl implements ProjectService {
                         oldUser.getId(),
                         project.getId()
                 );
-        positionSupportService.softDeletePositionByUserIdAndProjectId(oldUser.getId(), project.getId());
+        positionSupportService.deleteUserFromPositionsByUserIdAndProjectId(oldUser.getId(), project.getId());
 
         if (projectSupportService.isUserProjectLeader(login, project.getId())) {
             positionSupportService
@@ -115,7 +123,7 @@ public class ProjectServiceImpl implements ProjectService {
                         projectId
                 );
 
-        positionSupportService.softDeletePositionByUserIdAndProjectId(userId, projectId);
+        positionSupportService.deleteUserFromPositionsByUserIdAndProjectId(userId, projectId);
 
         project = projectSupportService.getProjectByIdOrElseThrow(projectId);
 
@@ -131,7 +139,8 @@ public class ProjectServiceImpl implements ProjectService {
         DirectionDictionary directionDictionary = dictionaryService
                 .getDirectionDictionaryById(projectCreateDTO.getDirection());
 
-        Position newPosition = new Position().setUser(leader)
+        Position newPosition = new Position()
+                .setUser(leader)
                 .setDirection(directionDictionary)
                 .setDescription(projectCreateDTO.getDescription())
                 .setSkills(null)
@@ -200,8 +209,8 @@ public class ProjectServiceImpl implements ProjectService {
                 .map(Position::getUser)
                 .filter(Objects::nonNull)
                 .toList();
-        ProjectDTO projectDTO = ProjectDTO.toProjectDTO(project, userLogin);
-        projectDTO.setMembers(ProjectMemberDTO.toProjectMemberDTO(
+        ProjectDTO projectDTO = projectMapper.toProjectDTO(project, userLogin);
+        projectDTO.setMembers(positionMapper.toProjectMemberDTO(
                 members,
                 project.getPositions(),
                 project.getLeader().getId()
@@ -210,6 +219,10 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     private ProjectContact mapToProjectContactEntity(ContactDTO contactDTO) {
-        return new ProjectContact(null, contactDTO.getLink(), contactDTO.getDescription(), null);
+        return new ProjectContact()
+                .setId(null)
+                .setLink(contactDTO.getLink())
+                .setDescription(contactDTO.getDescription())
+                .setProject(null);
     }
 }

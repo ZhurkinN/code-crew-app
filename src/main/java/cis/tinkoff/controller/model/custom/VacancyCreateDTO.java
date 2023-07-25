@@ -1,20 +1,17 @@
 package cis.tinkoff.controller.model.custom;
 
 import cis.tinkoff.model.enumerated.Direction;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.experimental.Accessors;
+import lombok.Setter;
 
 import java.util.List;
 
-@AllArgsConstructor
+@Setter
+@Getter
 @NoArgsConstructor
-@Data
-@Builder
-@Accessors(chain = true)
 public class VacancyCreateDTO {
+
     private Direction direction;
     private String description;
     private List<String> skills;

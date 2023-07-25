@@ -1,4 +1,4 @@
-package cis.tinkoff.model;
+package cis.tinkoff.model.dictionary;
 
 import cis.tinkoff.model.enumerated.NotificationType;
 import io.micronaut.data.annotation.Id;
@@ -8,11 +8,9 @@ import jakarta.persistence.Enumerated;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.experimental.Accessors;
 
 @Getter
 @Setter
-@Accessors(chain = true)
 @NoArgsConstructor
 @MappedEntity(value = "dictionary_notification_type")
 public class NotificationTypeDictionary {

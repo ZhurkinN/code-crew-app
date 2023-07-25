@@ -2,8 +2,8 @@ package cis.tinkoff.repository;
 
 import cis.tinkoff.model.Position;
 import cis.tinkoff.model.PositionRequest;
-import cis.tinkoff.model.RequestStatusDictionary;
 import cis.tinkoff.model.Resume;
+import cis.tinkoff.model.dictionary.RequestStatusDictionary;
 import io.micronaut.data.annotation.Id;
 import io.micronaut.data.annotation.Join;
 import io.micronaut.data.jdbc.annotation.JdbcRepository;
@@ -63,5 +63,7 @@ public interface PositionRequestRepository extends CrudRepository<PositionReques
     @Join(value = "status", type = Join.Type.FETCH)
     @Join(value = "notifications", type = Join.Type.LEFT_FETCH)
     Optional<PositionRequest> findByIdAndIsDeletedFalse(@NotNull Long id);
+
+    Optional<PositionRequest> getByIdAndIsDeletedFalse(@NotNull Long id);
 
 }

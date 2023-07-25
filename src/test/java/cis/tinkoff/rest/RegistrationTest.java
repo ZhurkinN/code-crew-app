@@ -25,14 +25,27 @@ public class RegistrationTest {
 
     @Test
     public void testRegister() {
-        Specifications.installSpecification(Specifications.requestSpec("/api/v1/users/register"), Specifications.responseSpec(200));
-
         String expectedName = "nikita";
         String expectedSurname = "brunov";
         String expectedEmail = "kukuipta@radick.rgrtu";
         String password = "123";
         RegisterUserDTO dto
                 = new RegisterUserDTO(expectedEmail, password, expectedName, expectedSurname);
+
+        Specifications.installSpecification(Specifications.requestSpec("/auth/login"), Specifications.responseSpec(401));
+
+        UserLoginDTO loginDTO = new UserLoginDTO(expectedEmail, password);
+
+        given()
+                .urlEncodingEnabled(false)
+                .body(loginDTO)
+                .when()
+                .post("/auth/login")
+                .then()
+                .extract()
+                .path("access_token");
+
+        Specifications.installSpecification(Specifications.requestSpec("/api/v1/users/register"), Specifications.responseSpec(200));
 
         UserDTO userDTO = given()
                 .when()
@@ -46,8 +59,6 @@ public class RegistrationTest {
         Assertions.assertEquals(expectedEmail, userDTO.getEmail());
         Assertions.assertEquals(expectedName, userDTO.getName());
         Assertions.assertEquals(expectedSurname, userDTO.getSurname());
-
-        UserLoginDTO loginDTO = new UserLoginDTO(expectedEmail, password);
 
         Specifications.installSpecification(Specifications.requestSpec("/auth/login"), Specifications.responseSpec(200));
 

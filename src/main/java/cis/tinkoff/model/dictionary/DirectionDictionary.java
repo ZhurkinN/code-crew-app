@@ -1,4 +1,4 @@
-package cis.tinkoff.model;
+package cis.tinkoff.model.dictionary;
 
 import cis.tinkoff.model.enumerated.Direction;
 import io.micronaut.data.annotation.Id;
@@ -9,15 +9,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.experimental.Accessors;
 
 import java.util.Objects;
 
 @Getter
 @Setter
-@Accessors(chain = true)
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @MappedEntity(value = "dictionary_direction")
 public class DirectionDictionary {
 
@@ -28,10 +26,18 @@ public class DirectionDictionary {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+
+        if (this == o) {
+            return true;
+        }
+
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
         DirectionDictionary that = (DirectionDictionary) o;
-        return directionName == that.directionName && Objects.equals(description, that.description);
+        return directionName == that.directionName
+                && Objects.equals(description, that.description);
     }
 
     @Override

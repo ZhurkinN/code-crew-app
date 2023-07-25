@@ -1,8 +1,8 @@
 package cis.tinkoff.controller;
 
-import cis.tinkoff.model.DirectionDictionary;
-import cis.tinkoff.model.ProjectStatusDictionary;
-import cis.tinkoff.model.RequestStatusDictionary;
+import cis.tinkoff.model.dictionary.DirectionDictionary;
+import cis.tinkoff.model.dictionary.ProjectStatusDictionary;
+import cis.tinkoff.model.dictionary.RequestStatusDictionary;
 import cis.tinkoff.service.DictionaryService;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.MediaType;
@@ -14,9 +14,11 @@ import io.micronaut.security.rules.SecurityRule;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
+@Slf4j
 @Tag(name = "Dictionaries", description = "All actions with dictionary-type models.")
 @Controller("/api/v1/dictionaries")
 @Secured(SecurityRule.IS_ANONYMOUS)

@@ -17,15 +17,17 @@ public class ProjectSupportServiceImpl implements ProjectSupportService {
 
     @Override
     public boolean isUserProjectLeader(String login, Long projectId) {
-        Project project = getProjectByIdOrElseThrow(projectId);
 
-        return project.getLeader().getEmail().equals(login);
+        return getProjectByIdOrElseThrow(projectId)
+                .getLeader()
+                .getEmail()
+                .equals(login);
     }
 
     @Override
     public Project getProjectByIdOrElseThrow(Long id) {
 
-        return projectRepository.findByIdAndIsDeletedFalse(id)
+        return projectRepository.findById(id)
                 .orElseThrow(() -> new RecordNotFoundException(
                         PROJECT_NOT_FOUND,
                         id

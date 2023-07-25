@@ -1,11 +1,10 @@
 package cis.tinkoff.service.impl;
 
 import cis.tinkoff.model.*;
-import cis.tinkoff.model.enumerated.NotificationType;
+import cis.tinkoff.model.dictionary.RequestStatusDictionary;
 import cis.tinkoff.model.enumerated.RequestStatus;
 import cis.tinkoff.repository.PositionRepository;
 import cis.tinkoff.repository.PositionRequestRepository;
-import cis.tinkoff.repository.ProjectRepository;
 import cis.tinkoff.repository.ResumeRepository;
 import cis.tinkoff.service.DictionaryService;
 import cis.tinkoff.service.NotificationService;
@@ -18,6 +17,7 @@ import cis.tinkoff.support.exceptions.RequestAlreadyProcessedException;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Objects;
 
@@ -32,7 +32,6 @@ public class PositionRequestServiceImpl implements PositionRequestService {
     private final PositionRequestRepository positionRequestRepository;
     private final ResumeRepository resumeRepository;
     private final PositionRepository positionRepository;
-    private final ProjectRepository projectRepository;
 
     @Override
     public PositionRequest createPositionRequest(String authorEmail,
@@ -55,15 +54,11 @@ public class PositionRequestServiceImpl implements PositionRequestService {
                 .setResume(resume)
                 .setCoverLetter(coverLetter)
                 .setIsInvite(false)
-                .setStatus(defaultStatus)
-                .setNotifications(List.of(
-                        notificationService.create(
-                                NotificationType.REQUEST,
-                                position.getProject().getLeader()
-                        ))
-                );
+                .setStatus(defaultStatus);
 
-        return positionRequestRepository.save(positionRequest);
+        positionRequest = positionRequestRepository.save(positionRequest);
+
+        return positionRequest;
     }
 
     @Override
@@ -87,15 +82,11 @@ public class PositionRequestServiceImpl implements PositionRequestService {
                 .setResume(resume)
                 .setCoverLetter(coverLetter)
                 .setIsInvite(true)
-                .setStatus(defaultStatus)
-                .setNotifications(List.of(
-                        notificationService.create(
-                                NotificationType.INVITE,
-                                resume.getUser()
-                        ))
-                );
+                .setStatus(defaultStatus);
 
-        return positionRequestRepository.save(positionRequest);
+        positionRequest = positionRequestRepository.save(positionRequest);
+
+        return positionRequest;
     }
 
     @Override
@@ -186,6 +177,7 @@ public class PositionRequestServiceImpl implements PositionRequestService {
     }
 
     @Override
+    @Transactional
     public void processRequest(Long requestId,
                                Boolean isAccepted,
                                String respondentEmail) {
@@ -197,7 +189,6 @@ public class PositionRequestServiceImpl implements PositionRequestService {
         Position position = request.getPosition();
 
         validateRequestStatus(status, position.getId(), respondentEmail);
-        validateInvitedUsersProjectMembership(resume.getId(), position.getId());
         if (request.getIsInvite()) {
             validateUsersResumeOwnership(respondentEmail, resume.getId());
         } else {
@@ -206,37 +197,28 @@ public class PositionRequestServiceImpl implements PositionRequestService {
 
         if (isAccepted) {
 
+            validateInvitedUsersProjectMembership(resume.getId(), position.getId());
             position.setUser(resume.getUser())
                     .setIsVisible(false)
                     .setJoinDate(System.currentTimeMillis());
             request.getResume().setIsActive(false);
             status.setStatusName(RequestStatus.ACCEPTED);
 
-            Notification createdNotification = request.getIsInvite()
-                    ? notificationService.create(NotificationType.INVITE_APPROVED, position.getProject().getLeader())
-                    : notificationService.create(NotificationType.REQUEST_APPROVED, resume.getUser());
-
-            if (Objects.nonNull(request.getNotifications())) {
-                request.getNotifications().add(createdNotification);
-            } else {
-                request.setNotifications(List.of(createdNotification));
-            }
-
         } else {
-
             status.setStatusName(RequestStatus.DECLINED);
-            Notification createdNotification = request.getIsInvite()
-                    ? notificationService.create(NotificationType.INVITE_APPROVED, position.getProject().getLeader())
-                    : notificationService.create(NotificationType.REQUEST_DECLINED, resume.getUser());
-
-            if (Objects.nonNull(request.getNotifications())) {
-                request.getNotifications().add(createdNotification);
-            } else {
-                request.setNotifications(List.of(createdNotification));
-            }
         }
 
         positionRequestRepository.update(request);
+    }
+
+    @Override
+    public PositionRequest findPositionRequestById(Long positionRequestId) {
+
+        return positionRequestRepository.getByIdAndIsDeletedFalse(positionRequestId)
+                .orElseThrow(() -> new RecordNotFoundException(
+                        REQUEST_NOT_FOUND,
+                        positionRequestId
+                ));
     }
 
     private void validateRequestStatus(RequestStatusDictionary status,

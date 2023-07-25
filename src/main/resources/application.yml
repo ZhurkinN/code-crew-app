@@ -65,12 +65,17 @@ micronaut:
         http-method: GET
         access:
           - isAnonymous()
+      - pattern: /ws/**
+        http-method: GET
+        access:
+          - isAnonymous()
     token:
       jwt:
         generator:
           access-token:
             expiration: 1_80000  # 30 minutes
           refresh-token:
+            max-token-count: 5
             enabled: true
             jws-algorithm: HS512
             secret: ${JWT_REFRESH_SECRET}
@@ -121,7 +126,8 @@ liquibase:
 
 logger:
   levels:
-    cis.tinkoff.micronaut.jwt: DEBUG
+    cis.tinkoff.controller: TRACE
+    cis.tinkoff.service: TRACE
     io.micronaut.security: DEBUG
 endpoints:
   all:

@@ -7,14 +7,12 @@ import io.micronaut.data.annotation.MappedEntity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.experimental.Accessors;
 
 import java.time.Instant;
 
 @Getter
 @Setter
 @MappedEntity
-@Accessors(chain = true)
 @NoArgsConstructor
 public class RefreshToken {
 

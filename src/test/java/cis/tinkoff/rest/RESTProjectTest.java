@@ -1,11 +1,10 @@
 package cis.tinkoff.rest;
 
 import cis.tinkoff.controller.model.ProjectDTO;
-import cis.tinkoff.controller.model.VacancyDTO;
 import cis.tinkoff.controller.model.custom.ContactDTO;
 import cis.tinkoff.controller.model.custom.ProjectCreateDTO;
 import cis.tinkoff.controller.model.custom.ProjectMemberDTO;
-import cis.tinkoff.model.ProjectStatusDictionary;
+import cis.tinkoff.model.dictionary.ProjectStatusDictionary;
 import cis.tinkoff.model.enumerated.Direction;
 import cis.tinkoff.model.enumerated.ProjectStatus;
 import cis.tinkoff.rest.model.UserLoginDTO;
@@ -16,18 +15,14 @@ import io.restassured.http.ContentType;
 import io.restassured.parsing.Parser;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
-import jakarta.inject.Inject;
 import org.junit.jupiter.api.*;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import javax.transaction.Transactional;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.INACCESSIBLE_PROJECT_ACTION;
 import static io.restassured.RestAssured.given;
-import static io.restassured.RestAssured.proxy;
 
 @Testcontainers
 @MicronautTest
@@ -38,9 +33,9 @@ public class RESTProjectTest {
 
     private static String TOKEN = "";
 
-    private static String USER_MAIL = "alex@mail.ru";
+    private static final String USER_MAIL = "alex@mail.ru";
 
-    private static String USER_PASSWORD = "123";
+    private static final String USER_PASSWORD = "123";
 
     @BeforeAll
     static void setUp() {
@@ -164,50 +159,50 @@ public class RESTProjectTest {
         Assertions.assertEquals(String.format(INACCESSIBLE_PROJECT_ACTION, USER_MAIL, 1), errorMessage);
     }
 
-//    @Test
-//    @Order(4)
-//    public void testChangeProjectById() {
-//        Specifications.installSpecification(Specifications.requestSpec("/api/v1/projects/" + 2), Specifications.responseSpec(200));
-//
-//        ProjectCreateDTO dto = new ProjectCreateDTO();
-//
-//        Long expectedId = 2L;
-//        boolean expectedIsLeader = true;
-//        String expectedTitle = "New project";
-//        String expectedTheme = "New theme";
-//        String expectedDescription = "New description";
-//        ProjectStatus status = ProjectStatus.FROZEN;
-//        ProjectStatusDictionary expectedProjectStatus
-//                = new ProjectStatusDictionary(ProjectStatus.FROZEN, "Project is frozen");
-//        ContactDTO contact1 = ContactDTO.builder().description("New link 1").link("Link 1").build();
-//        ContactDTO contact2 = ContactDTO.builder().description("New link 2").link("Link 2").build();
-//        ContactDTO contact3 = ContactDTO.builder().description("New link 3").link("Link 3").build();
-//        List<ContactDTO> expectedContacts = List.of(contact1, contact2, contact3);
-//
-//        dto.setStatus(status);
-//        dto.setDescription(expectedDescription);
-//        dto.setTheme(expectedTheme);
-//        dto.setContacts(expectedContacts);
-//        dto.setTitle(expectedTitle);
-//
-//        ProjectDTO projectDTO = given()
-//                .when()
-//                .body(dto)
-//                .header("Authorization", "Bearer " + TOKEN)
-//                .header("Content-Type", ContentType.JSON)
-//                .patch("/api/v1/projects/" + 2)
-//                .then()
-//                .extract()
-//                .body().as(ProjectDTO.class);
-//
-//        Assertions.assertEquals(expectedId, projectDTO.getId());
-//        Assertions.assertEquals(expectedIsLeader, projectDTO.getIsLeader());
-//        Assertions.assertEquals(expectedTitle, projectDTO.getTitle());
-//        Assertions.assertEquals(expectedTheme, projectDTO.getTheme());
-//        Assertions.assertEquals(expectedDescription, projectDTO.getDescription());
-//        Assertions.assertEquals(expectedProjectStatus, projectDTO.getStatus());
-//        Assertions.assertEquals(expectedContacts.size(), projectDTO.getContacts().size());
-//    }
+    @Test
+    @Order(4)
+    public void testChangeProjectById() {
+        Specifications.installSpecification(Specifications.requestSpec("/api/v1/projects/" + 2), Specifications.responseSpec(200));
+
+        ProjectCreateDTO dto = new ProjectCreateDTO();
+
+        Long expectedId = 2L;
+        boolean expectedIsLeader = true;
+        String expectedTitle = "New project";
+        String expectedTheme = "New theme";
+        String expectedDescription = "New description";
+        ProjectStatus status = ProjectStatus.FROZEN;
+        ProjectStatusDictionary expectedProjectStatus
+                = new ProjectStatusDictionary(ProjectStatus.FROZEN, "Project is frozen");
+        ContactDTO contact1 = new ContactDTO().setDescription("New link 1").setLink("Link 1");
+        ContactDTO contact2 = new ContactDTO().setDescription("New link 2").setLink("Link 1");
+        ContactDTO contact3 = new ContactDTO().setDescription("New link 3").setLink("Link 1");
+        List<ContactDTO> expectedContacts = List.of(contact1, contact2, contact3);
+
+        dto.setStatus(status);
+        dto.setDescription(expectedDescription);
+        dto.setTheme(expectedTheme);
+        dto.setContacts(expectedContacts);
+        dto.setTitle(expectedTitle);
+
+        ProjectDTO projectDTO = given()
+                .when()
+                .body(dto)
+                .header("Authorization", "Bearer " + TOKEN)
+                .header("Content-Type", ContentType.JSON)
+                .patch("/api/v1/projects/" + 2)
+                .then()
+                .extract()
+                .body().as(ProjectDTO.class);
+
+        Assertions.assertEquals(expectedId, projectDTO.getId());
+        Assertions.assertEquals(expectedIsLeader, projectDTO.getIsLeader());
+        Assertions.assertEquals(expectedTitle, projectDTO.getTitle());
+        Assertions.assertEquals(expectedTheme, projectDTO.getTheme());
+        Assertions.assertEquals(expectedDescription, projectDTO.getDescription());
+        Assertions.assertEquals(expectedProjectStatus, projectDTO.getStatus());
+        Assertions.assertEquals(expectedContacts.size(), projectDTO.getContacts().size());
+    }
 
     @Test
     @Order(5)
@@ -220,9 +215,9 @@ public class RESTProjectTest {
         String expectedTheme = "New theme";
         String expectedDescription = "New description";
         ProjectStatus status = ProjectStatus.FROZEN;
-        ContactDTO contact1 = ContactDTO.builder().description("New link 1").link("Link 1").build();
-        ContactDTO contact2 = ContactDTO.builder().description("New link 2").link("Link 2").build();
-        ContactDTO contact3 = ContactDTO.builder().description("New link 3").link("Link 3").build();
+        ContactDTO contact1 = new ContactDTO().setDescription("New link 1").setLink("Link 1");
+        ContactDTO contact2 = new ContactDTO().setDescription("New link 2").setLink("Link 1");
+        ContactDTO contact3 = new ContactDTO().setDescription("New link 3").setLink("Link 1");
         List<ContactDTO> expectedContacts = List.of(contact1, contact2, contact3);
 
         dto.setStatus(status);
@@ -409,9 +404,9 @@ public class RESTProjectTest {
         String title = "New title";
         String theme = "New theme";
         String description = "New description";
-        ContactDTO contact1 = ContactDTO.builder().description("New link 1").link("Link 1").build();
-        ContactDTO contact2 = ContactDTO.builder().description("New link 2").link("Link 2").build();
-        ContactDTO contact3 = ContactDTO.builder().description("New link 3").link("Link 3").build();
+        ContactDTO contact1 = new ContactDTO().setDescription("New link 1").setLink("Link 1");
+        ContactDTO contact2 = new ContactDTO().setDescription("New link 2").setLink("Link 1");
+        ContactDTO contact3 = new ContactDTO().setDescription("New link 3").setLink("Link 1");
         List<ContactDTO> expectedContacts = List.of(contact1, contact2, contact3);
 
         dto.setStatus(ProjectStatus.PREPARING);

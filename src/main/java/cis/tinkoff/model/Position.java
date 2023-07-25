@@ -1,5 +1,6 @@
 package cis.tinkoff.model;
 
+import cis.tinkoff.model.dictionary.DirectionDictionary;
 import cis.tinkoff.model.generic.GenericModel;
 import cis.tinkoff.support.helper.TimestampAttributeConverter;
 import io.micronaut.core.annotation.Nullable;
@@ -11,14 +12,12 @@ import io.micronaut.data.model.DataType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.experimental.Accessors;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 @Setter
-@Accessors(chain = true)
 @NoArgsConstructor
 @MappedEntity(value = "position")
 public class Position extends GenericModel {

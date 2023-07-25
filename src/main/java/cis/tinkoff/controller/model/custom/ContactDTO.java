@@ -2,19 +2,18 @@ package cis.tinkoff.controller.model.custom;
 
 import cis.tinkoff.model.ProjectContact;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
 
-@AllArgsConstructor
+@Setter
+@Getter
 @NoArgsConstructor
-@Data
-@Builder
 @JsonInclude
 public class ContactDTO {
+
     private Long id;
     private String link;
     private String description;
@@ -24,13 +23,10 @@ public class ContactDTO {
             return null;
         }
 
-        ContactDTO contactDTO = ContactDTO.builder()
-                .id(contact.getId())
-                .link(contact.getLink())
-                .description(contact.getDescription())
-                .build();
-
-        return contactDTO;
+        return new ContactDTO()
+                .setId(contact.getId())
+                .setLink(contact.getLink())
+                .setDescription(contact.getDescription());
     }
 
     public static List<ContactDTO> toContactDto(List<ProjectContact> contacts) {
@@ -38,10 +34,8 @@ public class ContactDTO {
             return null;
         }
 
-        List<ContactDTO> contactDTOList = contacts.stream()
+        return contacts.stream()
                 .map(ContactDTO::toContactDto)
                 .toList();
-
-        return contactDTOList;
     }
 }

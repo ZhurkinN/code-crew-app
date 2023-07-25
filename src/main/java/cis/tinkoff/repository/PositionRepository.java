@@ -3,7 +3,6 @@ package cis.tinkoff.repository;
 import cis.tinkoff.model.Position;
 import cis.tinkoff.model.Project;
 import cis.tinkoff.model.User;
-import io.micronaut.context.annotation.Parameter;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.data.annotation.Id;
 import io.micronaut.data.annotation.Join;
@@ -93,13 +92,20 @@ public interface PositionRepository extends PageableRepository<Position, Long>, 
     List<Position> retrieveByProjectId(Long project_id);
 
     @Query(value = """
-            UPDATE position SET is_deleted = true, user_id = null, is_visible = false\040
+            UPDATE position SET user_id = null, is_visible = false\040
             WHERE position.user_id = :userId\040
             AND position.project_id = :projectId
             """,
             nativeQuery = true)
-    void softDeletePositionByUserIdAndProjectId(Long userId,
-                                                Long projectId);
+    void deleteUserFromPositionsByUserIdAndProjectId(Long userId,
+                                                     Long projectId);
+
+    @Query(value = """
+            UPDATE position SET user_id = null, is_visible = false\040
+            WHERE position.user_id = :userId
+            """,
+            nativeQuery = true)
+    void deleteUserFromAllPositionsByUserId(Long userId);
 
     @Query(value = """
             UPDATE position SET is_deleted = true, user_id = null, is_visible = false\040
@@ -109,6 +115,7 @@ public interface PositionRepository extends PageableRepository<Position, Long>, 
     void softDeletePositionsByProjectId(Long projectId);
 
     @Join(value = "direction", type = Join.Type.FETCH)
+    @Join(value = "project", type = Join.Type.FETCH)
     Optional<Position> findByIdAndIsDeletedFalseAndIsVisibleTrue(@Id Long id);
 
     @Join(value = "direction", type = Join.Type.FETCH)
@@ -126,7 +133,7 @@ public interface PositionRepository extends PageableRepository<Position, Long>, 
                     WHERE po.id = :id
                     """
     )
-    List<User> findProjectMembersByPositionId(@Parameter Long id);
+    List<User> findProjectMembersByPositionId(@Id Long id);
 
     @Query(
             nativeQuery = true,
