@@ -20,7 +20,7 @@ public interface PositionService {
     VacancyDTO getVacancyById(Long id,
                               String userEmail);
 
-    List<VacancyDTO> getProjectVacancies(Long projectId, Boolean isVisible);
+    List<VacancyDTO> getProjectVacancies(String login, Long projectId, Boolean isVisible);
 
     VacancyDTO createVacancy(String login, Long projectId, VacancyCreateDTO vacancyCreateDTO);
 

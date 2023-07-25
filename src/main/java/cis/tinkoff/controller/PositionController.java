@@ -64,10 +64,15 @@ public class PositionController {
     @Operation(method = "getProjectVacancies", description = "Get vacancies of the project by project id")
     @Get(uri = "/projects", produces = MediaType.APPLICATION_JSON)
     public HttpResponse<List<VacancyDTO>> getProjectVacancies(
+            Authentication authentication,
             @QueryValue Long projectId,
             @QueryValue Boolean isVisible
     ) {
-        List<VacancyDTO> vacancyDTOList = positionService.getProjectVacancies(projectId, isVisible);
+        List<VacancyDTO> vacancyDTOList = positionService.getProjectVacancies(
+                authentication.getName(),
+                projectId,
+                isVisible
+        );
 
         return HttpResponse.ok(vacancyDTOList);
     }
