@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Objects;
 
 @Setter
 @Getter
@@ -37,5 +38,17 @@ public class ContactDTO {
         return contacts.stream()
                 .map(ContactDTO::toContactDto)
                 .toList();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ContactDTO that)) return false;
+        return Objects.equals(getId(), that.getId()) && Objects.equals(getLink(), that.getLink()) && Objects.equals(getDescription(), that.getDescription());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getLink(), getDescription());
     }
 }
