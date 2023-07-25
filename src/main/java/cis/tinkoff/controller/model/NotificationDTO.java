@@ -21,12 +21,11 @@ public class NotificationDTO {
 
     private Long id;
     private NotificationTypeDictionary type;
-    private PositionRequest request;
-    private User user;
+    private String projectTitle;
+    private Long resumeId;
     private Long createdWhen;
 
     public static NotificationDTO of(Notification notification) {
-
         if (Objects.isNull(notification)) {
             return null;
         }
@@ -34,9 +33,9 @@ public class NotificationDTO {
         return new NotificationDTO()
                 .setId(notification.getId())
                 .setType(notification.getType())
-                .setRequest(notification.getRequest())
-                .setUser(notification.getUser())
-                .setCreatedWhen(notification.getCreatedWhen());
+                .setCreatedWhen(notification.getCreatedWhen())
+                .setProjectTitle(notification.getRequest().getPosition().getProject().getTitle())
+                .setResumeId(notification.getRequest().getResume().getId());
     }
 
     public static List<NotificationDTO> of(Collection<Notification> notifications) {

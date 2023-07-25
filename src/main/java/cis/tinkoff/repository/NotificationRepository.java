@@ -13,6 +13,9 @@ public interface NotificationRepository extends CrudRepository<Notification, Lon
 
     @Join(value = "type", type = Join.Type.FETCH)
     @Join(value = "request", type = Join.Type.FETCH)
+    @Join(value = "request.resume", type = Join.Type.FETCH)
+    @Join(value = "request.position", type = Join.Type.FETCH)
+    @Join(value = "request.position.project", type = Join.Type.FETCH)
     @Join(value = "user", type = Join.Type.FETCH)
     Page<Notification> findByUserId(Long user_id, Pageable pageable);
 }

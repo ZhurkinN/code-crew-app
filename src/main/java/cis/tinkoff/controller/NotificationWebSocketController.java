@@ -1,6 +1,7 @@
 package cis.tinkoff.controller;
 
 import cis.tinkoff.controller.model.NotificationDTO;
+import cis.tinkoff.controller.model.custom.NotificationRequestDTO;
 import cis.tinkoff.service.NotificationService;
 import cis.tinkoff.service.event.NotificationEvent;
 import io.micronaut.context.event.ApplicationEventListener;
@@ -9,14 +10,12 @@ import io.micronaut.http.annotation.PathVariable;
 import io.micronaut.security.annotation.Secured;
 import io.micronaut.security.rules.SecurityRule;
 import io.micronaut.websocket.WebSocketSession;
-import io.micronaut.websocket.annotation.OnClose;
-import io.micronaut.websocket.annotation.OnError;
-import io.micronaut.websocket.annotation.OnOpen;
-import io.micronaut.websocket.annotation.ServerWebSocket;
+import io.micronaut.websocket.annotation.*;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Objects;
 
 @Setter
 @Secured(SecurityRule.IS_ANONYMOUS)
@@ -31,8 +30,10 @@ public class NotificationWebSocketController implements ApplicationEventListener
 
     @Override
     public void onApplicationEvent(NotificationEvent event) {
-        List<NotificationDTO> message = notificationService.getLatestUserNotificationsByLogin(userLogin);
-        publishMessage(message, session);
+        if (Objects.nonNull(userLogin)) {
+            List<NotificationDTO> message = notificationService.getLatestUserNotificationsByLogin(userLogin);
+            publishMessage(message, session);
+        }
     }
 
     @OnOpen
@@ -42,6 +43,13 @@ public class NotificationWebSocketController implements ApplicationEventListener
         List<NotificationDTO> message = notificationService.getLatestUserNotificationsByLogin(userLogin);
 
         publishMessage(message, session);
+    }
+
+    @OnMessage
+    public void onMessage(NotificationRequestDTO requestDTO, @PathVariable String userLogin) {
+        if (requestDTO.getDelete().equals(true)) {
+            notificationService.deleteNotificationById(requestDTO.getNotificationId());
+        }
     }
 
     public void publishMessage(List<NotificationDTO> message, WebSocketSession session) {

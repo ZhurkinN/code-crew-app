@@ -2,6 +2,7 @@ package cis.tinkoff.service.impl;
 
 import cis.tinkoff.model.*;
 import cis.tinkoff.model.dictionary.RequestStatusDictionary;
+import cis.tinkoff.model.enumerated.NotificationType;
 import cis.tinkoff.model.enumerated.RequestStatus;
 import cis.tinkoff.repository.PositionRepository;
 import cis.tinkoff.repository.PositionRequestRepository;
@@ -57,6 +58,12 @@ public class PositionRequestServiceImpl implements PositionRequestService {
                 .setStatus(defaultStatus);
 
         positionRequest = positionRequestRepository.save(positionRequest);
+
+        notificationService.createNotification(
+                position.getProject().getLeader().getId(),
+                positionRequest.getId(),
+                NotificationType.REQUEST
+        );
 
         return positionRequest;
     }
@@ -214,7 +221,7 @@ public class PositionRequestServiceImpl implements PositionRequestService {
     @Override
     public PositionRequest findPositionRequestById(Long positionRequestId) {
 
-        return positionRequestRepository.getByIdAndIsDeletedFalse(positionRequestId)
+        return positionRequestRepository.findByIdAndIsDeletedFalse(positionRequestId)
                 .orElseThrow(() -> new RecordNotFoundException(
                         REQUEST_NOT_FOUND,
                         positionRequestId
