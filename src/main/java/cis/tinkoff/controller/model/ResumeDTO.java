@@ -32,13 +32,31 @@ public class ResumeDTO extends GenericDTO {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ResumeDTO resumeDTO)) return false;
-        return Objects.equals(getDescription(), resumeDTO.getDescription()) && Objects.equals(getIsActive(), resumeDTO.getIsActive()) && Objects.equals(getDirection(), resumeDTO.getDirection()) && Objects.equals(getSkills(), resumeDTO.getSkills()) && Objects.equals(getUser(), resumeDTO.getUser()) && Objects.equals(getRequests(), resumeDTO.getRequests());
+
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof ResumeDTO resumeDTO)) {
+            return false;
+        }
+
+        return Objects.equals(getDescription(), resumeDTO.getDescription())
+                && Objects.equals(getIsActive(), resumeDTO.getIsActive())
+                && Objects.equals(getDirection(), resumeDTO.getDirection())
+                && Objects.equals(getSkills(), resumeDTO.getSkills())
+                && Objects.equals(getUser(), resumeDTO.getUser())
+                && Objects.equals(getRequests(), resumeDTO.getRequests());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getDescription(), getIsActive(), getDirection(), getSkills(), getUser(), getRequests());
+        return Objects.hash(
+                getDescription(),
+                getIsActive(),
+                getDirection(),
+                getSkills(),
+                getUser(),
+                getRequests()
+        );
     }
 }

@@ -26,9 +26,16 @@ public class RequestStatusDictionary {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof RequestStatusDictionary that)) return false;
-        return getStatusName() == that.getStatusName() && Objects.equals(getDescription(), that.getDescription());
+
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof RequestStatusDictionary that)) {
+            return false;
+        }
+
+        return getStatusName() == that.getStatusName()
+                && Objects.equals(getDescription(), that.getDescription());
     }
 
     @Override

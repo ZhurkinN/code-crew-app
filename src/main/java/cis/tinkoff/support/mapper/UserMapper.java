@@ -31,7 +31,6 @@ public class UserMapper extends GenericMapper<User, UserDTO> {
                 .setName(user.getName())
                 .setSurname(user.getSurname())
                 .setMainInformation(user.getMainInformation())
-                .setPictureLink(user.getPictureLink())
                 .setContacts(user.getContacts())
                 .setResumes(user.getResumes())
                 .setLeadProjects(user.getLeadProjects())

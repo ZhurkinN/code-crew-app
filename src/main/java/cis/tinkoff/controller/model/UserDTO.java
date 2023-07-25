@@ -20,7 +20,6 @@ public class UserDTO extends GenericDTO {
     private String name;
     private String surname;
     private String mainInformation;
-    private String pictureLink;
     private List<Position> positions;
     private List<Project> leadProjects;
 

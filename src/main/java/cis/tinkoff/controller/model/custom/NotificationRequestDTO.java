@@ -2,21 +2,17 @@ package cis.tinkoff.controller.model.custom;
 
 import cis.tinkoff.service.enumerated.SortDirection;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotNull;
 
-@AllArgsConstructor
+@Getter
+@Setter
 @NoArgsConstructor
-@Data
-@Builder
-@Accessors(chain = true)
 @JsonInclude
 public class NotificationRequestDTO {
+
     private Long notificationId;
     @NotNull
     private Long userId;

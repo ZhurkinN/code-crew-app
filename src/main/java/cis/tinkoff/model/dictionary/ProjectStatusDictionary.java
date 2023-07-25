@@ -26,9 +26,16 @@ public class ProjectStatusDictionary {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ProjectStatusDictionary that)) return false;
-        return getStatusName() == that.getStatusName() && getDescription().equals(that.getDescription());
+
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof ProjectStatusDictionary that)) {
+            return false;
+        }
+
+        return getStatusName() == that.getStatusName()
+                && Objects.equals(getDescription(), that.getDescription());
     }
 
     @Override

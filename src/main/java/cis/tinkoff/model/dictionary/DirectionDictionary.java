@@ -26,10 +26,18 @@ public class DirectionDictionary {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+
+        if (this == o) {
+            return true;
+        }
+
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
         DirectionDictionary that = (DirectionDictionary) o;
-        return directionName == that.directionName && Objects.equals(description, that.description);
+        return directionName == that.directionName
+                && Objects.equals(description, that.description);
     }
 
     @Override

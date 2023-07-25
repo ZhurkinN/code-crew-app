@@ -26,8 +26,6 @@ public class User extends GenericModel {
     private String surname;
     @Nullable
     private String mainInformation;
-    @Nullable
-    private String pictureLink;
 
     @Nullable
     @TypeDef(type = DataType.STRING_ARRAY)
@@ -65,7 +63,6 @@ public class User extends GenericModel {
                 String name,
                 String surname,
                 @Nullable String mainInformation,
-                @Nullable String pictureLink,
                 @Nullable List<String> contacts,
                 @Nullable List<Resume> resumes,
                 @Nullable List<Project> leadProjects,
@@ -76,7 +73,6 @@ public class User extends GenericModel {
         this.name = name;
         this.surname = surname;
         this.mainInformation = mainInformation;
-        this.pictureLink = pictureLink;
         this.contacts = contacts;
         this.resumes = resumes;
         this.leadProjects = leadProjects;
@@ -85,14 +81,39 @@ public class User extends GenericModel {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof User user)) return false;
-        return Objects.equals(getEmail(), user.getEmail()) && Objects.equals(getPassword(), user.getPassword()) && Objects.equals(getName(), user.getName()) && Objects.equals(getSurname(), user.getSurname()) && Objects.equals(getMainInformation(), user.getMainInformation()) && Objects.equals(getPictureLink(), user.getPictureLink()) && Objects.equals(getContacts(), user.getContacts()) && Objects.equals(getResumes(), user.getResumes()) && Objects.equals(getLeadProjects(), user.getLeadProjects()) && Objects.equals(getPositions(), user.getPositions());
+
+        if (this == o) {
+            return true;
+        }
+
+        if (!(o instanceof User user)) {
+            return false;
+        }
+
+        return Objects.equals(getEmail(), user.getEmail())
+                && Objects.equals(getPassword(), user.getPassword())
+                && Objects.equals(getName(), user.getName())
+                && Objects.equals(getSurname(), user.getSurname())
+                && Objects.equals(getMainInformation(), user.getMainInformation())
+                && Objects.equals(getContacts(), user.getContacts())
+                && Objects.equals(getResumes(), user.getResumes())
+                && Objects.equals(getLeadProjects(), user.getLeadProjects())
+                && Objects.equals(getPositions(), user.getPositions());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getEmail(), getPassword(), getName(), getSurname(), getMainInformation(), getPictureLink(), getContacts(), getResumes(), getLeadProjects(), getPositions());
+        return Objects.hash(
+                getEmail(),
+                getPassword(),
+                getName(),
+                getSurname(),
+                getMainInformation(),
+                getContacts(),
+                getResumes(),
+                getLeadProjects(),
+                getPositions()
+        );
     }
 }
 

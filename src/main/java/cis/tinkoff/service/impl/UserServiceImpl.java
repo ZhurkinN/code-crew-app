@@ -95,7 +95,6 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new RecordNotFoundException(USER_NOT_FOUND_BY_EMAIL, email));
         user.setName(name)
                 .setSurname(surname)
-                .setPictureLink(pictureLink)
                 .setMainInformation(mainInformation)
                 .setContacts(contacts);
 

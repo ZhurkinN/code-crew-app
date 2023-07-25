@@ -19,9 +19,9 @@ import java.util.Objects;
 @NoArgsConstructor
 @Data
 @Builder
-@Accessors(chain = true)
 @JsonInclude
 public class NotificationDTO {
+
     private Long id;
     private NotificationTypeDictionary type;
     private PositionRequest request;
