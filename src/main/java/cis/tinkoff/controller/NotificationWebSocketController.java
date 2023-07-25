@@ -34,7 +34,7 @@ public class NotificationWebSocketController implements ApplicationEventListener
     @Override
     public void onApplicationEvent(NotificationEvent event) {
         Notification newNotification = (Notification) event.getSource();
-        String userLogin = newNotification.getUser().getName();
+        String userLogin = newNotification.getUser().getEmail();
         if (Objects.nonNull(sessions.get(userLogin))) {
             NotificationDTO message = notificationService.getNotificationById(newNotification.getId());
 
