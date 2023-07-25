@@ -3,7 +3,7 @@
 #### <center> This repository is the Backend part of the CodeCrew project.  </center>
 <a name="readme-top"></a>
 
-###  <center> Readme доступно на Русском языке :ru: : [сменить язык](https://github.com/ZhurkinN/code-crew-app/blob/endpoints-branch/README.md) </center>
+###  <center> Readme доступно на Русском языке :ru: : [сменить язык](https://github.com/ZhurkinN/code-crew-app/blob/master/README.md) </center>
 
 ---
 
