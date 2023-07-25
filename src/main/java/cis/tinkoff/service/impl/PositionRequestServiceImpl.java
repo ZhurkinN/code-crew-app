@@ -8,6 +8,7 @@ import cis.tinkoff.repository.PositionRepository;
 import cis.tinkoff.repository.PositionRequestRepository;
 import cis.tinkoff.repository.ResumeRepository;
 import cis.tinkoff.service.DictionaryService;
+import cis.tinkoff.service.NotificationService;
 import cis.tinkoff.service.PositionRequestService;
 import cis.tinkoff.service.enumerated.RequestType;
 import cis.tinkoff.support.exceptions.InaccessibleActionException;
@@ -31,6 +32,7 @@ public class PositionRequestServiceImpl implements PositionRequestService {
     private final PositionRequestRepository positionRequestRepository;
     private final ResumeRepository resumeRepository;
     private final PositionRepository positionRepository;
+    private final NotificationService notificationService;
 
     @Override
     public PositionRequest createPositionRequest(String authorEmail,
