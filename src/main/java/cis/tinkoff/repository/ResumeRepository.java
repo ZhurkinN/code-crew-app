@@ -61,8 +61,8 @@ public interface ResumeRepository extends CrudRepository<Resume, Long> {
                     WHERE position_request.resume_id = :resumeId and position_request.status = :statusId
                     """
     )
-    void softDeleteActiveRequestsByResumeIdAndRequestStatusId(Long resumeId,
-                                                              @Parameter("statusId") RequestStatus requestStatusId);
+    void deleteActiveRequestsByResumeIdAndRequestStatusId(Long resumeId,
+                                                          @Parameter("statusId") RequestStatus requestStatusId);
 
     @Query(value = """
             SELECT  resume_.* FROM resume resume_

@@ -153,7 +153,7 @@ public class ResumeServiceImpl implements ResumeService {
             );
         }
 
-        resumeRepository.softDeleteActiveRequestsByResumeIdAndRequestStatusId(resumeId, RequestStatus.IN_CONSIDERATION);
+        resumeRepository.deleteActiveRequestsByResumeIdAndRequestStatusId(resumeId, RequestStatus.IN_CONSIDERATION);
         resumeRepository.updateById(resumeId, true);
     }
 

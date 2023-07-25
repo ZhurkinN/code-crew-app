@@ -56,12 +56,7 @@ public class PositionSupportServiceImpl implements PositionSupportService {
 
     @Override
     public void softDeletePositionsByProjectId(Long projectId) {
-        positionRepository.softDeletePositionsByProjectId(projectId);
-    }
-
-    @Override
-    public void deleteUserFromAllPositions(Long userId) {
-        positionRepository.deleteUserFromAllPositionsByUserId(userId);
+        positionRepository.deletePositionsByProjectId(projectId);
     }
 
     @Override

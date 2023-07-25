@@ -2,6 +2,8 @@ package cis.tinkoff.repository;
 
 import cis.tinkoff.model.User;
 import io.micronaut.data.annotation.Id;
+import io.micronaut.data.annotation.Join;
+import io.micronaut.data.annotation.Query;
 import io.micronaut.data.jdbc.annotation.JdbcRepository;
 import io.micronaut.data.model.query.builder.sql.Dialect;
 import io.micronaut.data.repository.CrudRepository;
@@ -15,9 +17,6 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
     boolean existsByEmail(String email);
 
-    void updateByEmail(String email,
-                       Boolean isDeleted);
-
     void update(@Id Long id,
                 String[] contacts);
 
@@ -25,5 +24,17 @@ public interface UserRepository extends CrudRepository<User, Long> {
                 Boolean isDeleted);
 
     Optional<User> findByIdAndIsDeletedFalse(@Id Long id);
+
+    @Query(
+            nativeQuery = true,
+            value = """
+                    UPDATE position SET user_id = null, is_visible = false
+                    WHERE position.user_id = :userId
+                    """
+    )
+    void deleteUserFromAllPositionsByUserId(Long userId);
+
+    @Join(value = "resumes", type = Join.Type.FETCH)
+    User getByEmail(String email);
 
 }

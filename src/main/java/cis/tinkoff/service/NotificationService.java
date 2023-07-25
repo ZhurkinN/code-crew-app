@@ -12,7 +12,7 @@ public interface NotificationService {
     Notification create(NotificationType type,
                         User user);
 
-    Notification createNotification(
+    void createNotification(
             Long targetUserId,
             Long targetRequestId,
             NotificationType notificationType

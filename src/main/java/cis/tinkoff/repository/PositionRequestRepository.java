@@ -17,11 +17,6 @@ import java.util.Optional;
 @JdbcRepository(dialect = Dialect.POSTGRES)
 public interface PositionRequestRepository extends CrudRepository<PositionRequest, Long> {
 
-    @Join(value = "resume", type = Join.Type.FETCH)
-    @Join(value = "position", type = Join.Type.FETCH)
-    @Join(value = "status", type = Join.Type.FETCH)
-    List<PositionRequest> list();
-
     List<PositionRequest> findByResumeAndIsDeletedFalseAndStatus(Resume resume,
                                                                  RequestStatusDictionary status);
 
@@ -63,7 +58,5 @@ public interface PositionRequestRepository extends CrudRepository<PositionReques
     @Join(value = "status", type = Join.Type.FETCH)
     @Join(value = "notifications", type = Join.Type.LEFT_FETCH)
     Optional<PositionRequest> findByIdAndIsDeletedFalse(@NotNull Long id);
-
-    Optional<PositionRequest> getByIdAndIsDeletedFalse(@NotNull Long id);
 
 }

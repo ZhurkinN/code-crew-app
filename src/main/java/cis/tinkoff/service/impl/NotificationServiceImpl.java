@@ -42,7 +42,7 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public Notification createNotification(
+    public void createNotification(
             Long targetUserId,
             Long targetRequestId,
             NotificationType notificationType
@@ -59,7 +59,6 @@ public class NotificationServiceImpl implements NotificationService {
 
         eventPublisher.publishEvent(new NotificationEvent(newNotification));
 
-        return newNotification;
     }
 
     @Override

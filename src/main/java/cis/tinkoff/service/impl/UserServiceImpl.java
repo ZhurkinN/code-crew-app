@@ -4,6 +4,7 @@ import cis.tinkoff.controller.model.UserDTO;
 import cis.tinkoff.model.Project;
 import cis.tinkoff.model.Resume;
 import cis.tinkoff.model.User;
+import cis.tinkoff.model.enumerated.RequestStatus;
 import cis.tinkoff.repository.ProjectRepository;
 import cis.tinkoff.repository.ResumeRepository;
 import cis.tinkoff.repository.UserRepository;
@@ -15,6 +16,7 @@ import io.micrometer.core.annotation.Timed;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.USER_NOT_FOUND;
@@ -64,7 +66,6 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new RecordNotFoundException(USER_NOT_FOUND_BY_EMAIL, email));
     }
 
-
     @Override
     public User register(String email,
                          String password,
@@ -102,8 +103,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void softDelete(String email) {
-        userRepository.updateByEmail(email, true);
+
+        User user = userRepository.getByEmail(email);
+        user.setIsDeleted(true);
+        user.getResumes().forEach(e -> {
+            e.setIsDeleted(true);
+            resumeRepository.deleteActiveRequestsByResumeIdAndRequestStatusId(e.getId(), RequestStatus.IN_CONSIDERATION);
+        });
+
+        userRepository.update(user);
+        userRepository.deleteUserFromAllPositionsByUserId(user.getId());
     }
 
     private UserDTO setOtherModelsData(User user) {
