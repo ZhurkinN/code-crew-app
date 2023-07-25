@@ -12,7 +12,9 @@ import io.micronaut.http.HttpStatus;
 import io.micronaut.http.annotation.Produces;
 import io.micronaut.http.server.exceptions.ExceptionHandler;
 import jakarta.inject.Singleton;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Produces
 @Singleton
 @Requires(classes = {RuntimeException.class, ExceptionHandler.class})
@@ -22,6 +24,7 @@ public class GlobalExceptionHandler implements ExceptionHandler<RuntimeException
     public HttpResponse handle(HttpRequest request,
                                RuntimeException exception) {
 
+        log.error(exception.getMessage());
         int statusCode = getStatusCode(exception);
         ErrorDTO dto = new ErrorDTO(
                 request.getPath(),

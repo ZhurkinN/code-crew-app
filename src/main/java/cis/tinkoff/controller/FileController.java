@@ -12,9 +12,11 @@ import io.micronaut.security.authentication.Authentication;
 import io.micronaut.security.rules.SecurityRule;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import static io.micronaut.http.MediaType.*;
 
+@Slf4j
 @Tag(name = "Files", description = "All actions with files in project")
 @Secured(SecurityRule.IS_AUTHENTICATED)
 @Controller("api/v1/files")

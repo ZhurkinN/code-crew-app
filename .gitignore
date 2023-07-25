@@ -14,6 +14,7 @@ out/
 .classpath
 .factorypath
 prometheus/
+logs/
 config/grafana/alerting
 config/grafana/csv
 config/grafana/png

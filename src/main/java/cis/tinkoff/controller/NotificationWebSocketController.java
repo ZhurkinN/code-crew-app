@@ -15,9 +15,11 @@ import io.micronaut.websocket.annotation.OnOpen;
 import io.micronaut.websocket.annotation.ServerWebSocket;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
+@Slf4j
 @Setter
 @Secured(SecurityRule.IS_ANONYMOUS)
 @ServerWebSocket("/ws/notifications/{userLogin}")

@@ -18,9 +18,11 @@ import io.micronaut.security.rules.SecurityRule;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
+@Slf4j
 @Tag(name = "Resumes", description = "All actions with resumes.")
 @Controller("/api/v1/resumes")
 @Secured(SecurityRule.IS_AUTHENTICATED)

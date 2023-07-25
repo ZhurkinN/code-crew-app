@@ -16,9 +16,11 @@ import io.micronaut.security.rules.SecurityRule;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
+@Slf4j
 @Tag(name = "Positions/Vacancies", description = "All actions with positions of project including vacancies.")
 @Controller("/api/v1/positions")
 @Secured(SecurityRule.IS_AUTHENTICATED)

@@ -14,9 +14,11 @@ import io.micronaut.security.rules.SecurityRule;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
+@Slf4j
 @Tag(name = "Dictionaries", description = "All actions with dictionary-type models.")
 @Controller("/api/v1/dictionaries")
 @Secured(SecurityRule.IS_ANONYMOUS)

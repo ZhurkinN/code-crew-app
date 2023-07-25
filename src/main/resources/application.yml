@@ -93,6 +93,10 @@ micronaut:
           allowed-origins:
             - http://localhost:3000
             - http://localhost:8080
+            - https://кодхрю.рф
+            - http://кодхрю.рф
+            - http://xn--d1almjy9c.xn--p1ai
+            - https://xn--d1almjy9c.xn--p1ai
     authentication: cookie
     enabled: false
     multipart:
@@ -104,7 +108,7 @@ micronaut:
 
 datasources:
   default:
-    url: jdbc:postgresql://localhost:5432/${MICRONAUT_DB}
+    url: jdbc:postgresql://postgres:5432/${MICRONAUT_DB}
     username: ${MICRONAUT_USER}
     password: ${MICRONAUT_PASSWORD}
     driver-class-name: org.postgresql.Driver
@@ -122,7 +126,8 @@ liquibase:
 
 logger:
   levels:
-    cis.tinkoff.micronaut.jwt: DEBUG
+    cis.tinkoff.controller: TRACE
+    cis.tinkoff.service: TRACE
     io.micronaut.security: DEBUG
 endpoints:
   all:

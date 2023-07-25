@@ -189,7 +189,6 @@ public class PositionRequestServiceImpl implements PositionRequestService {
         Position position = request.getPosition();
 
         validateRequestStatus(status, position.getId(), respondentEmail);
-        validateInvitedUsersProjectMembership(resume.getId(), position.getId());
         if (request.getIsInvite()) {
             validateUsersResumeOwnership(respondentEmail, resume.getId());
         } else {
@@ -198,6 +197,7 @@ public class PositionRequestServiceImpl implements PositionRequestService {
 
         if (isAccepted) {
 
+            validateInvitedUsersProjectMembership(resume.getId(), position.getId());
             position.setUser(resume.getUser())
                     .setIsVisible(false)
                     .setJoinDate(System.currentTimeMillis());

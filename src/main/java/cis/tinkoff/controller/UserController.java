@@ -16,7 +16,9 @@ import io.micronaut.security.rules.SecurityRule;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Tag(name = "Users", description = "All actions with users.")
 @Controller("/api/v1/users")
 @Secured(SecurityRule.IS_AUTHENTICATED)
