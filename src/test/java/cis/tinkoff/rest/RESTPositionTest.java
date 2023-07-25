@@ -429,7 +429,7 @@ public class RESTPositionTest {
 
         List<VacancyDTO> dtos = given()
                 .when()
-                .header("Authorization", "Bearer " + TOKEN_2)
+                .header("Authorization", "Bearer " + TOKEN_1)
                 .header("Content-Type", ContentType.JSON)
                 .get("/api/v1/positions/projects?projectId=" + id + "&isVisible=true")
                 .then()
@@ -452,7 +452,7 @@ public class RESTPositionTest {
 
         dtos = given()
                 .when()
-                .header("Authorization", "Bearer " + TOKEN_2)
+                .header("Authorization", "Bearer " + TOKEN_1)
                 .header("Content-Type", ContentType.JSON)
                 .get("/api/v1/positions/projects?projectId=" + id + "&isVisible=true")
                 .then()
