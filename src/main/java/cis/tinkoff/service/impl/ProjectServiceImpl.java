@@ -58,6 +58,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    @Transactional
     public void deleteProjectById(Long projectId,
                                   String email) {
         Project project = projectSupportService.getProjectByIdOrElseThrow(projectId);

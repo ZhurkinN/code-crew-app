@@ -7,7 +7,6 @@ import cis.tinkoff.repository.PositionRepository;
 import cis.tinkoff.repository.PositionRequestRepository;
 import cis.tinkoff.repository.ResumeRepository;
 import cis.tinkoff.service.DictionaryService;
-import cis.tinkoff.service.NotificationService;
 import cis.tinkoff.service.PositionRequestService;
 import cis.tinkoff.service.enumerated.RequestType;
 import cis.tinkoff.support.exceptions.InaccessibleActionException;
@@ -27,7 +26,6 @@ import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper
 @RequiredArgsConstructor
 public class PositionRequestServiceImpl implements PositionRequestService {
 
-    private final NotificationService notificationService;
     private final DictionaryService dictionaryService;
     private final PositionRequestRepository positionRequestRepository;
     private final ResumeRepository resumeRepository;
