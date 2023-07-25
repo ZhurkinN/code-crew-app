@@ -22,6 +22,7 @@ public class NotificationDTO {
     private String projectTitle;
     private Long resumeId;
     private Long vacancyId;
+    private Long projectId;
     private Long createdWhen;
 
     public static NotificationDTO of(Notification notification) {
@@ -41,6 +42,7 @@ public class NotificationDTO {
                 .setId(notification.getId())
                 .setType(notification.getType())
                 .setCreatedWhen(notification.getCreatedWhen())
+                .setProjectId(notification.getRequest().getPosition().getProject().getId())
                 .setProjectTitle(notification.getRequest().getPosition().getProject().getTitle())
                 .setResumeId(resumeId)
                 .setVacancyId(vacancyId);
