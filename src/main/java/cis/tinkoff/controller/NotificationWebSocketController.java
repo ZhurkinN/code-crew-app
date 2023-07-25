@@ -16,7 +16,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Setter
 @Secured(SecurityRule.IS_ANONYMOUS)
@@ -25,24 +27,26 @@ import java.util.Objects;
 public class NotificationWebSocketController implements ApplicationEventListener<NotificationEvent> {
 
     private final NotificationService notificationService;
-//    private final Map<String, WebSocketSession> sessions = new ConcurrentHashMap<>();
-    private WebSocketSession session;
-    private String userLogin;
+    private final Map<String, WebSocketSession> sessions = new ConcurrentHashMap<>();
+//    private WebSocketSession session;
+//    private String userLogin;
 
     @Override
     public void onApplicationEvent(NotificationEvent event) {
-        if (Objects.nonNull(userLogin)) {
-            Notification newNotification = (Notification) event.getSource();
+        Notification newNotification = (Notification) event.getSource();
+        String userLogin = newNotification.getUser().getName();
+        if (Objects.nonNull(sessions.get(userLogin))) {
             NotificationDTO message = notificationService.getNotificationById(newNotification.getId());
 
-            publishMessage(List.of(message), session);
+            publishMessage(List.of(message), sessions.get(userLogin));
         }
     }
 
     @OnOpen
     public void onOpen(WebSocketSession session, @PathVariable String userLogin) {
-        this.userLogin = userLogin;
-        this.session = session;
+//        this.userLogin = userLogin;
+//        this.session = session;
+        sessions.put(userLogin, session);
         List<NotificationDTO> message = notificationService.getLatestUserNotificationsByLogin(userLogin);
 
         publishMessage(message, session);
@@ -67,8 +71,9 @@ public class NotificationWebSocketController implements ApplicationEventListener
 
     @OnClose
     public void onClose(@PathVariable String userLogin) {
-        setUserLogin(null);
-        setSession(null);
+//        setUserLogin(null);
+//        setSession(null);
+        sessions.remove(userLogin);
     }
 
 }
