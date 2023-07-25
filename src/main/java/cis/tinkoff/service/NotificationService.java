@@ -19,6 +19,8 @@ public interface NotificationService {
             NotificationType notificationType
     );
 
+    NotificationDTO getNotificationById(Long notificationId);
+
     List<NotificationDTO> getLatestUserNotificationsByLogin(String login);
 
     List<NotificationDTO> getUserNotificationsByLogin(

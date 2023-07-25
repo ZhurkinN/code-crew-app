@@ -21,6 +21,7 @@ public class NotificationDTO {
     private NotificationTypeDictionary type;
     private String projectTitle;
     private Long resumeId;
+    private Long vacancyId;
     private Long createdWhen;
 
     public static NotificationDTO of(Notification notification) {
@@ -28,12 +29,21 @@ public class NotificationDTO {
             return null;
         }
 
+        Long resumeId = null;
+        Long vacancyId = null;
+
+        switch (notification.getType().getTypeName()) {
+            case INVITE, REQUEST_APPROVED, REQUEST_DECLINED -> resumeId = notification.getRequest().getResume().getId();
+            case REQUEST, INVITE_APPROVED, INVITE_DECLINED -> vacancyId = notification.getRequest().getPosition().getId();
+        }
+
         return new NotificationDTO()
                 .setId(notification.getId())
                 .setType(notification.getType())
                 .setCreatedWhen(notification.getCreatedWhen())
                 .setProjectTitle(notification.getRequest().getPosition().getProject().getTitle())
-                .setResumeId(notification.getRequest().getResume().getId());
+                .setResumeId(resumeId)
+                .setVacancyId(vacancyId);
     }
 
     public static List<NotificationDTO> of(Collection<Notification> notifications) {

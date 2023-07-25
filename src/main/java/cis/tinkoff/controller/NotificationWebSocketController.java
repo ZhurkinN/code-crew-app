@@ -2,6 +2,7 @@ package cis.tinkoff.controller;
 
 import cis.tinkoff.controller.model.NotificationDTO;
 import cis.tinkoff.controller.model.custom.NotificationRequestDTO;
+import cis.tinkoff.model.Notification;
 import cis.tinkoff.service.NotificationService;
 import cis.tinkoff.service.event.NotificationEvent;
 import io.micronaut.context.event.ApplicationEventListener;
@@ -30,9 +31,12 @@ public class NotificationWebSocketController implements ApplicationEventListener
 
     @Override
     public void onApplicationEvent(NotificationEvent event) {
+
         if (Objects.nonNull(userLogin)) {
-            List<NotificationDTO> message = notificationService.getLatestUserNotificationsByLogin(userLogin);
-            publishMessage(message, session);
+            Notification newNotification = (Notification) event.getSource();
+            NotificationDTO message = notificationService.getNotificationById(newNotification.getId());
+
+            publishMessage(List.of(message), session);
         }
     }
 
@@ -47,6 +51,7 @@ public class NotificationWebSocketController implements ApplicationEventListener
 
     @OnMessage
     public void onMessage(NotificationRequestDTO requestDTO, @PathVariable String userLogin) {
+
         if (requestDTO.getDelete().equals(true)) {
             notificationService.deleteNotificationById(requestDTO.getNotificationId());
         }

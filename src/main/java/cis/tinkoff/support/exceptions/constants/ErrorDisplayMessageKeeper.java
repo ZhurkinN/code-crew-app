@@ -32,6 +32,7 @@ public interface ErrorDisplayMessageKeeper {
     String PROJECT_STATUS_NOT_FOUND = "Project status with id = %s is not found.";
     String REQUEST_STATUS_NOT_FOUND = "Request status with id = %s is not found.";
     String NOTIFICATION_TYPE_NOT_FOUND = "Notification type with id = %s is not found.";
+    String NOTIFICATION_NOT_FOUND = "Notification with id = %s is not found.";
 
     //RequestAlreadyProcessedException
     String REQUEST_ALREADY_PROCESSED = "User with email = %s tried to process request with id = %d, that is already processed";

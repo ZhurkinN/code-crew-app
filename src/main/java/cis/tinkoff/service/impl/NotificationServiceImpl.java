@@ -9,6 +9,8 @@ import cis.tinkoff.repository.NotificationRepository;
 import cis.tinkoff.service.*;
 import cis.tinkoff.service.enumerated.SortDirection;
 import cis.tinkoff.service.event.NotificationEvent;
+import cis.tinkoff.support.exceptions.RecordNotFoundException;
+import cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper;
 import io.micronaut.context.event.ApplicationEventPublisher;
 import io.micronaut.data.model.Page;
 import io.micronaut.data.model.Pageable;
@@ -56,6 +58,17 @@ public class NotificationServiceImpl implements NotificationService {
         eventPublisher.publishEvent(new NotificationEvent(newNotification));
 
         return newNotification;
+    }
+
+    @Override
+    public NotificationDTO getNotificationById(Long notificationId) {
+        Notification notification = notificationRepository.findById(notificationId)
+                .orElseThrow(() -> new RecordNotFoundException(
+                        ErrorDisplayMessageKeeper.NOTIFICATION_NOT_FOUND,
+                        notificationId
+                ));
+
+        return NotificationDTO.of(notification);
     }
 
     @Override

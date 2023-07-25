@@ -94,7 +94,7 @@ public class PositionRequestServiceImpl implements PositionRequestService {
         positionRequest = positionRequestRepository.save(positionRequest);
 
         notificationService.createNotification(
-                position.getProject().getLeader().getId(),
+                resume.getUser().getId(),
                 positionRequest.getId(),
                 NotificationType.INVITE
         );
@@ -201,12 +201,15 @@ public class PositionRequestServiceImpl implements PositionRequestService {
         Resume resume = request.getResume();
         Position position = request.getPosition();
 
+        Long targetUserId;
         validateRequestStatus(status, position.getId(), respondentEmail);
         validateInvitedUsersProjectMembership(resume.getId(), position.getId());
         if (request.getIsInvite()) {
             validateUsersResumeOwnership(respondentEmail, resume.getId());
+            targetUserId = position.getProject().getLeader().getId();
         } else {
             validateUsersProjectLeadership(respondentEmail, position.getId());
+            targetUserId = resume.getUser().getId();
         }
 
         NotificationType notificationType;
@@ -232,7 +235,7 @@ public class PositionRequestServiceImpl implements PositionRequestService {
         }
 
         notificationService.createNotification(
-                position.getProject().getLeader().getId(),
+                targetUserId,
                 request.getId(),
                 notificationType
         );

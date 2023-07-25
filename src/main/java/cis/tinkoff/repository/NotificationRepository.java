@@ -8,8 +8,19 @@ import io.micronaut.data.model.Pageable;
 import io.micronaut.data.model.query.builder.sql.Dialect;
 import io.micronaut.data.repository.CrudRepository;
 
+import java.util.Optional;
+
 @JdbcRepository(dialect = Dialect.POSTGRES)
 public interface NotificationRepository extends CrudRepository<Notification, Long> {
+
+    @Override
+    @Join(value = "type", type = Join.Type.FETCH)
+    @Join(value = "request", type = Join.Type.FETCH)
+    @Join(value = "request.resume", type = Join.Type.FETCH)
+    @Join(value = "request.position", type = Join.Type.FETCH)
+    @Join(value = "request.position.project", type = Join.Type.FETCH)
+    @Join(value = "user", type = Join.Type.FETCH)
+    Optional<Notification> findById(Long id);
 
     @Join(value = "type", type = Join.Type.FETCH)
     @Join(value = "request", type = Join.Type.FETCH)
