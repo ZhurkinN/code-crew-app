@@ -1,7 +1,6 @@
 package cis.tinkoff.service.impl;
 
 import cis.tinkoff.controller.model.NotificationDTO;
-import cis.tinkoff.controller.model.custom.NotificationRequestDTO;
 import cis.tinkoff.model.Notification;
 import cis.tinkoff.model.User;
 import cis.tinkoff.model.enumerated.NotificationType;
@@ -12,6 +11,9 @@ import cis.tinkoff.service.PositionRequestService;
 import cis.tinkoff.service.UserService;
 import cis.tinkoff.service.enumerated.SortDirection;
 import cis.tinkoff.service.event.NotificationEvent;
+import cis.tinkoff.support.exceptions.RecordNotFoundException;
+import cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper;
+import cis.tinkoff.support.mapper.NotificationMapper;
 import io.micronaut.context.event.ApplicationEventPublisher;
 import io.micronaut.data.model.Page;
 import io.micronaut.data.model.Pageable;
@@ -26,7 +28,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class NotificationServiceImpl implements NotificationService {
     private final ApplicationEventPublisher<NotificationEvent> eventPublisher;
-
+    private final NotificationMapper notificationMapper;
     private final NotificationRepository notificationRepository;
     private final UserService userService;
     private final DictionaryService dictionaryService;
@@ -40,7 +42,7 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public Notification createNotification(
+    public void createNotification(
             Long targetUserId,
             Long targetRequestId,
             NotificationType notificationType
@@ -57,7 +59,17 @@ public class NotificationServiceImpl implements NotificationService {
 
         eventPublisher.publishEvent(new NotificationEvent(newNotification));
 
-        return newNotification;
+    }
+
+    @Override
+    public NotificationDTO getNotificationById(Long notificationId) {
+        Notification notification = notificationRepository.findById(notificationId)
+                .orElseThrow(() -> new RecordNotFoundException(
+                        ErrorDisplayMessageKeeper.NOTIFICATION_NOT_FOUND,
+                        notificationId
+                ));
+
+        return notificationMapper.of(notification);
     }
 
     @Override
@@ -68,25 +80,7 @@ public class NotificationServiceImpl implements NotificationService {
 
         Page<Notification> notifications = notificationRepository.findByUserId(userId, pageable);
 
-        return NotificationDTO.of(notifications.getContent());
-    }
-
-    @Override
-    public List<NotificationDTO> getUserNotificationsByLogin(
-            String login,
-            NotificationRequestDTO notificationRequestDTO
-    ) {
-        Pageable pageable = createPageable(
-                notificationRequestDTO.getPage(),
-                notificationRequestDTO.getSize(),
-                notificationRequestDTO.getSort()
-        );
-
-        Long userId = userService.getByEmail(login).getId();
-
-        Page<Notification> notifications = notificationRepository.findByUserId(userId, pageable);
-
-        return NotificationDTO.of(notifications.getContent());
+        return notificationMapper.of(notifications.getContent());
     }
 
     @Override

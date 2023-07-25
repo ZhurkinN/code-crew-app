@@ -1,7 +1,6 @@
 package cis.tinkoff.service;
 
 import cis.tinkoff.controller.model.NotificationDTO;
-import cis.tinkoff.controller.model.custom.NotificationRequestDTO;
 import cis.tinkoff.model.Notification;
 import cis.tinkoff.model.User;
 import cis.tinkoff.model.enumerated.NotificationType;
@@ -13,18 +12,15 @@ public interface NotificationService {
     Notification create(NotificationType type,
                         User user);
 
-    Notification createNotification(
+    void createNotification(
             Long targetUserId,
             Long targetRequestId,
             NotificationType notificationType
     );
 
-    List<NotificationDTO> getLatestUserNotificationsByLogin(String login);
+    NotificationDTO getNotificationById(Long notificationId);
 
-    List<NotificationDTO> getUserNotificationsByLogin(
-            String login,
-            NotificationRequestDTO notificationRequestDTO
-    );
+    List<NotificationDTO> getLatestUserNotificationsByLogin(String login);
 
     void deleteNotificationById(Long notificationId);
 }

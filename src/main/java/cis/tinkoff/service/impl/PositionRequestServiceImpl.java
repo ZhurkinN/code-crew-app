@@ -2,6 +2,7 @@ package cis.tinkoff.service.impl;
 
 import cis.tinkoff.model.*;
 import cis.tinkoff.model.dictionary.RequestStatusDictionary;
+import cis.tinkoff.model.enumerated.NotificationType;
 import cis.tinkoff.model.enumerated.RequestStatus;
 import cis.tinkoff.repository.PositionRepository;
 import cis.tinkoff.repository.PositionRequestRepository;
@@ -27,11 +28,11 @@ import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper
 @RequiredArgsConstructor
 public class PositionRequestServiceImpl implements PositionRequestService {
 
-    private final NotificationService notificationService;
     private final DictionaryService dictionaryService;
     private final PositionRequestRepository positionRequestRepository;
     private final ResumeRepository resumeRepository;
     private final PositionRepository positionRepository;
+    private final NotificationService notificationService;
 
     @Override
     public PositionRequest createPositionRequest(String authorEmail,
@@ -57,6 +58,12 @@ public class PositionRequestServiceImpl implements PositionRequestService {
                 .setStatus(defaultStatus);
 
         positionRequest = positionRequestRepository.save(positionRequest);
+
+        notificationService.createNotification(
+                position.getProject().getLeader().getId(),
+                positionRequest.getId(),
+                NotificationType.REQUEST
+        );
 
         return positionRequest;
     }
@@ -85,6 +92,12 @@ public class PositionRequestServiceImpl implements PositionRequestService {
                 .setStatus(defaultStatus);
 
         positionRequest = positionRequestRepository.save(positionRequest);
+
+        notificationService.createNotification(
+                resume.getUser().getId(),
+                positionRequest.getId(),
+                NotificationType.INVITE
+        );
 
         return positionRequest;
     }
@@ -188,12 +201,17 @@ public class PositionRequestServiceImpl implements PositionRequestService {
         Resume resume = request.getResume();
         Position position = request.getPosition();
 
+        Long targetUserId;
         validateRequestStatus(status, position.getId(), respondentEmail);
         if (request.getIsInvite()) {
             validateUsersResumeOwnership(respondentEmail, resume.getId());
+            targetUserId = position.getProject().getLeader().getId();
         } else {
             validateUsersProjectLeadership(respondentEmail, position.getId());
+            targetUserId = resume.getUser().getId();
         }
+
+        NotificationType notificationType;
 
         if (isAccepted) {
 
@@ -204,17 +222,31 @@ public class PositionRequestServiceImpl implements PositionRequestService {
             request.getResume().setIsActive(false);
             status.setStatusName(RequestStatus.ACCEPTED);
 
+            notificationType = request.getIsInvite()
+                    ? NotificationType.INVITE_APPROVED
+                    : NotificationType.REQUEST_APPROVED;
+
         } else {
             status.setStatusName(RequestStatus.DECLINED);
+
+            notificationType = request.getIsInvite()
+                    ? NotificationType.INVITE_DECLINED
+                    : NotificationType.REQUEST_DECLINED;
         }
 
         positionRequestRepository.update(request);
+
+        notificationService.createNotification(
+                targetUserId,
+                request.getId(),
+                notificationType
+        );
     }
 
     @Override
     public PositionRequest findPositionRequestById(Long positionRequestId) {
 
-        return positionRequestRepository.getByIdAndIsDeletedFalse(positionRequestId)
+        return positionRequestRepository.findByIdAndIsDeletedFalse(positionRequestId)
                 .orElseThrow(() -> new RecordNotFoundException(
                         REQUEST_NOT_FOUND,
                         positionRequestId

@@ -36,7 +36,6 @@ public interface ProjectRepository extends CrudRepository<Project, Long> {
     @Join(value = "status", type = Join.Type.FETCH)
     List<Project> getByPositionsUserEmailAndIsDeletedFalse(String positionsUserEmail);
 
-
     @Where("@.is_deleted = false")
     @Join(value = "positions.user", type = Join.Type.LEFT_FETCH)
     @Join(value = "status", type = Join.Type.FETCH)
