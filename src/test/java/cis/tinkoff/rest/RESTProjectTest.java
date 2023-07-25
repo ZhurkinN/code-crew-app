@@ -174,9 +174,9 @@ public class RESTProjectTest {
         ProjectStatus status = ProjectStatus.FROZEN;
         ProjectStatusDictionary expectedProjectStatus
                 = new ProjectStatusDictionary(ProjectStatus.FROZEN, "Project is frozen");
-        ContactDTO contact1 = ContactDTO.builder().description("New link 1").link("Link 1").build();
-        ContactDTO contact2 = ContactDTO.builder().description("New link 2").link("Link 2").build();
-        ContactDTO contact3 = ContactDTO.builder().description("New link 3").link("Link 3").build();
+        ContactDTO contact1 = new ContactDTO().setDescription("New link 1").setLink("Link 1");
+        ContactDTO contact2 = new ContactDTO().setDescription("New link 2").setLink("Link 1");
+        ContactDTO contact3 = new ContactDTO().setDescription("New link 3").setLink("Link 1");
         List<ContactDTO> expectedContacts = List.of(contact1, contact2, contact3);
 
         dto.setStatus(status);
@@ -215,9 +215,9 @@ public class RESTProjectTest {
         String expectedTheme = "New theme";
         String expectedDescription = "New description";
         ProjectStatus status = ProjectStatus.FROZEN;
-        ContactDTO contact1 = ContactDTO.builder().description("New link 1").link("Link 1").build();
-        ContactDTO contact2 = ContactDTO.builder().description("New link 2").link("Link 2").build();
-        ContactDTO contact3 = ContactDTO.builder().description("New link 3").link("Link 3").build();
+        ContactDTO contact1 = new ContactDTO().setDescription("New link 1").setLink("Link 1");
+        ContactDTO contact2 = new ContactDTO().setDescription("New link 2").setLink("Link 1");
+        ContactDTO contact3 = new ContactDTO().setDescription("New link 3").setLink("Link 1");
         List<ContactDTO> expectedContacts = List.of(contact1, contact2, contact3);
 
         dto.setStatus(status);
@@ -404,9 +404,9 @@ public class RESTProjectTest {
         String title = "New title";
         String theme = "New theme";
         String description = "New description";
-        ContactDTO contact1 = ContactDTO.builder().description("New link 1").link("Link 1").build();
-        ContactDTO contact2 = ContactDTO.builder().description("New link 2").link("Link 2").build();
-        ContactDTO contact3 = ContactDTO.builder().description("New link 3").link("Link 3").build();
+        ContactDTO contact1 = new ContactDTO().setDescription("New link 1").setLink("Link 1");
+        ContactDTO contact2 = new ContactDTO().setDescription("New link 2").setLink("Link 1");
+        ContactDTO contact3 = new ContactDTO().setDescription("New link 3").setLink("Link 1");
         List<ContactDTO> expectedContacts = List.of(contact1, contact2, contact3);
 
         dto.setStatus(ProjectStatus.PREPARING);

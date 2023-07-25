@@ -5,19 +5,17 @@ import cis.tinkoff.model.PositionRequest;
 import cis.tinkoff.model.User;
 import cis.tinkoff.model.dictionary.NotificationTypeDictionary;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
-@AllArgsConstructor
+@Setter
+@Getter
 @NoArgsConstructor
-@Data
-@Builder
 @JsonInclude
 public class NotificationDTO {
 
@@ -28,17 +26,17 @@ public class NotificationDTO {
     private Long createdWhen;
 
     public static NotificationDTO of(Notification notification) {
+
         if (Objects.isNull(notification)) {
             return null;
         }
 
-        return NotificationDTO.builder()
-                .id(notification.getId())
-                .type(notification.getType())
-                .request(notification.getRequest())
-                .user(notification.getUser())
-                .createdWhen(notification.getCreatedWhen())
-                .build();
+        return new NotificationDTO()
+                .setId(notification.getId())
+                .setType(notification.getType())
+                .setRequest(notification.getRequest())
+                .setUser(notification.getUser())
+                .setCreatedWhen(notification.getCreatedWhen());
     }
 
     public static List<NotificationDTO> of(Collection<Notification> notifications) {

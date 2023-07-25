@@ -10,6 +10,7 @@ import io.micronaut.data.repository.CrudRepository;
 
 @JdbcRepository(dialect = Dialect.POSTGRES)
 public interface NotificationRepository extends CrudRepository<Notification, Long> {
+
     @Join(value = "type", type = Join.Type.FETCH)
     @Join(value = "request", type = Join.Type.FETCH)
     @Join(value = "user", type = Join.Type.FETCH)

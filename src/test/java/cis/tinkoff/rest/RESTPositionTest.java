@@ -78,7 +78,7 @@ public class RESTPositionTest {
         DirectionDictionary expectedDirection
                 = new DirectionDictionary(Direction.BACKEND, "Backend-developer");
         List<String> expectedSkills = List.of("java", "postgres", "spring", "maven");
-        ProjectDTO expectedProject = ProjectDTO.builder().id(1L).build();
+        ProjectDTO expectedProject = new ProjectDTO().setId(1L);
 
         VacancyDTO dto = given()
                 .when()
@@ -125,19 +125,17 @@ public class RESTPositionTest {
 
         List<VacancyDTO> expectedVacancies = new ArrayList<>();
 
-        VacancyDTO expectedVacancy1 = VacancyDTO.builder()
-                .id(1L)
-                .isVisible(true)
-                .direction(new DirectionDictionary(Direction.BACKEND, "Backend-developer"))
-                .skills(List.of("java", "postgres", "spring", "maven"))
-                .build();
+        VacancyDTO expectedVacancy1 = new VacancyDTO()
+                .setId(1L)
+                .setIsVisible(true)
+                .setDirection(new DirectionDictionary(Direction.BACKEND, "Backend-developer"))
+                .setSkills(List.of("java", "postgres", "spring", "maven"));
 
-        VacancyDTO expectedVacancy2 = VacancyDTO.builder()
-                .id(3L)
-                .isVisible(true)
-                .direction(new DirectionDictionary(Direction.QA, "QA-engineer"))
-                .skills(List.of("java", "mockito", "junit"))
-                .build();
+        VacancyDTO expectedVacancy2 = new VacancyDTO()
+                .setId(3L)
+                .setIsVisible(true)
+                .setDirection(new DirectionDictionary(Direction.QA, "QA-engineer"))
+                .setSkills(List.of("java", "mockito", "junit"));
 
         expectedVacancies.add(expectedVacancy1);
         expectedVacancies.add(expectedVacancy2);
@@ -243,11 +241,10 @@ public class RESTPositionTest {
         String expectedDescription = "New description";
         List<String> expectedSkills = List.of("Skill 1", "Skill 2", "Skill 3");
 
-        VacancyCreateDTO updateDTO = VacancyCreateDTO.builder()
-                .description(expectedDescription)
-                .skills(expectedSkills)
-                .direction(Direction.ML)
-                .build();
+        VacancyCreateDTO updateDTO = new VacancyCreateDTO()
+                .setDescription(expectedDescription)
+                .setSkills(expectedSkills)
+                .setDirection(Direction.ML);
 
         Response response = given()
                 .body(updateDTO)
@@ -274,11 +271,10 @@ public class RESTPositionTest {
         List<String> expectedSkills = List.of("Skill 1", "Skill 2", "Skill 3");
         DirectionDictionary expectedDirection = new DirectionDictionary(Direction.ML, "Machine Learning Engineer");
 
-        VacancyCreateDTO createDTO = VacancyCreateDTO.builder()
-                .description(expectedDescription)
-                .skills(expectedSkills)
-                .direction(Direction.ML)
-                .build();
+        VacancyCreateDTO createDTO = new VacancyCreateDTO()
+                .setDescription(expectedDescription)
+                .setSkills(expectedSkills)
+                .setDirection(Direction.ML);
 
         VacancyDTO dto = given()
                 .body(createDTO)
@@ -306,11 +302,10 @@ public class RESTPositionTest {
         List<String> expectedSkills = List.of("Skill 1", "Skill 2", "Skill 3");
         DirectionDictionary expectedDirection = new DirectionDictionary(Direction.ML, "Machine Learning Engineer");
 
-        VacancyCreateDTO createDTO = VacancyCreateDTO.builder()
-                .description(expectedDescription)
-                .skills(expectedSkills)
-                .direction(Direction.ML)
-                .build();
+        VacancyCreateDTO createDTO = new VacancyCreateDTO()
+                .setDescription(expectedDescription)
+                .setSkills(expectedSkills)
+                .setDirection(Direction.ML);
 
         Response response = given()
                 .body(createDTO)
@@ -406,11 +401,10 @@ public class RESTPositionTest {
         List<String> expectedSkills = List.of("Skill 1", "Skill 2", "Skill 3");
         DirectionDictionary expectedDirection = new DirectionDictionary(Direction.ML, "Machine Learning Engineer");
 
-        VacancyCreateDTO updateDTO = VacancyCreateDTO.builder()
-                .description(expectedDescription)
-                .skills(expectedSkills)
-                .direction(Direction.ML)
-                .build();
+        VacancyCreateDTO updateDTO = new VacancyCreateDTO()
+                .setDescription(expectedDescription)
+                .setSkills(expectedSkills)
+                .setDirection(Direction.ML);
 
         VacancyDTO dto = given()
                 .body(updateDTO)
