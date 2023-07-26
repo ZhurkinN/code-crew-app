@@ -62,7 +62,7 @@ public class PositionServiceImpl implements PositionService {
             vacancyDirection = Direction.valueOf(direction).toString();
         }
         if (skills != null) {
-            skillList = Arrays.stream(skills.split(" ")).toList();
+            skillList = Arrays.stream(skills.split(",")).toList();
         }
 
         Sort.Order sortOrder = new Sort.Order("createdWhen");

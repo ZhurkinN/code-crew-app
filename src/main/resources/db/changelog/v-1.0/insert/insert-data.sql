@@ -100,73 +100,73 @@ values ('alex@mail.ru', 'Gordon', 'Alonso', '123',
 
 insert into resume(description, direction, user_id, skills)
 values ('Hey, i want to work backend dev. Wanna try new technologies and new ideas. Open to new contacts', 'BACKEND', 1,
-        ARRAY ['java', 'spring', 'micronaut', 'docker', 'postgres', 'rest']),
+        ARRAY ['Java', 'Spring', 'Micronaut', 'Docker', 'Postgres', 'REST']),
 
        ('Hey, i want to work Machine Learning engineer. Wanna learn new practices and write code on python', 'ML', 1,
-        ARRAY ['python']),
+        ARRAY ['Python']),
 
        ('Hey, i want to work frontend dev. Wanna drink smoozy and draw interfaces. Open to other devs', 'FRONTEND', 2,
-        ARRAY ['javaScript', 'next', 'react', 'node', 'postgres', 'rest']),
+        ARRAY ['JavaScript', 'Next', 'React', 'Node', 'Postgres', 'REST']),
 
        ('Hey, i want to work QA. Wanna test bugs and write integration and unit tests. Open to new bugs', 'QA', 3,
-        ARRAY ['java', 'mockito', 'rest', 'junit', 'postgres']),
+        ARRAY ['Java', 'Mockito', 'REST', 'JUnit', 'Postgres']),
 
        ('Hey, i want to work Machine Learning engineer. Wanna learn new practices and write code on python', 'ML', 4,
-        ARRAY ['python']),
+        ARRAY ['Python']),
 
        ('Hey, i want to work Analyst. Wanna analyze business moments and smth else. Doing something', 'ANALYST', 5,
-        ARRAY ['python']),
+        ARRAY ['Python']),
 
        ('Hey, i want to work Data science. Analyzing data and do some conclusions on it', 'DATA_SCIENCE', 6,
-        ARRAY ['python', 'pandas', 'postgres']),
+        ARRAY ['Python', 'Pandas', 'Postgres']),
 
        ('Hey, i want to work backend dev. Wanna try new technologies and new ideas. Open to new contacts', 'BACKEND', 7,
-        ARRAY ['java', 'spring', 'micronaut', 'docker', 'postgres', 'gradle', 'maven']),
+        ARRAY ['Java', 'Spring', 'Micronaut', 'Docker', 'Postgres', 'Gradle', 'Maven']),
 
        ('Hey, i want to work frontend dev. Wanna drink smoozy and draw interfaces. Open to other devs', 'FRONTEND', 8,
-        ARRAY ['javascript', 'next', 'react', 'node', 'postgres']),
+        ARRAY ['JavaScript', 'Next', 'React', 'Node', 'Postgres']),
 
        ('Hey, i want to work backend dev. Wanna try new technologies and new ideas. Open to new contacts', 'BACKEND', 9,
-        ARRAY ['java', 'spring', 'micronaut', 'docker', 'postgres', 'rest']),
+        ARRAY ['Java', 'Spring', 'Micronaut', 'Docker', 'Postgres', 'REST']),
 
        ('Hey, i want to work Machine Learning engineer. Wanna learn new practices and write code on python', 'ML', 9,
-        ARRAY ['python']),
+        ARRAY ['Python']),
 
        ('Hey, i want to work frontend dev. Wanna drink smoozy and draw interfaces. Open to other devs', 'FRONTEND', 10,
-        ARRAY ['javaScript', 'next', 'react', 'node', 'postgres', 'rest']),
+        ARRAY ['JavaScript', 'Next', 'React', 'Node', 'Postgres', 'REST']),
 
        ('Hey, i want to work QA. Wanna test bugs and write integration and unit tests. Open to new bugs', 'QA', 11,
-        ARRAY ['java', 'mockito', 'rest', 'junit', 'postgres']),
+        ARRAY ['Java', 'Mockito', 'REST', 'JUnit', 'Postgres']),
 
        ('Hey, i want to work Machine Learning engineer. Wanna learn new practices and write code on python', 'ML', 12,
-        ARRAY ['python']),
+        ARRAY ['Python']),
 
        ('Hey, i want to work Analyst. Wanna analyze business moments and smth else. Doing something', 'ANALYST', 13,
-        ARRAY ['python']),
+        ARRAY ['Python']),
 
        ('Hey, i want to work Data science. Analyzing data and do some conclusions on it', 'DATA_SCIENCE', 14,
-        ARRAY ['python', 'pandas', 'postgres']),
+        ARRAY ['Python', 'Pandas', 'Postgres']),
 
        ('Hey, i want to work backend dev. Wanna try new technologies and new ideas. Open to new contacts', 'BACKEND', 15,
-        ARRAY ['java', 'spring', 'micronaut', 'docker', 'postgres', 'gradle', 'maven']),
+        ARRAY ['Java', 'Spring', 'Micronaut', 'Docker', 'Postgres', 'Gradle', 'Maven']),
 
        ('Hey, i want to work frontend dev. Wanna drink smoozy and draw interfaces. Open to other devs', 'FRONTEND', 16,
-        ARRAY ['javascript', 'next', 'react', 'node', 'postgres']),
+        ARRAY ['JavaScript', 'Next', 'React', 'Node', 'Postgres']),
 
        ('Hey, i want to work backend dev. Wanna try new technologies and new ideas. Open to new contacts', 'BACKEND', 16,
-        ARRAY ['java', 'spring', 'micronaut', 'docker', 'postgres', 'rest']),
+        ARRAY ['Java', 'Spring', 'Micronaut', 'Docker', 'Postgres', 'REST']),
 
        ('Hey, i want to work Machine Learning engineer. Wanna learn new practices and write code on python', 'ML', 17,
-        ARRAY ['python']),
+        ARRAY ['Python']),
 
        ('Hey, i want to work frontend dev. Wanna drink smoozy and draw interfaces. Open to other devs', 'FRONTEND', 17,
-        ARRAY ['javaScript', 'next', 'react', 'node', 'postgres', 'rest']),
+        ARRAY ['JavaScript', 'Next', 'React', 'Node', 'Postgres', 'REST']),
 
        ('Hey, i want to work QA. Wanna test bugs and write integration and unit tests. Open to new bugs', 'QA', 18,
-        ARRAY ['java', 'mockito', 'rest', 'junit', 'postgres']),
+        ARRAY ['Java', 'Mockito', 'REST', 'JUnit', 'Postgres']),
 
        ('Hey, i want to work Machine Learning engineer. Wanna learn new practices and write code on python', 'ML', 19,
-        ARRAY ['python']);
+        ARRAY ['Python']);
 
 
 insert into project(leader_id, title, theme, description, status)
@@ -194,7 +194,7 @@ values (2, 'Новый сайт РЖД', 'Сайт РЖД',
 
        (11, 'Новый сайт Zocker', 'Сайт Zocker',
         'Проект разработки сайта Zocker. Zocker - новый лидер в поставках одежды и обуви из Европы', 'PREPARING'),
-       (12, 'Новый сайт Zeekr', 'Приложение Тиндер',
+       (12, 'Новый сайт Zeekr', 'Сайт Zeekr',
         'Проект разработки сайта Zeekr. Новый бренд электромобилей с корнями из Швеции', 'CLOSED'),
        (13, 'Новое приложение Apple Music', 'Apple Music',
         'Проект разработки Apple Music. Яндекс музыка нам надоела, поэтому делаем немного круче', 'FROZEN'),
@@ -205,63 +205,63 @@ values (2, 'Новый сайт РЖД', 'Сайт РЖД',
 
 
 insert into position(project_id, direction, description, skills, user_id)
-values (1, 'BACKEND', 'Позиция Backend-developer', ARRAY ['java', 'postgres', 'spring', 'maven'], null),
-       (1, 'FRONTEND', 'Позиция Frontend-developer', ARRAY ['javascript', 'typescript', 'react', 'next'], 2),
-       (1, 'QA', 'Позиция QA-engineer', ARRAY ['java', 'mockito', 'junit'], null),
+values (1, 'BACKEND', 'Позиция Backend-developer', ARRAY ['Java', 'Postgres', 'Spring', 'Maven'], null),
+       (1, 'FRONTEND', 'Позиция Frontend-developer', ARRAY ['JavaScript', 'TypeScript', 'React', 'Next'], 2),
+       (1, 'QA', 'Позиция QA-engineer', ARRAY ['Java', 'Mockito', 'JUnit'], null),
 
-       (2, 'BACKEND', 'Позиция Backend-developer', ARRAY ['python', 'postgres', 'django', 'maven'], 1),
-       (2, 'FRONTEND', 'Позиция Frontend-developer', ARRAY ['javascript', 'typescript', 'react'], 8),
-       (2, 'QA', 'Позиция тестировщика', ARRAY ['java', 'mockito', 'junit', 'selenium'], 3),
-       (2, 'ANALYST', 'Позиция аналитика', ARRAY ['java'], 5),
+       (2, 'BACKEND', 'Позиция Backend-developer', ARRAY ['Python', 'Postgres', 'Django', 'Maven'], 1),
+       (2, 'FRONTEND', 'Позиция Frontend-developer', ARRAY ['JavaScript', 'TypeScript', 'React'], 8),
+       (2, 'QA', 'Позиция тестировщика', ARRAY ['Java', 'Mockito', 'JUnit', 'Selenium'], 3),
+       (2, 'ANALYST', 'Позиция аналитика', ARRAY ['Java'], 5),
 
-       (3, 'BACKEND', 'Позиция Backend-developer', ARRAY ['java', 'postgres', 'spring', 'maven'], null),
-       (3, 'QA', 'Позиция тестировщика', ARRAY ['java', 'mockito', 'jUnit', 'selenium'], 3),
+       (3, 'BACKEND', 'Позиция Backend-developer', ARRAY ['Java', 'Postgres', 'Spring', 'Maven'], null),
+       (3, 'QA', 'Позиция тестировщика', ARRAY ['Java', 'Mockito', 'JUnit', 'Selenium'], 4),
 
-       (4, 'BACKEND', 'Позиция Backend-developer', ARRAY ['java', 'postgres', 'spring', 'maven'], null),
-       (4, 'FRONTEND', 'Позиция Frontend-developer', ARRAY ['javascript', 'typescript', 'react', 'next'], null),
+       (4, 'BACKEND', 'Позиция Backend-developer', ARRAY ['Java', 'Postgres', 'Spring', 'Maven'], null),
+       (4, 'FRONTEND', 'Позиция Frontend-developer', ARRAY ['JavaScript', 'TypeScript', 'React', 'Next'], null),
        (4, 'DATA_SCIENCE', 'Позиция Data Science Engineer', ARRAY ['Python'], 6),
        (4, 'ML', 'Позиция Machine Learning Engineer', ARRAY ['Python'], null),
 
-       (5, 'BACKEND', 'Позиция Backend-developer', ARRAY ['java', 'postgres', 'spring', 'maven'], null),
-       (5, 'QA', 'Позиция тестировщика', ARRAY ['java', 'mockito', 'junit', 'selenium'], 3),
-       (5, 'DATA_SCIENCE', 'Позиция Data science engineer', ARRAY ['python', 'pandas', 'postgres'], null),
-       (5, 'ANALYST', 'Позиция аналитика', ARRAY ['postgres', 'python'], null),
+       (5, 'BACKEND', 'Позиция Backend-developer', ARRAY ['Java', 'Postgres', 'Spring', 'Maven'], null),
+       (5, 'QA', 'Позиция тестировщика', ARRAY ['Java', 'Mockito', 'JUnit', 'Selenium'], 3),
+       (5, 'DATA_SCIENCE', 'Позиция Data science engineer', ARRAY ['Python', 'Pandas', 'Postgres'], null),
+       (5, 'ANALYST', 'Позиция аналитика', ARRAY ['Postgres', 'Python'], null),
 
-       (6, 'BACKEND', 'Позиция Backend-developer', ARRAY ['java', 'postgres', 'spring', 'maven'], null),
-       (6, 'ANALYST', 'Позиция аналитика', ARRAY ['java'], 5),
+       (6, 'BACKEND', 'Позиция Backend-developer', ARRAY ['Java', 'Postgres', 'Spring', 'Maven'], null),
+       (6, 'ANALYST', 'Позиция аналитика', ARRAY ['Java'], 5),
 
-       (7, 'QA', 'Позиция тестировщика', ARRAY ['java', 'mockito', 'junit', 'selenium'], 7),
-       (7, 'DATA_SCIENCE', 'Позиция Data science engineer', ARRAY ['python', 'pandas', 'postgres'], null),
-       (7, 'ANALYST', 'Позиция аналитика', ARRAY ['postgres', 'python'], null),
+       (7, 'QA', 'Позиция тестировщика', ARRAY ['Java', 'Mockito', 'JUnit', 'Selenium'], 7),
+       (7, 'DATA_SCIENCE', 'Позиция Data science engineer', ARRAY ['Python', 'Pandas', 'Postgres'], null),
+       (7, 'ANALYST', 'Позиция аналитика', ARRAY ['Postgres', 'Python'], null),
 
-       (8, 'QA', 'Позиция тестировщика', ARRAY ['java', 'mockito', 'junit', 'selenium'], null),
-       (8, 'DATA_SCIENCE', 'Позиция Data science engineer', ARRAY ['python', 'pandas', 'postgres'], 8),
-       (8, 'ANALYST', 'Позиция аналитика', ARRAY ['postgres', 'python'], null),
+       (8, 'QA', 'Позиция тестировщика', ARRAY ['Java', 'Mockito', 'JUnit', 'Selenium'], null),
+       (8, 'DATA_SCIENCE', 'Позиция Data science engineer', ARRAY ['Python', 'Pandas', 'Postgres'], 8),
+       (8, 'ANALYST', 'Позиция аналитика', ARRAY ['Postgres', 'Python'], null),
 
-       (9, 'QA', 'Позиция тестировщика', ARRAY ['java', 'mockito', 'junit', 'selenium'], null),
-       (9, 'DATA_SCIENCE', 'Позиция Data science engineer', ARRAY ['python', 'pandas', 'postgres'], 9),
+       (9, 'QA', 'Позиция тестировщика', ARRAY ['Java', 'Mockito', 'Junit', 'Selenium'], null),
+       (9, 'DATA_SCIENCE', 'Позиция Data science engineer', ARRAY ['Python', 'Pandas', 'Postgres'], 9),
 
-       (10, 'QA', 'Позиция тестировщика', ARRAY ['java', 'mockito', 'junit', 'selenium'], 10),
-       (10, 'DATA_SCIENCE', 'Позиция Data science engineer', ARRAY ['python', 'pandas', 'postgres'], null),
+       (10, 'QA', 'Позиция тестировщика', ARRAY ['Java', 'Mockito', 'JUnit', 'Selenium'], 10),
+       (10, 'DATA_SCIENCE', 'Позиция Data science engineer', ARRAY ['Python', 'Pandas', 'Postgres'], null),
 
-       (11, 'QA', 'Позиция тестировщика', ARRAY ['java', 'mockito', 'junit', 'selenium'], null),
-       (11, 'DATA_SCIENCE', 'Позиция Data science engineer', ARRAY ['python', 'pandas', 'postgres'], null),
-       (11, 'BACKEND', 'Позиция Backend-developer', ARRAY ['java', 'postgres', 'spring'], 11),
+       (11, 'QA', 'Позиция тестировщика', ARRAY ['Java', 'Mockito', 'JUnit', 'Selenium'], null),
+       (11, 'DATA_SCIENCE', 'Позиция Data science engineer', ARRAY ['Python', 'Pandas', 'Postgres'], null),
+       (11, 'BACKEND', 'Позиция Backend-developer', ARRAY ['Java', 'Postgres', 'Spring'], 11),
 
-       (12, 'QA', 'Позиция тестировщика', ARRAY ['java', 'mockito', 'junit', 'selenium'], null),
-       (12, 'QA', 'Позиция тестировщика', ARRAY ['java', 'mockito', 'junit', 'selenium'], null),
-       (12, 'DATA_SCIENCE', 'Позиция Data science engineer', ARRAY ['python', 'pandas', 'postgres'], 12),
+       (12, 'QA', 'Позиция тестировщика', ARRAY ['Java', 'Mockito', 'JUnit', 'Selenium'], null),
+       (12, 'QA', 'Позиция тестировщика', ARRAY ['Java', 'Mockito', 'JUnit', 'Selenium'], null),
+       (12, 'DATA_SCIENCE', 'Позиция Data science engineer', ARRAY ['Python', 'Pandas', 'Postgres'], 12),
 
-       (13, 'QA', 'Позиция тестировщика', ARRAY ['java', 'mockito', 'junit', 'selenium'], 13),
-       (13, 'DATA_SCIENCE', 'Позиция Data science engineer', ARRAY ['python', 'pandas', 'postgres'], null),
+       (13, 'QA', 'Позиция тестировщика', ARRAY ['Java', 'Mockito', 'JUnit', 'Selenium'], 13),
+       (13, 'DATA_SCIENCE', 'Позиция Data science engineer', ARRAY ['Python', 'Pandas', 'Postgres'], null),
 
-       (14, 'QA', 'Позиция тестировщика', ARRAY ['java', 'mockito', 'junit', 'selenium'], null),
-       (14, 'BACKEND', 'Позиция Backend-developer', ARRAY ['java', 'postgres', 'spring'], 13),
-       (14, 'DATA_SCIENCE', 'Позиция Data science engineer', ARRAY ['python', 'pandas', 'postgres'], null),
+       (14, 'QA', 'Позиция тестировщика', ARRAY ['Java', 'Mockito', 'JUnit', 'Selenium'], null),
+       (14, 'BACKEND', 'Позиция Backend-developer', ARRAY ['Java', 'Postgres', 'Spring'], 14),
+       (14, 'DATA_SCIENCE', 'Позиция Data science engineer', ARRAY ['Python', 'Pandas', 'Postgres'], null),
 
-       (15, 'QA', 'Позиция тестировщика', ARRAY ['java', 'mockito', 'junit', 'selenium'], null),
-       (15, 'BACKEND', 'Позиция Backend-developer', ARRAY ['java', 'postgres', 'spring'], null),
-       (15, 'DATA_SCIENCE', 'Позиция Data science engineer', ARRAY ['python', 'pandas', 'postgres'], 15);
+       (15, 'QA', 'Позиция тестировщика', ARRAY ['Java', 'Mockito', 'JUnit', 'Selenium'], null),
+       (15, 'BACKEND', 'Позиция Backend-developer', ARRAY ['Java', 'Postgres', 'Spring'], null),
+       (15, 'DATA_SCIENCE', 'Позиция Data science engineer', ARRAY ['Python', 'Pandas', 'Postgres'], 15);
 
 
 
