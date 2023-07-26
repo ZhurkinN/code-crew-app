@@ -110,6 +110,14 @@ datasources:
     driver-class-name: org.postgresql.Driver
     db-type: postgres
 
+minio:
+  url: http://localhost:9000
+  key:
+    access: ${MINIO_ROOT_USER}
+    secret: ${MINIO_ROOT_PASSWORD}
+  bucket:
+    name: code-crew
+
 netty:
   default:
     allocator:
