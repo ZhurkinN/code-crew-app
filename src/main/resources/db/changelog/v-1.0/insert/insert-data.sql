@@ -215,7 +215,7 @@ values (1, 'BACKEND', 'Позиция Backend-developer', ARRAY ['Java', 'Postgr
        (2, 'ANALYST', 'Позиция аналитика', ARRAY ['Java'], 5),
 
        (3, 'BACKEND', 'Позиция Backend-developer', ARRAY ['Java', 'Postgres', 'Spring', 'Maven'], null),
-       (3, 'QA', 'Позиция тестировщика', ARRAY ['Java', 'Mockito', 'JUnit', 'Selenium'], 3),
+       (3, 'QA', 'Позиция тестировщика', ARRAY ['Java', 'Mockito', 'JUnit', 'Selenium'], 4),
 
        (4, 'BACKEND', 'Позиция Backend-developer', ARRAY ['Java', 'Postgres', 'Spring', 'Maven'], null),
        (4, 'FRONTEND', 'Позиция Frontend-developer', ARRAY ['JavaScript', 'TypeScript', 'React', 'Next'], null),
@@ -256,7 +256,7 @@ values (1, 'BACKEND', 'Позиция Backend-developer', ARRAY ['Java', 'Postgr
        (13, 'DATA_SCIENCE', 'Позиция Data science engineer', ARRAY ['Python', 'Pandas', 'Postgres'], null),
 
        (14, 'QA', 'Позиция тестировщика', ARRAY ['Java', 'Mockito', 'JUnit', 'Selenium'], null),
-       (14, 'BACKEND', 'Позиция Backend-developer', ARRAY ['Java', 'Postgres', 'Spring'], 13),
+       (14, 'BACKEND', 'Позиция Backend-developer', ARRAY ['Java', 'Postgres', 'Spring'], 14),
        (14, 'DATA_SCIENCE', 'Позиция Data science engineer', ARRAY ['Python', 'Pandas', 'Postgres'], null),
 
        (15, 'QA', 'Позиция тестировщика', ARRAY ['Java', 'Mockito', 'JUnit', 'Selenium'], null),
