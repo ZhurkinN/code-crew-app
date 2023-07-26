@@ -170,7 +170,7 @@ public class ResumeServiceImpl implements ResumeService {
             resumeDirection = Direction.valueOf(direction).toString();
         }
         if (Objects.nonNull(skills)) {
-            skillList = Arrays.stream(skills.split(" ")).toList();
+            skillList = Arrays.stream(skills.split(",")).toList();
         }
 
         Sort.Order sortOrder = new Sort.Order("createdWhen");
