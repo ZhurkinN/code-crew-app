@@ -26,7 +26,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.*;
+import static cis.tinkoff.support.exceptions.constants.LoggedErrorMessageKeeper.*;
 
 @Singleton
 @RequiredArgsConstructor

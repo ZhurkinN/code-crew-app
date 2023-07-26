@@ -25,7 +25,6 @@ micronaut:
         enabled: true
         step: PT1M
         descriptions: true
-
   # Micronaut Security configuration
   security:
     enabled: true
@@ -65,15 +64,11 @@ micronaut:
         http-method: GET
         access:
           - isAnonymous()
-      - pattern: /ws/**
-        http-method: GET
-        access:
-          - isAnonymous()
     token:
       jwt:
         generator:
           access-token:
-            expiration: 1_80000  # 30 minutes
+            expiration: 1_800  # 30 minutes
           refresh-token:
             max-token-count: 5
             enabled: true
@@ -105,7 +100,8 @@ micronaut:
       common-file-extension: png
     netty:
       max-header-size: 30_720
-
+      max-chunk-size: 5_242_880 # 5 MB
+    max-request-size: 5_242_880 # 5 MB
 datasources:
   default:
     url: jdbc:postgresql://postgres:5432/${MICRONAUT_DB}

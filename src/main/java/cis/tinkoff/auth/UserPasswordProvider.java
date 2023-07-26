@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static cis.tinkoff.auth.enumerated.UserRole.USER_ROLE;
-import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.AUTHENTICATION_ERROR;
+import static cis.tinkoff.support.exceptions.constants.LoggedErrorMessageKeeper.AUTHENTICATION_ERROR;
 
 @Singleton
 @RequiredArgsConstructor

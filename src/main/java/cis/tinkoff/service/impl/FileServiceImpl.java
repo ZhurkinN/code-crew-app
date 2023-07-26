@@ -20,7 +20,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 
-import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.USER_NOT_FOUND;
+import static cis.tinkoff.support.exceptions.constants.LoggedErrorMessageKeeper.USER_NOT_FOUND;
 import static cis.tinkoff.support.helper.FileHandler.buildFilename;
 import static cis.tinkoff.support.helper.FileHandler.validateFileMediaType;
 

@@ -1,6 +1,6 @@
 package cis.tinkoff.support.exceptions;
 
-import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.WRONG_MEDIA_TYPE;
+import static cis.tinkoff.support.exceptions.constants.LoggedErrorMessageKeeper.WRONG_MEDIA_TYPE;
 
 public class UnavailableMediaTypeException extends RuntimeException {
 

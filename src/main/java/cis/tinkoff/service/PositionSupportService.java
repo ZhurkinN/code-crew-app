@@ -18,5 +18,7 @@ public interface PositionSupportService {
 
     void softDeletePositionsByProjectId(Long projectId);
 
+    void softDeleteAllInConsiderationPositionRequestsByPositionId(Long positionId);
+
     Position createPosition(User user, Direction direction, String description, List<String> skills, Long joinDate, Boolean isVisible);
 }

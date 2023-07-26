@@ -26,12 +26,13 @@ import io.micronaut.data.model.Sort;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 
+import javax.transaction.Transactional;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.INACCESSIBLE_PROJECT_ACTION;
-import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.POSITION_NOT_FOUND;
+import static cis.tinkoff.support.exceptions.constants.LoggedErrorMessageKeeper.INACCESSIBLE_PROJECT_ACTION;
+import static cis.tinkoff.support.exceptions.constants.LoggedErrorMessageKeeper.POSITION_NOT_FOUND;
 
 @Singleton
 @RequiredArgsConstructor
@@ -207,6 +208,7 @@ public class PositionServiceImpl implements PositionService {
     }
 
     @Override
+    @Transactional
     public void deleteVacancy(Long id,
                               String email) {
         Position updatedPosition = positionSupportService.findPositionByIdOrElseThrow(id);
@@ -220,6 +222,7 @@ public class PositionServiceImpl implements PositionService {
                     projectId
             );
         }
+        positionSupportService.softDeleteAllInConsiderationPositionRequestsByPositionId(id);
 
         updatedPosition.setIsDeleted(true);
         updatedPosition.setIsVisible(false);

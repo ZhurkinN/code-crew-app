@@ -140,6 +140,14 @@ public interface PositionRepository extends PageableRepository<Position, Long>, 
     )
     String getProjectsLeadersEmailById(@Id Long id);
 
+    @Query(value = """
+            UPDATE position_request SET is_deleted = true
+            WHERE status = 'IN_CONSIDERATION'
+            AND position_id = :positionId
+            """,
+            nativeQuery = true)
+    void softDeleteAllInConsiderationPositionRequestsByPositionId(Long positionId);
+
     @Join(value = "project.status", type = Join.Type.FETCH)
     @Join(value = "project.positions.user", type = Join.Type.FETCH)
     Project findProjectById(@Id Long id);

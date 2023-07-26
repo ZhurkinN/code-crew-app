@@ -8,4 +8,5 @@ public interface ProjectSupportService {
 
     Project getProjectByIdOrElseThrow(Long id);
 
+    void softDeleteAllInConsiderationPositionRequestsByProjectId(Long projectId);
 }

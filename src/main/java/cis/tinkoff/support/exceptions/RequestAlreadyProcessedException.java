@@ -1,6 +1,6 @@
 package cis.tinkoff.support.exceptions;
 
-import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.REQUEST_ALREADY_PROCESSED;
+import static cis.tinkoff.support.exceptions.constants.LoggedErrorMessageKeeper.REQUEST_ALREADY_PROCESSED;
 
 public class RequestAlreadyProcessedException extends RuntimeException {
 

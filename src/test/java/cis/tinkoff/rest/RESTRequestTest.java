@@ -23,7 +23,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import cis.tinkoff.controller.model.ProjectDTO;
 import java.util.List;
 
-import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.INACCESSIBLE_POSITION_ACTION;
+import static cis.tinkoff.support.exceptions.constants.LoggedErrorMessageKeeper.INACCESSIBLE_POSITION_ACTION;
 import static io.restassured.RestAssured.given;
 
 @MicronautTest

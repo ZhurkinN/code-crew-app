@@ -1,6 +1,6 @@
 package cis.tinkoff.support.exceptions;
 
-import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.REQUEST_ALREADY_EXISTS;
+import static cis.tinkoff.support.exceptions.constants.LoggedErrorMessageKeeper.REQUEST_ALREADY_EXISTS;
 
 public class RequestAlreadyExistsException extends RuntimeException {
 

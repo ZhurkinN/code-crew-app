@@ -19,8 +19,8 @@ import lombok.RequiredArgsConstructor;
 import javax.transaction.Transactional;
 import java.util.List;
 
-import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.USER_NOT_FOUND;
-import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.USER_NOT_FOUND_BY_EMAIL;
+import static cis.tinkoff.support.exceptions.constants.LoggedErrorMessageKeeper.USER_NOT_FOUND;
+import static cis.tinkoff.support.exceptions.constants.LoggedErrorMessageKeeper.USER_NOT_FOUND_BY_EMAIL;
 
 @Singleton
 @RequiredArgsConstructor

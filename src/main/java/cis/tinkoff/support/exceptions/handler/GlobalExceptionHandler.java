@@ -1,9 +1,7 @@
 package cis.tinkoff.support.exceptions.handler;
 
-import cis.tinkoff.support.exceptions.InaccessibleActionException;
-import cis.tinkoff.support.exceptions.ProfilePictureNotFoundException;
-import cis.tinkoff.support.exceptions.RecordNotFoundException;
-import cis.tinkoff.support.exceptions.UnavailableMediaTypeException;
+import cis.tinkoff.support.exceptions.*;
+import cis.tinkoff.support.exceptions.constants.DisplayedErrorMessageKeeper;
 import cis.tinkoff.support.exceptions.model.ErrorDTO;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.http.HttpRequest;
@@ -25,32 +23,55 @@ public class GlobalExceptionHandler implements ExceptionHandler<RuntimeException
                                RuntimeException exception) {
 
         log.error(exception.getMessage());
-        int statusCode = getStatusCode(exception);
-        ErrorDTO dto = new ErrorDTO(
-                request.getPath(),
-                exception.getMessage(),
-                statusCode,
-                System.currentTimeMillis()
-        );
+        ErrorDTO responseDto = new ErrorDTO()
+                .setPath(request.getPath())
+                .setLoggedMessage(exception.getMessage());
+        setErrorCodeAndMessage(exception, responseDto);
+
         return HttpResponse
-                .serverError(dto)
-                .status(statusCode);
+                .serverError(responseDto)
+                .status(responseDto.getStatusCode());
     }
 
-    private int getStatusCode(RuntimeException exception) {
-
+    private void setErrorCodeAndMessage(RuntimeException exception,
+                                        ErrorDTO dto) {
         int statusCode;
-        if (exception instanceof RecordNotFoundException
-                || exception instanceof ProfilePictureNotFoundException) {
+        String displayedMessage;
+
+        if (exception instanceof RecordNotFoundException) {
+
             statusCode = HttpStatus.NOT_FOUND.getCode();
+            displayedMessage = DisplayedErrorMessageKeeper.RESOURCES_NOT_FOUND;
         } else if (exception instanceof InaccessibleActionException) {
+
             statusCode = HttpStatus.NOT_ACCEPTABLE.getCode();
-        } else if (exception instanceof UnavailableMediaTypeException) {
-            statusCode = HttpStatus.UNSUPPORTED_MEDIA_TYPE.getCode();
-        } else {
+            displayedMessage = DisplayedErrorMessageKeeper.INACCESSIBLE_ACTION;
+        } else if (exception instanceof UserAlreadyExistsException) {
+
             statusCode = HttpStatus.CONFLICT.getCode();
+            displayedMessage = DisplayedErrorMessageKeeper.USER_ALREADY_EXISTS;
+        } else if (exception instanceof UnavailableMediaTypeException) {
+
+            statusCode = HttpStatus.UNSUPPORTED_MEDIA_TYPE.getCode();
+            displayedMessage = DisplayedErrorMessageKeeper.UNAVAILABLE_MEDIA_TYPE;
+        } else if (exception instanceof RequestAlreadyExistsException) {
+
+            statusCode = HttpStatus.CONFLICT.getCode();
+            displayedMessage = DisplayedErrorMessageKeeper.REQUEST_ALREADY_EXISTS;
+        } else if (exception instanceof RequestAlreadyProcessedException) {
+
+            statusCode = HttpStatus.CONFLICT.getCode();
+            displayedMessage = DisplayedErrorMessageKeeper.REQUEST_ALREADY_PROCESSED;
+        } else if (exception instanceof ProfilePictureNotFoundException) {
+
+            statusCode = HttpStatus.NOT_FOUND.getCode();
+            displayedMessage = DisplayedErrorMessageKeeper.PROFILE_PICTURE_NOT_FOUND;
+        } else {
+
+            statusCode = HttpStatus.BAD_REQUEST.getCode();
+            displayedMessage = exception.getMessage();
         }
 
-        return statusCode;
+        dto.setMessage(displayedMessage).setStatusCode(statusCode);
     }
 }
