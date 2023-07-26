@@ -215,7 +215,7 @@ values (1, 'BACKEND', 'Позиция Backend-developer', ARRAY ['Java', 'Postgr
        (2, 'ANALYST', 'Позиция аналитика', ARRAY ['Java'], 5),
 
        (3, 'BACKEND', 'Позиция Backend-developer', ARRAY ['Java', 'Postgres', 'Spring', 'Maven'], null),
-       (3, 'QA', 'Позиция тестировщика', ARRAY ['Java', 'Mockito', 'JUnit', 'Selenium'], 3),
+       (3, 'QA', 'Позиция тестировщика', ARRAY ['Java', 'Mockito', 'JUnit', 'Selenium'], 4),
 
        (4, 'BACKEND', 'Позиция Backend-developer', ARRAY ['Java', 'Postgres', 'Spring', 'Maven'], null),
        (4, 'FRONTEND', 'Позиция Frontend-developer', ARRAY ['JavaScript', 'TypeScript', 'React', 'Next'], null),
