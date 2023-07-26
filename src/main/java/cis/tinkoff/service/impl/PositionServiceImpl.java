@@ -26,6 +26,7 @@ import io.micronaut.data.model.Sort;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 
+import javax.transaction.Transactional;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -207,6 +208,7 @@ public class PositionServiceImpl implements PositionService {
     }
 
     @Override
+    @Transactional
     public void deleteVacancy(Long id,
                               String email) {
         Position updatedPosition = positionSupportService.findPositionByIdOrElseThrow(id);
@@ -220,6 +222,7 @@ public class PositionServiceImpl implements PositionService {
                     projectId
             );
         }
+        positionSupportService.softDeleteAllInConsiderationPositionRequestsByPositionId(id);
 
         updatedPosition.setIsDeleted(true);
         updatedPosition.setIsVisible(false);

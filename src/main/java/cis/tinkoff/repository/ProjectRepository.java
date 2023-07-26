@@ -48,6 +48,14 @@ public interface ProjectRepository extends CrudRepository<Project, Long> {
             nativeQuery = true)
     void softDeleteProject(Long id);
 
+    @Query(value = """
+            UPDATE position_request SET is_deleted = true
+            WHERE status = 'IN_CONSIDERATION'
+            AND position_id IN (SELECT pos.id FROM position pos WHERE pos.project_id = :projectId)
+            """,
+            nativeQuery = true)
+    void softDeleteAllInConsiderationPositionRequestsByProjectId(Long projectId);
+
     void updateLeaderByLeaderId(@Id Long id,
                                 User leader);
 

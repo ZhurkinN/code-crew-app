@@ -71,6 +71,7 @@ public class ProjectServiceImpl implements ProjectService {
             );
         }
 
+        projectSupportService.softDeleteAllInConsiderationPositionRequestsByProjectId(projectId);
         positionSupportService.softDeletePositionsByProjectId(projectId);
         projectRepository.softDeleteProject(projectId);
     }

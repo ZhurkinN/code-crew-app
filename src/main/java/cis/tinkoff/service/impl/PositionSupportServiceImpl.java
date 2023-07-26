@@ -60,6 +60,11 @@ public class PositionSupportServiceImpl implements PositionSupportService {
     }
 
     @Override
+    public void softDeleteAllInConsiderationPositionRequestsByPositionId(Long positionId) {
+        positionRepository.softDeleteAllInConsiderationPositionRequestsByPositionId(positionId);
+    }
+
+    @Override
     public Position createPosition(
             @NonNull User user,
             @NonNull Direction direction,

@@ -33,4 +33,9 @@ public class ProjectSupportServiceImpl implements ProjectSupportService {
                         id
                 ));
     }
+
+    @Override
+    public void softDeleteAllInConsiderationPositionRequestsByProjectId(Long projectId) {
+        projectRepository.softDeleteAllInConsiderationPositionRequestsByProjectId(projectId);
+    }
 }
