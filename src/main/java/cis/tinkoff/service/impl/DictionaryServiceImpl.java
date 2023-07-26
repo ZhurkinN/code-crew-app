@@ -24,7 +24,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 
-import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.*;
+import static cis.tinkoff.support.exceptions.constants.LoggedErrorMessageKeeper.*;
 
 @Singleton
 @RequiredArgsConstructor

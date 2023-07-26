@@ -31,8 +31,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.INACCESSIBLE_PROJECT_ACTION;
-import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.POSITION_NOT_FOUND;
+import static cis.tinkoff.support.exceptions.constants.LoggedErrorMessageKeeper.INACCESSIBLE_PROJECT_ACTION;
+import static cis.tinkoff.support.exceptions.constants.LoggedErrorMessageKeeper.POSITION_NOT_FOUND;
 
 @Singleton
 @RequiredArgsConstructor

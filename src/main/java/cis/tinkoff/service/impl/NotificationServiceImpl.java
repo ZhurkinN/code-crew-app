@@ -12,7 +12,7 @@ import cis.tinkoff.service.UserService;
 import cis.tinkoff.service.enumerated.SortDirection;
 import cis.tinkoff.service.event.NotificationEvent;
 import cis.tinkoff.support.exceptions.RecordNotFoundException;
-import cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper;
+import cis.tinkoff.support.exceptions.constants.LoggedErrorMessageKeeper;
 import cis.tinkoff.support.mapper.NotificationMapper;
 import io.micronaut.context.event.ApplicationEventPublisher;
 import io.micronaut.data.model.Page;
@@ -65,7 +65,7 @@ public class NotificationServiceImpl implements NotificationService {
     public NotificationDTO getNotificationById(Long notificationId) {
         Notification notification = notificationRepository.findById(notificationId)
                 .orElseThrow(() -> new RecordNotFoundException(
-                        ErrorDisplayMessageKeeper.NOTIFICATION_NOT_FOUND,
+                        LoggedErrorMessageKeeper.NOTIFICATION_NOT_FOUND,
                         notificationId
                 ));
 

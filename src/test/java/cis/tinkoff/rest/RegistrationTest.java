@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.USER_ALREADY_EXISTS;
+import static cis.tinkoff.support.exceptions.constants.LoggedErrorMessageKeeper.USER_ALREADY_EXISTS;
 import static io.restassured.RestAssured.given;
 
 @MicronautTest

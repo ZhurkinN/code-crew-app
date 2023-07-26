@@ -7,7 +7,7 @@ import cis.tinkoff.support.exceptions.RecordNotFoundException;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 
-import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.PROJECT_NOT_FOUND;
+import static cis.tinkoff.support.exceptions.constants.LoggedErrorMessageKeeper.PROJECT_NOT_FOUND;
 
 @Singleton
 @RequiredArgsConstructor

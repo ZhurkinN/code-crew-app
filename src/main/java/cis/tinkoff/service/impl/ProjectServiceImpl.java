@@ -23,7 +23,7 @@ import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Objects;
 
-import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.INACCESSIBLE_PROJECT_ACTION;
+import static cis.tinkoff.support.exceptions.constants.LoggedErrorMessageKeeper.INACCESSIBLE_PROJECT_ACTION;
 
 @Singleton
 @RequiredArgsConstructor

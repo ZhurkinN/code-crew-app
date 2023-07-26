@@ -1,6 +1,6 @@
 package cis.tinkoff.support.exceptions.constants;
 
-public interface ErrorDisplayMessageKeeper {
+public interface LoggedErrorMessageKeeper {
 
     //ProfilePictureNotFoundException
     String PICTURE_NOT_FOUND = "Profile picture for user with id = %d isn't found.";

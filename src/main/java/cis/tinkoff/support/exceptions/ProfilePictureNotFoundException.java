@@ -1,6 +1,6 @@
 package cis.tinkoff.support.exceptions;
 
-import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.PICTURE_NOT_FOUND;
+import static cis.tinkoff.support.exceptions.constants.LoggedErrorMessageKeeper.PICTURE_NOT_FOUND;
 
 public class ProfilePictureNotFoundException extends RuntimeException {
 

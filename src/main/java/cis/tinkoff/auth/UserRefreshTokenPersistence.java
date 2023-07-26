@@ -15,8 +15,8 @@ import reactor.core.publisher.FluxSink;
 
 import java.util.Optional;
 
-import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.REFRESH_TOKEN_NOT_FOUND;
-import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.REFRESH_TOKEN_REVOKED;
+import static cis.tinkoff.support.exceptions.constants.LoggedErrorMessageKeeper.REFRESH_TOKEN_NOT_FOUND;
+import static cis.tinkoff.support.exceptions.constants.LoggedErrorMessageKeeper.REFRESH_TOKEN_REVOKED;
 import static io.micronaut.security.errors.IssuingAnAccessTokenErrorCode.INVALID_GRANT;
 
 @Singleton

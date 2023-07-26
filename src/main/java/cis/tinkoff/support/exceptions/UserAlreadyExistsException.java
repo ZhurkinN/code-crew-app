@@ -1,6 +1,6 @@
 package cis.tinkoff.support.exceptions;
 
-import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.USER_ALREADY_EXISTS;
+import static cis.tinkoff.support.exceptions.constants.LoggedErrorMessageKeeper.USER_ALREADY_EXISTS;
 
 public class UserAlreadyExistsException extends RuntimeException {
 

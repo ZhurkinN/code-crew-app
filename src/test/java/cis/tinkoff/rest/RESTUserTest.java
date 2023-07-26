@@ -17,7 +17,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.List;
 
-import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.USER_NOT_FOUND;
+import static cis.tinkoff.support.exceptions.constants.LoggedErrorMessageKeeper.USER_NOT_FOUND;
 import static io.restassured.RestAssured.given;
 
 @MicronautTest

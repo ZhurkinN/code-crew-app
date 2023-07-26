@@ -14,8 +14,8 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.POSITION_NOT_FOUND;
-import static cis.tinkoff.support.exceptions.constants.ErrorDisplayMessageKeeper.POSITION_NOT_FOUND_BY_USER;
+import static cis.tinkoff.support.exceptions.constants.LoggedErrorMessageKeeper.POSITION_NOT_FOUND;
+import static cis.tinkoff.support.exceptions.constants.LoggedErrorMessageKeeper.POSITION_NOT_FOUND_BY_USER;
 
 @Singleton
 @RequiredArgsConstructor
