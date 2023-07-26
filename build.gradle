@@ -62,6 +62,9 @@ dependencies {
     //Logging
     runtimeOnly("ch.qos.logback:logback-classic")
 
+    //MinIO
+    implementation("io.minio:minio:8.4.3")
+
 }
 
 application {
